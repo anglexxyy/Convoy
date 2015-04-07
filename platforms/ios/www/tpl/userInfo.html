@@ -1,0 +1,93 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_userInfo" class="button">全屏</a>
+        </div>
+        <div class="center sliding">用户信息</div>
+        <div class="right">
+            <a href="#" id="back_userInfo" class="link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="userInfo" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <form id="userInfoForm">
+                    <label id="userInfo_userId" style="display: none"></label>
+
+                    <div class="row">
+                        <div class="col-15">
+                            <label>用户名：</label>
+                        </div>
+                        <div class="col-85">
+                            <input type="text" name="userInfo_userName" id="userInfo_userName">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-15">
+                            <label>电子邮箱：</label>
+                        </div>
+                        <div class="col-85">
+                            <input type="text" name="userInfo_email" id="userInfo_email">
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-15">
+                            <label>组：</label>
+                        </div>
+                        <div class="col-85" id="userInfo_groups">
+                            {{#each groups}}
+                            <div>{{name}}</div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-15">
+                            <label>组织：</label>
+                        </div>
+                        <div class="col-85" id="userInfo_organizations">
+                            {{#each orgs}}
+                            <div>{{name}}</div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-15">
+                            <label>角色：</label>
+                        </div>
+                        <div class="col-85" id="userInfo_roles">
+                            {{#each roles}}
+                            <div>{{name}}</div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <hr>
+                </form>
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="userInfo_modify" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

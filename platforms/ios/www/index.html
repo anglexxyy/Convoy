@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<meta charset="utf-8" />-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <!--, target-densitydpi=device-dpi-->
+
+    <title>易存文档管理系统</title>
+
+    <!--css-->
+    <!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
+    <link rel="stylesheet" href="css/framework7.min.css">
+    <link rel="stylesheet" href="css/uc-app.css">
+	<link rel="stylesheet" href="css/uc-style.css">
+</head>
+<body class="theme-084DA2">
+<!-- Status bar overlay for fullscreen mode-->
+<div class="statusbar-overlay"></div>
+
+<!-- Views-->
+<div class="views tabs">
+    <!-- view-left - Tab 1 -->
+    <div id="left-repository" class="view view-left tab active">
+        <div class="pages navbar-fixed toolbar-fixed">
+            <div data-page="repository" class="page">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" id="returnback" class="link">
+                                <i class="icon icon-back"></i>
+                                <span>返回</span>
+                            </a>
+                        </div>
+                        <div class="center">
+                            库
+                        </div>
+                        <div class="right">
+                            <a href="#" id="returnRoot" class="link">
+                                <i class="icon icon-home"></i>
+                                <!--<span>home</span>-->
+                            </a>
+                            <a href="#" data-popover=".popover-links" class="open-popover">
+                                <i class="icon icon-new"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="searchbar">
+                    <div class="searchbar-input">
+                        <input type="search" id="search_input" placeholder="请输入文档名称">
+                        <a href="#" class="searchbar-clear"></a>
+                    </div>
+                    <!--<a href="#" id="search_Button" >Search</a>-->
+                </form>
+                <!-- Search bar overlay -->
+                <div class="searchbar-overlay"></div>
+
+                <div class="page-content contacts-content infinite-scroll" data-distance="100">
+                    <!--pull-to-refresh-content-->
+                    <!--<div class="pull-to-refresh-layer">-->
+                        <!--<div class="preloader"></div>-->
+                        <!--<div class="pull-to-refresh-arrow"></div>-->
+                    <!--</div>-->
+
+                    <!--<div class="content-block">-->
+                        <!--<div class="content-block-inner">-->
+                            <!---->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="list-block media-list contacts-block">
+                        <ul id="itemList">
+                        </ul>
+                    </div>
+
+                    <div class="infinite-scroll-preloader">
+                    <div class="preloader"></div>
+                        加载中...
+                    </div>
+                </div>
+
+                <div class="toolbar tabbar">
+                    <div class="toolbar-inner" id="repository-lr">
+                        <a href="#left-repository" id="repository-left" class="tab-link active">
+                            <i class="icon icon-repository-on"></i>
+                            <span class="tabbar-label">库</span>
+                        </a>
+                        <a href="#left-set" id="repository-right" class="tab-link">
+                            <i class="icon icon-set"></i>
+                            <span class="tabbar-label">设置</span>
+                        </a>
+                    </div>
+                    <div class="toolbar-inner toolbar-item-display-none" id="toolbar-buttons">
+                        <div class="buttons-row toolbar-buttons">
+                            <a href="#" id="select-all" class="button">全选</a>
+                            <a href="#" id="btn_cut" class="button paste-buttons-show">剪切</a>
+                            <a href="#" id="btn_copy" class="button paste-buttons-show">复制</a>
+                            <a href="#" id="btn_delete" class="button del-bg">删除</a>
+                        </div>
+                    </div>
+                    <div class="toolbar-inner toolbar-item-display-none" id="toolbar-buttons-paste">
+                        <div class="buttons-row toolbar-buttons">
+                            <a href="#" id="to-paste" class="button">粘贴</a>
+                            <a href="#" id="cancel-paste" class="button del-bg">取消</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- view-left - Tab 2 -->
+    <div id="left-set" class="view view-left tab">
+        <div class="pages navbar-fixed toolbar-fixed">
+            <div data-page="set" class="page">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="center">设置</div>
+                    </div>
+                </div>
+
+                <div class="page-content contacts-content">
+                    <!--<div class="content-block">-->
+                        <!--<p align="center">易存文档管理系统</p>-->
+                    <!--</div>-->
+                    <div class="list-block contacts-block">
+                        <ul>
+                            <li>
+                                <a href="#" id="show_userInfo" class="item-link">
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title">用户名</div>
+                                            <div class="item-title">
+                                                <div class="item-after">
+                                                    <label id="userName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" id="show_changePass" class="item-link">
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">修改密码</div>
+                                    </div>
+                                </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" id="show_about" class="item-link">
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">关于</div>
+                                    </div>
+                                </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <div>
+                            <p align="center">
+                                <a href="#" id="logout" class="button">退出</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar tabbar">
+                    <div class="toolbar-inner">
+                        <a href="#left-repository" id="set-left" class="tab-link active">
+                            <i class="icon icon-repository"></i>
+                            <span class="tabbar-label">库</span>
+                        </a>
+                        <a href="#left-set" id="set-right" class="tab-link">
+                            <i class="icon icon-set-on"></i>
+                            <span class="tabbar-label">设置</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- view-main -->
+    <div class="view view-main">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" id="fullscreen_view_main" class="button">全屏</a>
+                </div>
+                <div class="center">主页</div>
+            </div>
+        </div>
+
+        <div class="pages navbar-through ">
+            <div data-page="index-home" class="page">
+                <div class="page-content">
+                    <div class="content-block">
+                        <h1 align="center">欢迎使用易存文档管理系统！</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Links popover -->
+<div class="popover popover-links">
+    <div class="popover-angle"></div>
+    <div class="popover-inner">
+        <div class="list-block">
+            <div class="toolbar tabbar tabbar-labels btn_new">
+                <div class="toolbar-inner">
+                    <a href="" id="btn_newFile" class="tab-link borderight">
+                        <i class="icon icon-new-file"></i>
+                        <span class="tabbar-label">新建文档</span>
+                    </a>
+                    <a href="" id="btn_newFolder" class="tab-link borderight">
+                        <i class="icon icon-new-folder">
+                        </i>
+                        <span class="tabbar-label">新建文件夹</span>
+                    </a>
+                    <a href="" id="btn_newOther" class="tab-link">
+                        <i class="icon icon-new-other"></i>
+                        <span class="tabbar-label">新建其它</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--约束值选择弹出框，采用默认尺寸：在手机上是全屏的，在平板上宽高都是630px -->
+<div class="popup popup-about modal" style="margin-left: -225px; margin-top: -200px; max-height: 630px;height: auto;width: 450px;left: 50%;top:50%;" id="choicePopup">
+    <div class="modal-inner">
+        <div class="modal-title">约束值列表</div>
+        <div class="list-block" style="margin: 0;height: 300px;overflow: auto;">
+            <ul id="choices">
+                <!--可选约束值填充区-->
+            </ul>
+        </div>
+        <!--<p class="button"><a href="" id="popup_confirm">确定</a>&nbsp;&nbsp;&nbsp;<a href="" id="popup_cancel">取消</a></p>  -->
+    </div>
+    <div class="modal-buttons">
+        <span class="modal-button modal-button-bold" style="border-bottom: 1px solid #b5b5b5;" id="popup_confirm">确定</span>
+        <span class="modal-button" style="border-bottom: 1px solid #b5b5b5;" id="popup_cancel">取消</span>
+    </div>
+</div>
+
+<!--js-->
+<script type="text/javascript" src="js/msg.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="js/jquery.form.js"></script>
+<script type="text/javascript" src="js/jquery.validate.js"></script>
+<script type="text/javascript" src="js/jquery.validate.uc7.js"></script>
+
+<script type="text/template7" id="listTemplate">
+    {{#each rows}}
+    <li class="row no-gutter swipeout" id=li{{@index}}>
+        <div class="col-15">
+            <label class="label-checkbox item-content" onclick="toggle_toolbar_buttons({{@index}})">
+                <input type="checkbox" id=content_checkbox{{@index}} name="content_checkbox" value="" >
+                <div class="item-media" >
+                    <i class="icon icon-form-checkbox"></i>
+                </div>
+            </label>
+        </div>
+        <div class="col-85 swipeout-content">
+            <a href="#" class="item-link item-content" onclick="clickContent({{@index}})">
+                <div class="item-media">
+                    <i class = {{getIcons format}}></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title-row" style="background-image: none">
+                        <div id=name{{@index}} class="item-title">{{name}}</div>
+                        <input type="hidden" id=id{{@index}} value={{id}} name="input_contentId">
+                        <input type="hidden" id=ctName{{@index}} value={{contentTypeName}}>
+                        <input type="hidden" id=format{{@index}} value={{format}}>
+                        <!--<div class="item-after">{{FACETS}}</div>-->
+                        <!--<div class="item-title">{{Folder}}</div>-->
+                        <!--{{#if size}}-->
+                        <!--<div class="item-after">{{size}}</div>-->
+                        <!--{{/if}}-->
+                    </div>
+                    <div class="item-subtitle">{{createdBy}} {{convertDateTime creationDate}}</div>
+                </div>
+            </a>
+        </div>
+        <div class="swipeout-actions-right">
+            <a href="#" class="action1 bg-black" style="width: 55px" onclick="renameContent({{@index}})">重命名</a>
+            <a href="#" class="action2 bg-blue" style="width: 50px" onclick="getContentDetails({{@index}})">详细信息</a>
+            <a href="#" class="action3 bg-green" style="width: 50px" onclick="getContentPermissions({{@index}})">权限信息</a>
+        </div>
+    </li>
+    {{/each}}
+</script>
+
+
+<script type="text/javascript" src="js/uc-app.js"></script>
+<!--<script type="text/javascript" src="js/pull-to-refresh.js"></script>-->
+<script type="text/javascript" src="js/infinite-scroll.js"></script>
+
+</body>
+</html>

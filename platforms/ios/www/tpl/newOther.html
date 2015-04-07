@@ -1,0 +1,78 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_newOther" class="button">全屏</a>
+        </div>
+        <div class="center sliding">新建其它</div>
+        <div class="right">
+            <a href="#" id="back_newOther" class="link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="newOther" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <form id="content_newOtherDocumentForm" action="content/otherDocument"
+                      method="post" encType="multipart/form-data">
+                  <div class="row">
+                    <div class="col-15">
+                        <em>*</em> <label for="content_newOtherDocument_name">名称：</label>
+                    </div>
+                    <div class="col-85">    
+                        <input type="text" id="content_newOtherDocument_name"
+                               name="content_newOtherDocument_name"/>
+                     </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-15">
+                        <em>&nbsp;</em> <label for="content_newOtherDocument_description">描述：</label>
+                    </div>
+                    <div class="col-85"> 
+                        <textarea id="content_newOtherDocument_description"
+                                  name="content_newOtherDocument_description" cols="30" rows="3"></textarea>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-15">
+                        <em>*</em> <label for="content_newOtherDocument_documentType">文档类型：</label>
+                    </div>
+                    <div class="col-85">
+                        <select id="content_newOtherDocument_documentType"
+                                name="content_newOtherDocument_documentType">
+                            <option value="">=======请选择文档类型======</option>
+                            {{#each contentTypes}}
+                                <option value={{name}} info={{hasAttachment}}>{{displayName}}</option>
+                            {{/each}}
+
+                        </select>
+                    </div>
+                  </div>
+
+                    <div id="content_newOtherDocument_propertyListDIV"></div>
+                    <!--<p>-->
+                        <!--<label class="alert alert-info" style="width:90%;"><%= msg.documentManagment.toolBar.newOtherDocumentDialog.prompt %></label>-->
+                    <!--</p>-->
+                    <div id="content_newOtherDocument_upload">
+                    </div>
+                    <input	type="hidden"  name="jsonContent" id="content_newOtherDocument_contentString"/>
+
+                </form>
+                <div id="choicesDiv" style="padding-bottom: 35px;"></div>
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="newOther_add" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+/*layout*/
+.view-left {
+    float: left;
+    width: 320px;
+    border-right: 1px solid #b2b2b2;
+}
+
+.view-main {
+    width: -webkit-calc(100% - 321px);
+    width: -moz-calc(100% - 321px);
+    width: -ms-calc(100% - 321px);
+    width: calc(100% - 321px);
+}
+
+.view-main-fullscreen {
+    width: 100%;
+}
+
+/*popover*/
+.popover {
+    width: 315px;
+}
+
+.borderight {
+    border-right: 1px solid #b2b2b2;
+}
+
+/*toolbar-buttons*/
+.toolbar-buttons {
+    width: 100%;
+}
+
+.toolbar-item-display-none {
+    display: none;
+}
+
+.toolbar-buttons .del-bg {
+    background-color: brown;
+}
+
+.paste-buttons-show{}
+
+/*infinite-scroll*/
+.infinite-scroll-preloader {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    display: none; /*默认隐藏*/
+}
+
+.infinite-scroll-preloader .preloader {
+    width: 30px;
+    height: 30px;
+}

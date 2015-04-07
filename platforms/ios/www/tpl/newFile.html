@@ -1,0 +1,64 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_newFile" class="button">全屏</a>
+        </div>
+        <div class="center sliding">新建文档</div>
+        <div class="right">
+            <a href="#" id="back_newFile" class="link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="newFile" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <form id="content_newFileForm" action=""  method="post" enctype="multipart/form-data">
+                    
+                    <div class="row">
+                        <div class="col-15">
+                            <em>*</em> <label for="content_newFile_name">Name:</label>
+                        </div>
+                        <div class="col-85">
+                            <input id="content_newFile_name" type="text" name="content_newFile_name" />
+                            <input id="content_newFile_parentId" type="hidden" value={{parentId}} name="content_newFile_parentId" />
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-15">
+                            <em>&nbsp;</em> <label for="content_newFile_description">Description:</label>
+                        </div>
+                        <div class="col-85">
+                            <textarea id="content_newFile_description" name="content_newFile_description" cols="30" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-15">
+                        </div>
+                        <div class="col-85">
+                            <input  type="file" id="file_upload" name="file_upload" />
+                            <input	type="hidden"  name="jsonContent" id="content_newFile_contentString"/>
+                        </div>
+                    </div>
+                    
+                    
+                </form>
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="newFile_add" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

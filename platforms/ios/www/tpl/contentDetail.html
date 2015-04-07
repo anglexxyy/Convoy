@@ -1,0 +1,296 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_contentDetail" class="button">全屏</a>
+        </div>
+        <div class="center sliding">详细信息</div>
+        <div class="right">
+            <a href="#" id="back_contentDetail" class="link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="contentDetail" class="page" style="padding-bottom: 35px;">
+        <div class="page-content">
+
+            <div class="content-block">
+                <h3><strong>{{name}}</strong></h3>
+
+
+                <form id="contentDetailForm"  name="contentDetailForm"  >
+                    <input type="hidden" id="contentId_contentDetail" name="contentId_contentDetail" value={{id}}>
+                    <input	type="hidden"  name="jsonContent" id="content_update_contentString"/>
+                    <input type="hidden" id="contentDetail_ctName" name="contentDetail_ctName" value={{contentTypeName}}>
+
+                    <div class="accordion-list">
+                        <div class="accordion-item accordion-item-expanded">
+                            <div class="accordion-item-toggle">基本信息</div>
+                            
+
+                            <div class="accordion-item-content accordion-form">
+                                <div class="row">
+                                    <div class="col-50">
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <em>*</em><label>文档名称:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                {{#if canUpdateProperty}}
+                                                    <input type="text" name="contentDetail_contentName" id="contentDetail_contentName" value='{{name}}'>
+                                                {{else}}
+                                                    <input type="text" name="contentDetail_contentName" id="contentDetail_contentName" disabled="disabled" value='{{name}}'>
+                                                {{/if}}
+                                                <!--<input type="text" name="contentDetail_contentName" id="contentDetail_contentName" value='{{name}}'>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>文档描述:</label>
+                                            </div>
+                                            <div class="col-80 item-input">
+                                                {{#if canUpdateProperty}}
+                                                    <textarea id="contentDetail_description" name="contentDetail_description">{{description}}</textarea>
+                                                {{else}}
+                                                    <textarea id="contentDetail_description" name="contentDetail_description" disabled="disabled">{{description}}</textarea>
+                                                {{/if}}
+                                                <!--<textarea id="contentDetail_description">{{description}}</textarea>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>文档ID:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <label>{{id}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>文档类型:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <label> {{contentTypeDisplayName}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>创建者:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <label>{{createdByDispalyName}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>拥有者:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <label>{{ownerDispalyName}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>修改者:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <label>{{lastModifiedByDispalyName}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                &nbsp;<label>标签:</label>
+                                            </div>
+                                            <div class="col-80">
+                                                <!--<label>{{convertFacets facets}} </label>-->
+                                                <label id="contentFacets"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-50">
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>创建时间:</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>{{convertDateTime creationDate}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>拥有时间:</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>{{convertDateTime ownDate}} </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>修改时间:</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>{{convertDateTime lastModificationDate}} </label>
+                                            </div>
+                                        </div>
+
+                                        {{#if hasVersion}}
+                                        <div class="row">
+                                            <div class="col-20">
+                                                <label>版本号:</label>
+                                            </div>
+                                            <div class="col-80" align="left">
+                                                <label>{{versionLabel}} </label>
+                                            </div>
+                                        </div>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{#if properties.length}}
+                        <div class="accordion-item" style="margin-top: 2px">
+                            <div class="accordion-item-toggle">扩展信息</div>
+                            <div class="accordion-item-content" style="margin-left: 30px">
+                                <div id="contentDetail_propertyListDIV"></div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if hasAttachment}}
+                        <div class="accordion-item" style="margin-top: 2px">
+                            <div class="accordion-item-toggle">附件</div>
+
+                            {{#if canUpdateProperty}}
+                            <div id="contentDetail_upload" class="accordion-item-content">
+                                <p><button name="file_upload0" type="button">选择文档</button><input type="hidden" name="input_upload0"/><label name="label_upload0"></label><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>
+                            </div>
+                            {{/if}}
+
+
+                            {{#if attachments.length}}
+                            <div class="accordion-item-content" style="margin-left: 30px">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <label><b>图标</b></label>
+                                    </div>
+                                    <div class="col-60">
+                                        <label><b>文件名</b></label>
+                                    </div>
+                                    <div class="col-10">
+                                        <label><b>大小</b></label>
+                                    </div>
+                                    <div class="col-20">
+
+                                    </div>
+                                </div>
+                                <hr>
+
+
+                                <div id="attachmentTable">
+                                {{#each attachments}}
+                                    <div  class="row">
+                                        <div class="col-5">
+                                            <i class={{getIcons format}}></i>
+                                        </div>
+                                        <div class="col-60">
+                                            <label>'{{name}}'</label>
+                                        </div>
+                                        <div class="col-10">
+                                            <label>{{convertSize size}}</label>
+                                        </div>
+                                        <div class="col-20">
+                                            <a href="" action="delete" atname="{{name}}" encoding="{{encoding}}">
+                                                <ins>删除</ins>
+                                            </a>
+
+                                            <a href="" action="download" atname="{{name}}" encoding="{{encoding}}">
+                                                <ins>下载原件</ins>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {{/each}}
+                                </div>
+                            </div>
+                            {{/if}}
+                        </div>
+                        {{/if}}
+
+
+                    </div>
+                </form>
+
+                <!--<div>-->
+                    <!--<form id="form_submit" name="formsubmit" method="get" encType="multipart/form-data"  accept-charset="utf-8" onsubmit="document.charset='utf-8'" >-->
+                        <!--<input type="hidden" id="form_renditionType" name="renditionType" value="" />-->
+                        <!--<input type="hidden" id="form_attachmentName" name="attachmentName" value="" />-->
+                        <!--<input type="hidden" id="form_encoding" name= "encoding" value="" />-->
+                    <!--</form>-->
+                <!--</div>-->
+
+            </div>
+        </div>
+
+        {{#if canUpdateProperty}}
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="contentDetail_modify" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+
+</div>

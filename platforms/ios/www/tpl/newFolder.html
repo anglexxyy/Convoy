@@ -1,0 +1,81 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_newFolder" class="button">全屏</a>
+        </div>
+        <div class="center sliding">新建文件夹</div>
+        <div class="right">
+            <a href="#" id="back_newFolder" class="link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="newFolder" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <!--<form id="content_newFolderForm">-->
+                <!--<p>-->
+                <!--<em>*</em> <label for="content_newFolder_name">Name:</label>-->
+                <!--<input id="content_newFolder_name" type="text" name="content_newFolder_name" />-->
+                <!--<input id="content_newFolder_parentId" type="hidden" value={{parentId}} name="content_newFolder_parentId" />-->
+                <!--</p>-->
+                <!--<p>-->
+                <!--<em>&nbsp;</em> <label for="content_newFolder_description">Description:</label>-->
+                <!--<textarea id="content_newFolder_description"-->
+                <!--name="content_newFolder_description" cols="30" rows="3"></textarea>-->
+                <!--</p>-->
+                <!--</form>-->
+
+                <form id="content_newFolderForm" action="content/createFolder" method="post"
+                      encType="multipart/form-data" class="uc7-cmxform">
+                    <div class="row">
+                        <div class="col-15">
+                            <em>*</em> <label for="content_newFolder_name">名称:</label>
+                        </div>
+                        <div class="col-85">
+                            <input type="text" id="content_newFolder_name" name="content_newFolder_name" />
+                            <input id="content_newFolder_parentId" type="hidden" value={{parentId}}
+                                   name="content_newFolder_parentId" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-15">
+                            <em>&nbsp;</em> <label for="content_newFolder_description">描述:</label>
+                        </div>
+                        <div class="col-85">
+                            <textarea id="content_newFolder_description" name="content_newFolder_description" cols="30"
+                                      rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!--<p>-->
+                    <!--<em>*</em> <label for="content_newFolder_name">Name:</label> <input-->
+                    <!--type="text" id="content_newFolder_name"-->
+                    <!--name="content_newFolder_name" />-->
+                    <!--<input id="content_newFolder_parentId" type="hidden" value={{parentId}} name="content_newFolder_parentId" />-->
+                    <!--</p>-->
+                    <!--<p>-->
+                    <!--<em>&nbsp;</em> <label for="content_newFolder_description">Description:</label>-->
+                    <!--<textarea id="content_newFolder_description"-->
+                    <!--name="content_newFolder_description" cols="30" rows="3"></textarea>-->
+                    <!--</p>-->
+
+                </form>
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="newFolder_add" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
