@@ -21,7 +21,7 @@
                 <h3><strong>{{name}}</strong></h3>
 
 
-                <form id="contentDetailForm"  name="contentDetailForm"  >
+                <form id="contentDetailForm"  name="contentDetailForm"  method="post" encType="multipart/form-data">
                     <input type="hidden" id="contentId_contentDetail" name="contentId_contentDetail" value={{id}}>
                     <input	type="hidden"  name="jsonContent" id="content_update_contentString"/>
                     <input type="hidden" id="contentDetail_ctName" name="contentDetail_ctName" value={{contentTypeName}}>
@@ -211,8 +211,13 @@
                             <div class="accordion-item-toggle">附件</div>
 
                             {{#if canUpdateProperty}}
+                            <!--
                             <div id="contentDetail_upload" class="accordion-item-content">
                                 <p><button name="file_upload0" type="button">选择文档</button><input type="hidden" name="input_upload0"/><label name="label_upload0"></label><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>
+                            </div>
+                             -->
+                            <div id="contentDetail_upload" class="accordion-item-content">
+                                <p><input  type="file" name="file_upload0"/></p>
                             </div>
                             {{/if}}
 
@@ -252,10 +257,13 @@
                                             <a href="" action="delete" atname="{{name}}" encoding="{{encoding}}">
                                                 <ins>删除</ins>
                                             </a>
-
+                                            
+                                            <!--
                                             <a href="" action="download" atname="{{name}}" encoding="{{encoding}}">
                                                 <ins>下载原件</ins>
                                             </a>
+                                             -->
+                                            
                                         </div>
                                     </div>
                                 {{/each}}

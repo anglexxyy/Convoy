@@ -349,6 +349,7 @@ ucApp.onPageInit('newFile', function (page) {
                                                                             type : 'POST',
                                                                             success : function(responseText, statusText) {
                                                                             var currentFolderId = storage.getItem('currentFolder');
+                                                                            $('#search_input').attr('value','');
                                                                             getContentList(currentFolderId,'');
                                                                             ucApp.hideIndicator();
                                                                             ucApp.alert('新建成功!');
@@ -359,7 +360,8 @@ ucApp.onPageInit('newFile', function (page) {
                                                                             } ,
                                                                             error: function(jqXHR, textStatus, errorThrown) {
                                                                             ucApp.hideIndicator();
-                                                                            showErrorMassage(jqXHR.getResponseHeader('code'));
+                                                                            //alert(jqXHR.getResponseHeader('code'));
+                                                                            showMessage('error',jqXHR.getResponseHeader('code'));
                                                                             }
                                                                             });
                                        });
@@ -446,6 +448,7 @@ ucApp.onPageInit('newFolder', function (page) {
             data: JSON.stringify(content)
         }).success(function (data) {
             var currentFolderId = storage.getItem('currentFolder');
+            $('#search_input').attr('value','');
             getContentList(currentFolderId,'');
             showMessage('success','新建成功!');
             mainView.router.back({
@@ -577,90 +580,59 @@ ucApp.onPageInit('newOther', function (page) {
         }
         ucApp.showIndicator();
 
-        if($('#content_newOtherDocument_upload').find('p')&&$('#content_newOtherDocument_upload').find('p').length>0){
-            $('#content_newOtherDocument_upload').find('input').each(function(i){
-                if(i>0){
-                    if($(this).val()==''){
-                        $(this).parent().remove();
-                    }
-                }
-            });
-            var files = $('#content_newOtherDocument_upload').find('input');
-            if(files.length>1){
-                for(var i=0;i<files.length;i++){
-                    for(var j=(i+1);j<files.length;j++){
-                        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
-                        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
-                        if(fileName1==fileName2){
-                            showMessage('error','上传列表中存在重复的附件');
-                            ucApp.hideIndicator();
-                            return ;
-                        }
-                    }
-                }
-            }
-        }
-
-        var content = organizationDocument();
-        var contentString = JSON.stringify(content);
-        $('#content_newOtherDocument_contentString').val(contentString);
-        //$('#content_newOtherDocumentForm').ajaxSubmit({
-        //    url : ucUrl + 'contents',
-        //    type : 'POST',
-        //    success : function(responseText, statusText) {
-        //        var currentFolderId = storage.getItem('currentFolder');
-        //        getContentList(currentFolderId,'');
-        //        ucApp.hideIndicator();
-        //        ucApp.alert('新建成功!');
-        //        mainView.router.back({
-        //            url: 'index.html'
-        //            ,force:true
-        //        })
-        //    } ,
-        //    error: function(jqXHR, textStatus, errorThrown) {
-        //        ucApp.hideIndicator();
-        //        showErrorMassage(jqXHR.getResponseHeader('code'));
-        //    }
-        //});
-        //写入元数据
-        $.ajax({
-            type: "POST",
-            url: ucUrl + 'contents/mobile',
-            data: {
-                'jsonContent': JSON.stringify(content)
-            }
-        }).success(function (data) {
-            //回传内容ID
-            var contentId = data;
-            //开始写入流数据
-
-            var files = $('#content_newOtherDocument_upload').find('input');
-            if(ifHaveFiles(files)){
-                var uriArray = new Array();
-                for(var i=0;i<files.length;i++){
-                    uriArray.push(files[i].value);
-                }
-                uploadMultiFiles("new",uriArray,contentId,0,0,"","");
-            }else{
-                //不包含附件
-                var currentFolderId = storage.getItem('currentFolder');
-                getContentList(currentFolderId,'');
-                showMessage('success','新建成功!');
-                mainView.router.back({
-                    url: 'index.html'
-                    ,force:true
-                });
-                ucApp.hideIndicator();
-            }
-            //ucApp.hideIndicator();
-        }).error(function (jqXHR) {
-            if (jqXHR.status == '401') {
-                status401Error();
-            } else {
-                showMessage('error',jqXHR.getResponseHeader('code'));
-            }
-            ucApp.hideIndicator();
-        });
+//       if($('#content_newOtherDocument_upload').find('p')&&$('#content_newOtherDocument_upload').find('p').length>0){
+//           $('#content_newOtherDocument_upload').find('input:file').each(function(i){
+//                 if(i>0){
+//                     if($(this).val()==''){
+//                         $(this).parent().remove();
+//                     }
+//                 }
+//           });
+//           var files = $('#content_newOtherDocument_upload').find('input:file');
+//           if(files.length>1){
+//               for(var i=0;i<files.length;i++){
+//                   for(var j=(i+1);j<files.length;j++){
+//                           alert(files[i].value);
+//                           alert(files[j].value);
+//                       var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
+//                       var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
+//                           alert(fileName1);
+//                           alert(fileName2);
+//                       if(fileName1==fileName2){
+//                           //ucApp.alert('上传重复附件');
+//                           showMessage('error','上传重复附件');
+//                           ucApp.hideIndicator();
+//                           return ;
+//                       }
+//                   }
+//               }
+//           }
+//       }
+       
+       var content = organizationDocument();
+       var contentString = JSON.stringify(content);
+       $('#content_newOtherDocument_contentString').val(contentString);
+       $('#content_newOtherDocumentForm').ajaxSubmit({
+             url : ucUrl + 'contents',
+             type : 'POST',
+             success : function(responseText, statusText) {
+                 var currentFolderId = storage.getItem('currentFolder');
+                 $('#search_input').attr('value','');
+                 getContentList(currentFolderId,'');
+                 ucApp.hideIndicator();
+                 //ucApp.alert('新建成功!');
+                 showMessage('success','新建成功!');
+                 mainView.router.back({
+                                      url: 'index.html'
+                                      ,force:true
+                                      })
+             } ,
+             error: function(jqXHR, textStatus, errorThrown) {
+                 ucApp.hideIndicator();
+                 //showErrorMassage(jqXHR.getResponseHeader('code'));
+                 showMessage('error',jqXHR.getResponseHeader('code'));
+             }
+       });
     });
 });
 
@@ -850,63 +822,32 @@ $$('#popup_cancel').on('click', function () {
 
 //创建属性表单中上传部分
 function drawUploadDiv() {
-    //$("#content_newOtherDocument_upload").append('<p><input  type="file" name="file_upload0"/><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>');
-    $("#content_newOtherDocument_upload").append('<p><button name="file_upload0" type="button">选择文档</button><input type="hidden" name="input_upload0"/><label name="label_upload0"></label><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>');
+//    $("#content_newOtherDocument_upload").append('<p><input  type="file" name="file_upload0"/><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a>');
+    $("#content_newOtherDocument_upload").append('<p><input  type="file" name="file_upload0"/>');
     $('#content_newOtherDocument_upload').find('a[name="addUpload"]').click(function(){
-        var index = $('#content_newOtherDocument_upload').find('p').length;
+        var index = $(this).parent().find('p').length+1;
         var newP = $(this).parent().clone(true);
         newP.find('a[name="deleteUpload"]').removeAttr("hidden");
-        newP.find('button').attr('name','file_upload'+index);
-        newP.find('label').attr('name','label_upload'+index);
-        newP.find('input').attr('name','input_upload'+index);
-        newP.find('label').html("");
-        newP.find('input').attr("value","");
+        newP.find('input').attr('name','file_upload'+index);
         $('#content_newOtherDocument_upload').append(newP);
-
+                                                                            
     });
     $('#content_newOtherDocument_upload').find('a[name="deleteUpload"]').click(function(){
-        $(this).parent().remove();
+        $('#content_newOtherDocument_upload').find('input:file').each(function(i){
+              $(this).attr('name','file_upload'+i);
+        });
+       $(this).parent().remove();
     });
-
-    $('#content_newOtherDocument_upload').find('button').click(function(){
-        var pObj = $(this).parent();
-        fileChooser.open(
-            function(uri) {
-                var fname = decodeURI(uri.substr(uri.lastIndexOf('/')+1));
-                pObj.find("input").val(uri);
-                pObj.find("label").html(fname);
-                if($.trim($('#content_newOtherDocument_name').val())==''){
-                    $('#content_newOtherDocument_name').val(fname);
-                    $("#content_newOtherDocumentForm").valid();
-                }
-            }
-        );
+    $("#content_newOtherDocument_upload").find('input:file:first').change(function(){
+      var fileValue = $(this).val();
+      if(fileValue!=''){
+         if($.trim($('#content_newOtherDocument_name').val())==''){
+             var fileName = fileValue.substring(fileValue.lastIndexOf("\\")+1,fileValue.length);
+             $('#content_newOtherDocument_name').val(fileName);
+             $("#content_newOtherDocumentForm").valid();
+         }
+      }
     });
-
-    //$$('file_upload0').on('click', function () {
-    //    fileChooser.open(
-    //        function(uri) {
-    //            var fname = decodeURI(uri.substr(uri.lastIndexOf('/')+1));
-    //            $$('#input_upload0').val(uri);
-    //            $$('#label_upload0').html(fname);
-    //            if($.trim($('#content_newOtherDocument_name').val())==''){
-    //                $('#content_newOtherDocument_name').val(fname);
-    //                $("#content_newOtherDocumentForm").valid();
-    //            }
-    //
-    //        }
-    //    );
-    //});
-    //$("#content_newOtherDocument_upload").find('input:file:first').change(function(){
-    //    var fileValue = $(this).val();
-    //    if(fileValue!=''){
-    //        if($.trim($('#content_newOtherDocument_name').val())==''){
-    //            var fileName = fileValue.substring(fileValue.lastIndexOf("\\")+1,fileValue.length);
-    //            $('#content_newOtherDocument_name').val(fileName);
-    //            $("#content_newOtherDocumentForm").valid();
-    //        }
-    //    }
-    //});
 };
 
 function toValue(value) {
@@ -1250,6 +1191,7 @@ $$('#to-paste').on('click', function () {
         });
         if (method === 'copy') {
             $.post(ucUrl + 'folderTree/' + currentFolderId + '/children?action=copy&' + data, function () {
+                $('#search_input').attr('value','');
                 getContentList(currentFolderId, '');
                 showMessage('success','复制成功!');
             }).error(function (jqXHR, textStatus, errorThrown) {
@@ -1261,6 +1203,7 @@ $$('#to-paste').on('click', function () {
         }
         if (method === 'cut') {
             $.post(ucUrl + 'folderTree/' + currentFolderId + '/children?action=move&' + data, function () {
+                $('#search_input').attr('value','');
                 getContentList(currentFolderId, '');
                 showMessage('success','剪切成功!');
             }).error(function (jqXHR, textStatus, errorThrown) {
@@ -1311,6 +1254,7 @@ $$('#btn_delete').on('click', function () {
                     onClick: function() {
                         $['delete'](ucUrl + 'contents/' + ids, function () {
                             var currentFolderId = storage.getItem('currentFolder');
+                            $('#search_input').attr('value','');
                             getContentList(currentFolderId, '');
                             showMessage('success','删除成功!');
                             mainView.router.back({
@@ -1698,6 +1642,7 @@ $$('#show_about').on('click', function () {
 
 //跳转到ROOT目录
 $$('#returnRoot').on('click', function () {
+    $('#search_input').attr('value','');
     getContentList(root,'');
     storage.setItem('currentFolder', root);
     mainView.router.back({
@@ -1710,6 +1655,7 @@ $$('#returnRoot').on('click', function () {
 //点击back返回上级目录
 $$('#returnback').on('click', function () {
     var cid = storage.getItem('currentFolder');
+    $('#search_input').attr('value','');
 
     //当前目录为root则不跳转
     if ((cid == '') || (cid == root)) {
@@ -1918,6 +1864,7 @@ ucApp.onPageInit('rename', function (page) {
         });
         $.put(ucUrl+'contents/' + cid + '/name?' + data, function() {
             var currentFolderId = storage.getItem('currentFolder');
+            $('#search_input').attr('value','');
             getContentList(currentFolderId,'');
             showMessage('success','修改成功!');
             mainView.router.back({
@@ -1969,6 +1916,7 @@ function getStringToArray(str){
 
 var tempContentData = null;
 
+
 //page初始化_contentDetail
 ucApp.onPageInit('contentDetail', function (page) {
     $$('#fullscreen_contentDetail').on('click', function () {
@@ -1999,19 +1947,23 @@ ucApp.onPageInit('contentDetail', function (page) {
     }).success(function (data) {
 
         //File类型的文档只能添加一个
-        if (data.contentTypeName==sysfilecontenttype){
-            $('#contentDetail_upload').find('a[name="addUpload"]').hide();
-            if(data.attachments.length){
-                $('#contentDetail_upload').find('button').hide();
-            }
-        }
+//        if (data.contentTypeName==sysfilecontenttype){
+//            $('#contentDetail_upload').find('a[name="addUpload"]').hide();
+//            if(data.attachments.length){
+//                $('#contentDetail_upload').find('button').hide();
+//            }
+//        }
+               
+       if(data.attachments.length){
+           $('#contentDetail_upload').find('input').hide();
+       }
 
         //判断是否可以删除附件
         if (!data.canUpdateProperty){
             $('#attachmentTable').find('a[action="delete"]').hide();
         }
 
-        //判断是否可以下载
+        //判f断是否可以下载
         if (!data.canDownloadOrigin){
             $('#attachmentTable').find('a[action="download"]').hide();
         }
@@ -2086,6 +2038,7 @@ ucApp.onPageInit('contentDetail', function (page) {
             $.each(tempContentData.attachments, function(key, atta) {
                 if(atta.name==atname){
                     chooseAttObj.parent().parent().remove();
+                    $('#contentDetail_upload').find('input').show();
                     atta.status = 2;
                 }
             });
@@ -2113,81 +2066,138 @@ ucApp.onPageInit('contentDetail', function (page) {
         }
     });
 
-    $$('#contentDetail_modify').on('click', function () {
+//    $$('#contentDetail_modify').on('click', function () {
+//        if (!$("#contentDetailForm").valid()) {
+//            return;
+//        }
+//
+//        ucApp.showIndicator();
+//        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
+//            $('#contentDetail_upload').find('input').each(function(i){
+//                if(i>0){
+//                    if($(this).val()==''){
+//                        $(this).parent().remove();
+//                    }
+//                }
+//            });
+//            var files = $('#contentDetail_upload').find('input');
+//            if(files.length>1){
+//                for(var i=0;i<files.length;i++){
+//                    for(var j=(i+1);j<files.length;j++){
+//                        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
+//                        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
+//                        if(fileName1==fileName2){
+//                            showMessage('error','上传列表中存在重复的附件');
+//                            ucApp.hideIndicator();
+//                            return ;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        var content = organizationDetailDocument(tempContentData);
+//        var contentString = JSON.stringify(content);
+//        $('#content_update_contentString').val(contentString);
+//        //写入元数据
+//        $.ajax({
+//            type: "POST",
+//            url: ucUrl + 'contents/'+cid+'/update/mobile',
+//            data: {
+//                'jsonContent': JSON.stringify(content)
+//            }
+//        }).success(function (data) {
+//            //回传内容ID
+//            //var contentId = data;
+//
+//            //开始写入流数据
+//            var files = $('#contentDetail_upload').find('input');
+//            if(ifHaveFiles(files)){
+//                if(files.length>0){
+//                    var uriArray = new Array();
+//                    for(var i=0;i<files.length;i++){
+//                        uriArray.push(files[i].value);
+//                    }
+//                    uploadMultiFiles("update",uriArray,cid,0,0,"","");
+//                }
+//            }else{
+//                var currentFolderId = storage.getItem('currentFolder');
+//                getContentList(currentFolderId,'');
+//                showMessage('success','修改成功!');
+//                mainView.router.back({
+//                    url: 'index.html'
+//                    ,force:true
+//                });
+//                ucApp.hideIndicator();
+//            }
+//
+//            //ucApp.hideIndicator();
+//        }).error(function (jqXHR) {
+//            if (jqXHR.status == '401') {
+//                status401Error();
+//            } else {
+//                showMessage('error',jqXHR.getResponseHeader('code'));
+//            }
+//            ucApp.hideIndicator();
+//        });
+//    });
+                 
+                 
+     $$('#contentDetail_modify').on('click', function () {
         if (!$("#contentDetailForm").valid()) {
-            return;
+        return;
         }
-
         ucApp.showIndicator();
-        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
-            $('#contentDetail_upload').find('input').each(function(i){
-                if(i>0){
-                    if($(this).val()==''){
-                        $(this).parent().remove();
-                    }
-                }
-            });
-            var files = $('#contentDetail_upload').find('input');
-            if(files.length>1){
-                for(var i=0;i<files.length;i++){
-                    for(var j=(i+1);j<files.length;j++){
-                        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
-                        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
-                        if(fileName1==fileName2){
-                            showMessage('error','上传列表中存在重复的附件');
-                            ucApp.hideIndicator();
-                            return ;
-                        }
-                    }
-                }
-            }
-        }
-
+        
+//        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
+//        $('#contentDetail_upload').find('input:file').each(function(i){
+//                                                           if(i>0){
+//                                                           if($(this).val()==''){
+//                                                           $(this).parent().remove();
+//                                                           }
+//                                                           }
+//                                                           });
+//        var files = $('#contentDetail_upload').find('input:file');
+//        if(files.length>1){
+//        for(var i=0;i<files.length;i++){
+//        for(var j=(i+1);j<files.length;j++){
+//        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
+//        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
+//        if(fileName1==fileName2){
+//        ucApp.alert('上传重复附件');
+//        ucApp.hideIndicator();
+//        return ;
+//        }
+//        }
+//        }
+//        }
+//        }
+        
         var content = organizationDetailDocument(tempContentData);
         var contentString = JSON.stringify(content);
         $('#content_update_contentString').val(contentString);
-        //写入元数据
-        $.ajax({
-            type: "POST",
-            url: ucUrl + 'contents/'+cid+'/update/mobile',
-            data: {
-                'jsonContent': JSON.stringify(content)
-            }
-        }).success(function (data) {
-            //回传内容ID
-            //var contentId = data;
-
-            //开始写入流数据
-            var files = $('#contentDetail_upload').find('input');
-            if(ifHaveFiles(files)){
-                if(files.length>0){
-                    var uriArray = new Array();
-                    for(var i=0;i<files.length;i++){
-                        uriArray.push(files[i].value);
-                    }
-                    uploadMultiFiles("update",uriArray,cid,0,0,"","");
-                }
-            }else{
-                var currentFolderId = storage.getItem('currentFolder');
-                getContentList(currentFolderId,'');
-                showMessage('success','修改成功!');
-                mainView.router.back({
-                    url: 'index.html'
-                    ,force:true
-                });
-                ucApp.hideIndicator();
-            }
-
-            //ucApp.hideIndicator();
-        }).error(function (jqXHR) {
-            if (jqXHR.status == '401') {
-                status401Error();
-            } else {
-                showMessage('error',jqXHR.getResponseHeader('code'));
-            }
-            ucApp.hideIndicator();
+        $('#contentDetailForm').ajaxSubmit({
+               url : ucUrl + 'contents/' + cid+'?_method=PUT',
+               type : 'POST',
+               success : function(responseText, statusText) {
+                   var currentFolderId = storage.getItem('currentFolder');
+                   $('#search_input').attr('value','');
+                   getContentList(currentFolderId,'');
+                   showMessage('success','修改成功!');
+                   ucApp.hideIndicator();
+                   mainView.router.back({
+                                        url: 'index.html'
+                                        ,force:true
+                                        })
+               } ,
+               error: function(jqXHR, textStatus, errorThrown) {
+                   //showErrorMassage(jqXHR.getResponseHeader('code'));
+                   showMessage('error',jqXHR.getResponseHeader('code'));
+                   ucApp.hideIndicator();
+               }
+               });
         });
-    });
+     
 
     $$('#back_contentDetail').on('click', function () {
         mainView.router.back({
