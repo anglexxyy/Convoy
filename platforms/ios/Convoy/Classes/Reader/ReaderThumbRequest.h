@@ -29,8 +29,7 @@
 
 @interface ReaderThumbRequest : NSObject <NSObject>
 
-//@property (nonatomic, strong, readonly) NSURL *fileURL;
-@property (nonatomic, strong, readonly) NSData *fileData;
+@property (nonatomic, strong, readonly) NSURL *fileURL;
 @property (nonatomic, strong, readonly) NSString *guid;
 @property (nonatomic, strong, readonly) NSString *password;
 @property (nonatomic, strong, readonly) NSString *cacheKey;
@@ -41,7 +40,6 @@
 @property (nonatomic, assign, readonly) CGSize thumbSize;
 @property (nonatomic, assign, readonly) CGFloat scale;
 
-//+ (instancetype)newForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size;
-+ (instancetype)newForView:(ReaderThumbView *)view fileData:(NSData *)data password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size;
++ (instancetype)newForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size;
 
 @end

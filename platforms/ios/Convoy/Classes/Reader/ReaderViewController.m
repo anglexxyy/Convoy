@@ -131,17 +131,13 @@
 
 	viewRect.origin.x = (viewRect.size.width * (page - 1)); viewRect = CGRectInset(viewRect, scrollViewOutset, 0.0f);
 
-//	NSURL *fileURL = document.fileURL;
-    NSData* fileData = document.fileData;
-    NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
+	NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
 
-//	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
-    ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileData:fileData page:page password:phrase]; // ReaderContentView
+	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
 
 	contentView.message = self; [contentViews setObject:contentView forKey:[NSNumber numberWithInteger:page]]; [scrollView addSubview:contentView];
 
-//	[contentView showPageThumb:fileURL page:page password:phrase guid:guid]; // Request page preview thumb
-    [contentView showPageThumb:fileData page:page password:phrase guid:guid];
+	[contentView showPageThumb:fileURL page:page password:phrase guid:guid]; // Request page preview thumb
 }
 
 - (void)layoutContentViews:(UIScrollView *)scrollView
@@ -265,7 +261,7 @@
 
 	[self showDocumentPage:[document.pageNumber integerValue]]; // Show page
 
-//	document.lastOpen = [NSDate date]; // Update document last opened date
+	document.lastOpen = [NSDate date]; // Update document last opened date
 }
 
 - (void)closeDocument
@@ -306,8 +302,7 @@
 
 			scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
 
-//			[object updateDocumentProperties];
-            document = object; // Retain the supplied ReaderDocument object for our use
+			[object updateDocumentProperties]; document = object; // Retain the supplied ReaderDocument object for our use
 
 			[ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
 		}
@@ -744,25 +739,24 @@
 
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar exportButton:(UIButton *)button
 {
-//	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
-//
-////	NSURL *fileURL = document.fileURL; // Document file URL
-//
-//	documentInteraction = [UIDocumentInteractionController interactionControllerWithURL:fileURL];
-//
-//	documentInteraction.delegate = self; // UIDocumentInteractionControllerDelegate
-//
-//	[documentInteraction presentOpenInMenuFromRect:button.bounds inView:button animated:YES];
+	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
+
+	NSURL *fileURL = document.fileURL; // Document file URL
+
+	documentInteraction = [UIDocumentInteractionController interactionControllerWithURL:fileURL];
+
+	documentInteraction.delegate = self; // UIDocumentInteractionControllerDelegate
+
+	[documentInteraction presentOpenInMenuFromRect:button.bounds inView:button animated:YES];
 }
 
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar printButton:(UIButton *)button
 {
 	if ([UIPrintInteractionController isPrintingAvailable] == YES)
 	{
-//		NSURL *fileURL = document.fileURL; // Document file URL
-        NSData *fileData = document.fileData;
+		NSURL *fileURL = document.fileURL; // Document file URL
 
-		if ([UIPrintInteractionController canPrintData:fileData] == YES)
+		if ([UIPrintInteractionController canPrintURL:fileURL] == YES)
 		{
 			printInteraction = [UIPrintInteractionController sharedPrintController];
 
@@ -772,8 +766,7 @@
 			printInfo.jobName = document.fileName;
 
 			printInteraction.printInfo = printInfo;
-			printInteraction.printingItem = fileData;
-//            printInteraction.printingItems
+			printInteraction.printingItem = fileURL;
 			printInteraction.showsPageRange = YES;
 
 			if (userInterfaceIdiom == UIUserInterfaceIdiomPad) // Large device printing
@@ -804,34 +797,34 @@
 
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar emailButton:(UIButton *)button
 {
-//	if ([MFMailComposeViewController canSendMail] == NO) return;
-//
-//	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
-//
-//	unsigned long long fileSize = [document.fileSize unsignedLongLongValue];
-//
-//	if (fileSize < 15728640ull) // Check attachment size limit (15MB)
-//	{
-//		NSURL *fileURL = document.fileURL; NSString *fileName = document.fileName;
-//
-//		NSData *attachment = [NSData dataWithContentsOfURL:fileURL options:(NSDataReadingMapped|NSDataReadingUncached) error:nil];
-//
-//		if (attachment != nil) // Ensure that we have valid document file attachment data available
-//		{
-//			MFMailComposeViewController *mailComposer = [MFMailComposeViewController new];
-//
-//			[mailComposer addAttachmentData:attachment mimeType:@"application/pdf" fileName:fileName];
-//
-//			[mailComposer setSubject:fileName]; // Use the document file name for the subject
-//
-//			mailComposer.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//			mailComposer.modalPresentationStyle = UIModalPresentationFormSheet;
-//
-//			mailComposer.mailComposeDelegate = self; // MFMailComposeViewControllerDelegate
-//
-//			[self presentViewController:mailComposer animated:YES completion:NULL];
-//		}
-//	}
+	if ([MFMailComposeViewController canSendMail] == NO) return;
+
+	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
+
+	unsigned long long fileSize = [document.fileSize unsignedLongLongValue];
+
+	if (fileSize < 15728640ull) // Check attachment size limit (15MB)
+	{
+		NSURL *fileURL = document.fileURL; NSString *fileName = document.fileName;
+
+		NSData *attachment = [NSData dataWithContentsOfURL:fileURL options:(NSDataReadingMapped|NSDataReadingUncached) error:nil];
+
+		if (attachment != nil) // Ensure that we have valid document file attachment data available
+		{
+			MFMailComposeViewController *mailComposer = [MFMailComposeViewController new];
+
+			[mailComposer addAttachmentData:attachment mimeType:@"application/pdf" fileName:fileName];
+
+			[mailComposer setSubject:fileName]; // Use the document file name for the subject
+
+			mailComposer.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+			mailComposer.modalPresentationStyle = UIModalPresentationFormSheet;
+
+			mailComposer.mailComposeDelegate = self; // MFMailComposeViewControllerDelegate
+
+			[self presentViewController:mailComposer animated:YES completion:NULL];
+		}
+	}
 }
 
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar markButton:(UIButton *)button

@@ -9,6 +9,8 @@
 #import "OnlinePreview.h"
 #import "Cordova/CDVViewController.h"
 #import "ReaderViewController.h"
+#import "SingleImage.h"
+#import "SingleImageViewController.h"
 @interface OnlinePreview () <ReaderViewControllerDelegate>
 @end
 
@@ -16,107 +18,64 @@
 
 ReaderViewController *readerViewController;
 
-- (void)previewPDF:(CDVInvokedUrlCommand*)command {
-    CDVPluginResult* pluginResult = nil;
-    NSString* uri = [command.arguments objectAtIndex:0];
-//    uri = @"http://dl.wenku.baidu.com/wenku11/%2Fb956bddd331563ec30704c4e4a177838?sign=MBOT:y1jXjmMD4FchJHFHIGN4z:8xdOhUd%2BtivTYXyycD1%2FREfB7eU%3D&time=1427450337&response-content-disposition=attachment;%20filename=%22%D3%C3%CA%B2%C3%B4%C8%ED%BC%FE%BF%C9%D2%D4%D0%DE%B8%C4PDF%CE%C4%BC%FE.pdf%22&response-content-type=application%2foctet-stream";
-    NSString* format = [command.arguments objectAtIndex:1];
-    NSLog(@"argument1: %@,argument2: %@",uri,format);
-    NSData* pdfData = [self uploadData:uri];
-    if (pdfData == nil) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    }else{
-        [self showPDFVieData:pdfData];
-//        [self showPDFView];
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    }
+CDVPluginResult* pluginResult;
 
-//    [self showPDFView];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+- (void)previewPDF:(CDVInvokedUrlCommand*)command {
+    NSString* filePath = [command.arguments objectAtIndex:0];
+    NSString* format = [command.arguments objectAtIndex:1];
+    if ([filePath   hasPrefix:@"file://"]){
+        filePath = [filePath stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+    }
+    NSLog(@"filePath: %@,format: %@",filePath,format);
+    
+    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
+    
+//    NSArray *pdfs = [[NSBundle mainBundle] pathsForResourcesOfType:@"pdf" inDirectory:nil];
+    
+    assert(filePath != nil); // Path to first PDF file
+    
+    ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
+    
+    if (document != nil) // Must have a valid ReaderDocument object in order to proceed with things
+    {
+        ReaderViewController *readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
+        
+        readerViewController.delegate = self; // Set the ReaderViewController delegate to self
+        
+        [self.viewController presentViewController:readerViewController animated:true completion:nil];
+        
+    }
+    else // Log an error so that we know that something went wrong
+    {
+        NSLog(@"%s [ReaderDocument withDocumentFilePath:'%@' password:'%@'] failed.", __FUNCTION__, filePath, phrase);
+    }
+    
 }
 
 - (void)previewIMG:(CDVInvokedUrlCommand*)command {
-    NSString* uri = [command.arguments objectAtIndex:0];
+    NSString* filePath = [command.arguments objectAtIndex:0];
+//    filePath = @"file:///Users/nko/Library/Developer/CoreSimulator/Devices/0B3A5A44-83D3-42B8-87D3-214F6ACA7AA0/data/Containers/Data/Application/E3C55664-560C-4B2E-909A-28B8363C14EC/Documents/75cb79b9-47b7-44c1-a019-10a683b34cb9/75cb79b9-47b7-44c1-a019-10a683b34cb9.jpg";
+    if ([filePath   hasPrefix:@"file://"]){
+        filePath = [filePath stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+    }
     NSString* format = [command.arguments objectAtIndex:1];
-    NSLog(@"argument1: %@,argument2: %@",uri,format);
-    NSLog(@"i'am debuging");
-    ImagePreviewViewController* controller =  [[ImagePreviewViewController alloc] init];
+    NSLog(@"filePath: %@,format: %@",filePath,format);
     
-    NSData* imageData = [self uploadData:uri];
-    UIImage* image = [[UIImage alloc] initWithData:imageData];
-        NSLog(@"fram-y: %@",image);
-//    controller.imageView.image = image;
-    [[self viewController] presentViewController:controller animated:true completion:^{
-        controller.imageView.image = image;
-    }];
+    SingleImage *imageSingle = [SingleImage sharedInstance];
+    imageSingle.imageData = [[NSMutableArray alloc] init];
+    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+    [imageSingle.imageData addObject:image];
+    
+    UIStoryboard *secondStoryboard = [UIStoryboard storyboardWithName:@"ImagesPreview" bundle:nil];
+    [self.viewController presentViewController:secondStoryboard.instantiateInitialViewController animated:YES completion:nil];
 }
 
 - (void)previewTIF:(CDVInvokedUrlCommand*)command {
-    NSString* uri = [command.arguments objectAtIndex:0];
+    NSString* filePath = [command.arguments objectAtIndex:0];
     NSString* format = [command.arguments objectAtIndex:1];
-    NSLog(@"argument1: %@,argument2: %@",uri,format);
+    NSLog(@"filePath: %@,format: %@",filePath,format);
 }
 
-
-- (NSData*) uploadData:(NSString*)serverUri {
-//    NSString *urlAsString = @"http://files.cnblogs.com/zhuqil/UIWebViewDemo.zip";
-    NSURL    *url = [NSURL URLWithString:serverUri];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    NSError *error = nil;
-    NSData   *data = [NSURLConnection sendSynchronousRequest:request
-                                           returningResponse:nil
-                                                       error:&error];
-    /* 下载的数据 */
-    return data;
-}
-- (void) showPDFView {
-    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
-    
-    NSArray *pdfs = [[NSBundle mainBundle] pathsForResourcesOfType:@"pdf" inDirectory:nil];
-
-    NSString *filePath = [pdfs lastObject]; assert(filePath != nil); // Path to last PDF file
-
-    NSData *pdfdata = [[NSData alloc] initWithContentsOfFile:filePath];
-    
-    ReaderDocument *document = [ReaderDocument withDocumentFileData:pdfdata password:phrase];
-    
-    if (document != nil) // Must have a valid ReaderDocument object in order to proceed
-    {
-        readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
-        
-        readerViewController.delegate = self; // Set the ReaderViewController delegate to self
-        
-        [self.viewController presentViewController:readerViewController animated:false completion:nil];
-    }
-
-}
-
-- (void) showPDFVieData:(NSData*)pdfdata {
-    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
-//
-//    NSArray *pdfs = [[NSBundle mainBundle] pathsForResourcesOfType:@"pdf" inDirectory:nil];
-//    
-//    NSString *filePath = [pdfs lastObject]; assert(filePath != nil); // Path to last PDF file
-//    
-//    NSData *pdfdata = [[NSData alloc] initWithContentsOfFile:filePath];
-    
-    ReaderDocument *document = [ReaderDocument withDocumentFileData:pdfdata password:phrase];
-    
-    if (document != nil) // Must have a valid ReaderDocument object in order to proceed
-    {
-        readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
-        
-        readerViewController.delegate = self; // Set the ReaderViewController delegate to self
-        
-        [self.viewController presentViewController:readerViewController animated:false completion:nil];
-    }
-    
-}
-
-//struct PluginArg {
-//    _unsafe_unretained NSString* uri;
-//    _unsafe_unretained NSString;* format;
-//};
 - (void)dismissReaderViewController:(ReaderViewController *)viewController
 {
     // Do nothing

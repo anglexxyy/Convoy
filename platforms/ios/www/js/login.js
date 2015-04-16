@@ -202,15 +202,15 @@ function enabledLogin() {
 //}
 
 function test(){
-//    alert("test");
-    loginApp.showIndicator();
     function onSuccess(su){
-        loginApp.hideIndicator();
+
     };
     function onFailure(error){
-        loginApp.hideIndicator();
+
     };
-    UCmobile.previewPDF(onSuccess,onFailure, "http://lskjdfkls.com","jpg");
+//    loginApp.showIndicator();
+//    UCmobile.previewIMG(onSuccess,onFailure, "http://lskjdfkls.com","jpg");
+    console.log('divice file root: ' + window.app.rootName);
 }
 
 

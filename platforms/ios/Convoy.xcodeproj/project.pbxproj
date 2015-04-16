@@ -32,8 +32,12 @@
 		58BE241568FF4CC5849B6EE3 /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = EDC6CCC4B47E4AB295326594 /* CDVFileTransfer.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
 		744A2DF51AB94BE90047C106 /* OnlinePreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 744A2DF41AB94BE90047C106 /* OnlinePreview.m */; };
-		744A2DFB1AB9795A0047C106 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 744A2DF91AB9795A0047C106 /* ImagePreviewViewController.m */; };
-		744A2DFC1AB9795A0047C106 /* ImagePreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 744A2DFA1AB9795A0047C106 /* ImagePreviewViewController.xib */; };
+		7488BA211ADB5FFC0083E364 /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA151ADB5FFC0083E364 /* CollectionViewCell.m */; };
+		7488BA221ADB5FFC0083E364 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA171ADB5FFC0083E364 /* CollectionViewController.m */; };
+		7488BA231ADB5FFC0083E364 /* ImagesPreview.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7488BA181ADB5FFC0083E364 /* ImagesPreview.storyboard */; };
+		7488BA241ADB5FFC0083E364 /* MRImgShowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA1A1ADB5FFC0083E364 /* MRImgShowView.m */; };
+		7488BA251ADB5FFC0083E364 /* SingleImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA1C1ADB5FFC0083E364 /* SingleImage.m */; };
+		7488BA261ADB5FFC0083E364 /* SingleImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA1E1ADB5FFC0083E364 /* SingleImageViewController.m */; };
 		74D79DDF1AC3D76500F1A370 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74D79DE11AC3D76500F1A370 /* Localizable.strings */; };
 		74D79DE61AC3D7CB00F1A370 /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 74D79DE51AC3D7CB00F1A370 /* test.pdf */; };
 		74D79E0F1AC3D7F000F1A370 /* CGPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D79DE81AC3D7F000F1A370 /* CGPDFDocument.m */; };
@@ -149,9 +153,17 @@
 		66F3A74DA2DA4A6CA6EB0302 /* CDVFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVFile.m; path = org.apache.cordova.file/CDVFile.m; sourceTree = "<group>"; };
 		744A2DF31AB94BE90047C106 /* OnlinePreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnlinePreview.h; path = com.nikoyo.ucmobile.preview/OnlinePreview.h; sourceTree = "<group>"; };
 		744A2DF41AB94BE90047C106 /* OnlinePreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnlinePreview.m; path = com.nikoyo.ucmobile.preview/OnlinePreview.m; sourceTree = "<group>"; };
-		744A2DF81AB9795A0047C106 /* ImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewViewController.h; sourceTree = "<group>"; };
-		744A2DF91AB9795A0047C106 /* ImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewViewController.m; sourceTree = "<group>"; };
-		744A2DFA1AB9795A0047C106 /* ImagePreviewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImagePreviewViewController.xib; sourceTree = "<group>"; };
+		7488BA141ADB5FFC0083E364 /* CollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
+		7488BA151ADB5FFC0083E364 /* CollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
+		7488BA161ADB5FFC0083E364 /* CollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewController.h; sourceTree = "<group>"; };
+		7488BA171ADB5FFC0083E364 /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
+		7488BA181ADB5FFC0083E364 /* ImagesPreview.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ImagesPreview.storyboard; sourceTree = "<group>"; };
+		7488BA191ADB5FFC0083E364 /* MRImgShowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRImgShowView.h; sourceTree = "<group>"; };
+		7488BA1A1ADB5FFC0083E364 /* MRImgShowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRImgShowView.m; sourceTree = "<group>"; };
+		7488BA1B1ADB5FFC0083E364 /* SingleImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleImage.h; sourceTree = "<group>"; };
+		7488BA1C1ADB5FFC0083E364 /* SingleImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleImage.m; sourceTree = "<group>"; };
+		7488BA1D1ADB5FFC0083E364 /* SingleImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleImageViewController.h; sourceTree = "<group>"; };
+		7488BA1E1ADB5FFC0083E364 /* SingleImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleImageViewController.m; sourceTree = "<group>"; };
 		74D79DE01AC3D76500F1A370 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		74D79DE21AC3D76800F1A370 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		74D79DE31AC3D76900F1A370 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -266,15 +278,13 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				7488BA131ADB5FB10083E364 /* ImagePreView */,
 				74D79DDC1AC3D69500F1A370 /* Reader */,
 				302D95EE14D2391D003F00A1 /* MainViewController.h */,
 				302D95EF14D2391D003F00A1 /* MainViewController.m */,
 				302D95F014D2391D003F00A1 /* MainViewController.xib */,
 				1D3623240D0F684500981E51 /* AppDelegate.h */,
 				1D3623250D0F684500981E51 /* AppDelegate.m */,
-				744A2DF81AB9795A0047C106 /* ImagePreviewViewController.h */,
-				744A2DF91AB9795A0047C106 /* ImagePreviewViewController.m */,
-				744A2DFA1AB9795A0047C106 /* ImagePreviewViewController.xib */,
 			);
 			name = Classes;
 			path = Convoy/Classes;
@@ -418,6 +428,24 @@
 				744A2DF41AB94BE90047C106 /* OnlinePreview.m */,
 			);
 			name = com.nikoyo.ucmobile.preview;
+			sourceTree = "<group>";
+		};
+		7488BA131ADB5FB10083E364 /* ImagePreView */ = {
+			isa = PBXGroup;
+			children = (
+				7488BA141ADB5FFC0083E364 /* CollectionViewCell.h */,
+				7488BA151ADB5FFC0083E364 /* CollectionViewCell.m */,
+				7488BA161ADB5FFC0083E364 /* CollectionViewController.h */,
+				7488BA171ADB5FFC0083E364 /* CollectionViewController.m */,
+				7488BA181ADB5FFC0083E364 /* ImagesPreview.storyboard */,
+				7488BA191ADB5FFC0083E364 /* MRImgShowView.h */,
+				7488BA1A1ADB5FFC0083E364 /* MRImgShowView.m */,
+				7488BA1B1ADB5FFC0083E364 /* SingleImage.h */,
+				7488BA1C1ADB5FFC0083E364 /* SingleImage.m */,
+				7488BA1D1ADB5FFC0083E364 /* SingleImageViewController.h */,
+				7488BA1E1ADB5FFC0083E364 /* SingleImageViewController.m */,
+			);
+			path = ImagePreView;
 			sourceTree = "<group>";
 		};
 		74D79DDC1AC3D69500F1A370 /* Reader */ = {
@@ -581,7 +609,6 @@
 				7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */,
 				74D79E471AC3EA7100F1A370 /* Reader-Button-N@2x.png in Resources */,
 				74D79E4B1AC3EA7100F1A370 /* Reader-Export@2x.png in Resources */,
-				744A2DFC1AB9795A0047C106 /* ImagePreviewViewController.xib in Resources */,
 				74D79DE61AC3D7CB00F1A370 /* test.pdf in Resources */,
 				308D05371370CCF300D202BF /* icon-72.png in Resources */,
 				30B4F30119D5E07200D9F7D8 /* Default-736h.png in Resources */,
@@ -624,6 +651,7 @@
 				7E7966E11810823500FA85AD /* icon-50@2x.png in Resources */,
 				74D79E441AC3EA7100F1A370 /* Reader-Button-H.png in Resources */,
 				7E7966E51810823500FA85AD /* icon-76@2x.png in Resources */,
+				7488BA231ADB5FFC0083E364 /* ImagesPreview.storyboard in Resources */,
 				30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -653,8 +681,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7488BA221ADB5FFC0083E364 /* CollectionViewController.m in Sources */,
 				74D79E181AC3D7F000F1A370 /* ReaderThumbCache.m in Sources */,
 				74D79E101AC3D7F000F1A370 /* ReaderConstants.m in Sources */,
+				7488BA211ADB5FFC0083E364 /* CollectionViewCell.m in Sources */,
 				74D79E111AC3D7F000F1A370 /* ReaderContentPage.m in Sources */,
 				74D79E1F1AC3D7F000F1A370 /* ReaderViewController.m in Sources */,
 				74D79E1C1AC3D7F000F1A370 /* ReaderThumbRequest.m in Sources */,
@@ -666,13 +696,15 @@
 				74D79E1E1AC3D7F000F1A370 /* ReaderThumbView.m in Sources */,
 				74D79E1D1AC3D7F000F1A370 /* ReaderThumbsView.m in Sources */,
 				74D79E131AC3D7F000F1A370 /* ReaderContentView.m in Sources */,
+				7488BA241ADB5FFC0083E364 /* MRImgShowView.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
+				7488BA261ADB5FFC0083E364 /* SingleImageViewController.m in Sources */,
 				74D79E1B1AC3D7F000F1A370 /* ReaderThumbRender.m in Sources */,
-				744A2DFB1AB9795A0047C106 /* ImagePreviewViewController.m in Sources */,
 				74D79E221AC3D7F000F1A370 /* UIXToolbarView.m in Sources */,
 				D62B5A3DA7E649ED99323318 /* CDVFile.m in Sources */,
 				7DD3B1D0BC5C473F85F2F26E /* CDVLocalFilesystem.m in Sources */,
+				7488BA251ADB5FFC0083E364 /* SingleImage.m in Sources */,
 				74D79E121AC3D7F000F1A370 /* ReaderContentTile.m in Sources */,
 				F5806F066FF34DB5BDEA69DC /* CDVAssetLibraryFilesystem.m in Sources */,
 				74D79E171AC3D7F000F1A370 /* ReaderMainToolbar.m in Sources */,
@@ -739,7 +771,7 @@
 				);
 				PRODUCT_NAME = Convoy;
 				SDKROOT = iphoneos8.1;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -769,7 +801,7 @@
 				);
 				PRODUCT_NAME = Convoy;
 				SDKROOT = iphoneos8.1;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

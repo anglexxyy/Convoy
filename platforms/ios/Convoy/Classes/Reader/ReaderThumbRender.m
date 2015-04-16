@@ -75,13 +75,9 @@
 {
 	NSInteger page = request.thumbPage; NSString *password = request.password;
 
-	CGImageRef imageRef = NULL;
-//    CFURLRef fileURL = (__bridge CFURLRef)request.fileURL;
-//
-//	CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(fileURL, password);
-    CFDataRef cfdata = (__bridge CFDataRef)request.fileData;
-    CGDataProviderRef data = CGDataProviderCreateWithCFData(cfdata);
-    CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingData(data, password);
+	CGImageRef imageRef = NULL; CFURLRef fileURL = (__bridge CFURLRef)request.fileURL;
+
+	CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(fileURL, password);
 
 	if (thePDFDocRef != NULL) // Check for non-NULL CGPDFDocumentRef
 	{

@@ -28,8 +28,7 @@
 
 @implementation ReaderThumbRequest
 {
-//	NSURL *_fileURL;
-    NSData* _fileData;
+	NSURL *_fileURL;
 
 	NSString *_guid;
 
@@ -53,7 +52,7 @@
 #pragma mark - Properties
 
 @synthesize guid = _guid;
-@synthesize fileData = _fileData;
+@synthesize fileURL = _fileURL;
 @synthesize password = _password;
 @synthesize thumbView = _thumbView;
 @synthesize thumbPage = _thumbPage;
@@ -65,60 +64,33 @@
 
 #pragma mark - ReaderThumbRequest class methods
 
-//+ (instancetype)newForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
-//{
-//	return [[ReaderThumbRequest alloc] initForView:view fileURL:url password:phrase guid:guid page:page size:size];
-//}
-+ (instancetype)newForView:(ReaderThumbView *)view fileData:(NSData *)data password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
++ (instancetype)newForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
 {
-    return [[ReaderThumbRequest alloc] initForView:view fileData:data password:phrase guid:guid page:page size:size];
+	return [[ReaderThumbRequest alloc] initForView:view fileURL:url password:phrase guid:guid page:page size:size];
 }
 
 #pragma mark - ReaderThumbRequest instance methods
 
-//- (instancetype)initForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
-//{
-//	if ((self = [super init])) // Initialize object
-//	{
-//		NSInteger w = size.width; NSInteger h = size.height;
-//
-//		_thumbView = view; _thumbPage = page; _thumbSize = size;
-//
-//		_fileURL = [url copy]; _password = [phrase copy]; _guid = [guid copy];
-//
-//		_thumbName = [[NSString alloc] initWithFormat:@"%07i-%04ix%04i", (int)page, (int)w, (int)h];
-//
-//		_cacheKey = [[NSString alloc] initWithFormat:@"%@+%@", _thumbName, _guid];
-//
-//		_targetTag = [_cacheKey hash]; _thumbView.targetTag = _targetTag;
-//
-//		_scale = [[UIScreen mainScreen] scale]; // Thumb screen scale
-//	}
-//
-//	return self;
-//}
-- (instancetype)initForView:(ReaderThumbView *)view fileData:(NSData *)data password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
+- (instancetype)initForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
 {
-    if ((self = [super init])) // Initialize object
-    {
-        NSInteger w = size.width; NSInteger h = size.height;
-        
-        _thumbView = view; _thumbPage = page; _thumbSize = size;
-        
-//        _fileURL = [url copy];
-        _fileData = [data copy];
-        _password = [phrase copy]; _guid = [guid copy];
-        
-        _thumbName = [[NSString alloc] initWithFormat:@"%07i-%04ix%04i", (int)page, (int)w, (int)h];
-        
-        _cacheKey = [[NSString alloc] initWithFormat:@"%@+%@", _thumbName, _guid];
-        
-        _targetTag = [_cacheKey hash]; _thumbView.targetTag = _targetTag;
-        
-        _scale = [[UIScreen mainScreen] scale]; // Thumb screen scale
-    }
-    
-    return self;
+	if ((self = [super init])) // Initialize object
+	{
+		NSInteger w = size.width; NSInteger h = size.height;
+
+		_thumbView = view; _thumbPage = page; _thumbSize = size;
+
+		_fileURL = [url copy]; _password = [phrase copy]; _guid = [guid copy];
+
+		_thumbName = [[NSString alloc] initWithFormat:@"%07i-%04ix%04i", (int)page, (int)w, (int)h];
+
+		_cacheKey = [[NSString alloc] initWithFormat:@"%@+%@", _thumbName, _guid];
+
+		_targetTag = [_cacheKey hash]; _thumbView.targetTag = _targetTag;
+
+		_scale = [[UIScreen mainScreen] scale]; // Thumb screen scale
+	}
+
+	return self;
 }
 
 @end

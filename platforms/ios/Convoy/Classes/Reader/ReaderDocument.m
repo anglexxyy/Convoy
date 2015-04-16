@@ -38,11 +38,11 @@
 {
 	NSString *_guid;
 
-//	NSDate *_fileDate;
+	NSDate *_fileDate;
 
-//	NSDate *_lastOpen;
+	NSDate *_lastOpen;
 
-//	NSNumber *_fileSize;
+	NSNumber *_fileSize;
 
 	NSNumber *_pageCount;
 
@@ -57,23 +57,20 @@
 	NSString *_filePath;
 
 	NSURL *_fileURL;
-    
-    NSData *_fileData;
 }
 
 #pragma mark - Properties
 
 @synthesize guid = _guid;
-//@synthesize fileDate = _fileDate;
-//@synthesize lastOpen = _lastOpen;
-//@synthesize fileSize = _fileSize;
+@synthesize fileDate = _fileDate;
+@synthesize lastOpen = _lastOpen;
+@synthesize fileSize = _fileSize;
 @synthesize pageCount = _pageCount;
 @synthesize pageNumber = _pageNumber;
 @synthesize bookmarks = _bookmarks;
 @synthesize password = _password;
 @synthesize filePath = _filePath;
-//@dynamic fileName, fileURL;
-@synthesize fileData = _fileData;
+@dynamic fileName, fileURL;
 @dynamic canEmail, canExport, canPrint;
 
 #pragma mark - ReaderDocument class methods
@@ -124,34 +121,6 @@
 	return [archivePath stringByAppendingPathComponent:archiveName]; // "{archivePath}/'fileName'.plist"
 }
 
-
-+ (ReaderDocument *)unarchiveFromFileData:(NSData *)fileData password:(NSString *)phrase
-{
-    ReaderDocument *document = nil; // ReaderDocument object
-    
-//    NSString *fileName = [filePath lastPathComponent]; // File name only
-    
-//    NSString *archiveFilePath = [ReaderDocument archiveFilePath:fileName];
-    
-    @try // Unarchive an archived ReaderDocument object from its property list
-    {
-        document = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
-        
-        if (document != nil) // Set the document's file path and password properties
-        {
-            document.password = [phrase copy];
-        }
-    }
-    @catch (NSException *exception) // Exception handling (just in case O_o)
-    {
-#ifdef DEBUG
-        NSLog(@"%s Caught %@: %@", __FUNCTION__, [exception name], [exception reason]);
-#endif
-    }
-    
-    return document;
-}
-
 + (ReaderDocument *)unarchiveFromFileName:(NSString *)filePath password:(NSString *)phrase
 {
 	ReaderDocument *document = nil; // ReaderDocument object
@@ -183,7 +152,7 @@
 {
 	ReaderDocument *document = nil; // ReaderDocument object
 
-//	document = [ReaderDocument unarchiveFromFileName:filePath password:phrase];
+	document = [ReaderDocument unarchiveFromFileName:filePath password:phrase];
 
 	if (document == nil) // Unarchive failed so create a new ReaderDocument object
 	{
@@ -191,20 +160,6 @@
 	}
 
 	return document;
-}
-
-+ (ReaderDocument *)withDocumentFileData:(NSData *)pdfdata password:(NSString *)phrase
-{
-    ReaderDocument *document = nil; // ReaderDocument object
-    
-//    document = [ReaderDocument unarchiveFromFileData:pdfdata password:phrase];
-    
-    if (document == nil) // Unarchive failed so create a new ReaderDocument object
-    {
-        document = [[ReaderDocument alloc] initWithData:pdfdata password:phrase];
-    }
-    
-    return document;
 }
 
 + (BOOL)isPDF:(NSString *)filePath
@@ -250,12 +205,9 @@
 
 			_bookmarks = [NSMutableIndexSet new]; // Bookmarked pages index set
 
-//			CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
+			CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
 
-            CGPDFDocumentRef thePDFDocRef = nil;//CGPDFDocumentCreateUsingUrl(docURLRef, _password);
-            CFDataRef cfdata = (__bridge CFDataRef) [[NSData alloc] initWithContentsOfFile:@""];
-            CGDataProviderRef data = CGDataProviderCreateWithCFData(cfdata);
-            CGPDFDocumentCreateUsingData(data, _password);
+			CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(docURLRef, _password);
 
 			if (thePDFDocRef != NULL) // Get the total number of pages in the document
 			{
@@ -270,15 +222,15 @@
 				NSAssert(NO, @"CGPDFDocumentRef == NULL");
 			}
 
-//			_lastOpen = [NSDate dateWithTimeIntervalSinceReferenceDate:0.0];
+			_lastOpen = [NSDate dateWithTimeIntervalSinceReferenceDate:0.0];
 
-//			NSFileManager *fileManager = [NSFileManager defaultManager]; // Singleton
+			NSFileManager *fileManager = [NSFileManager defaultManager]; // Singleton
 
-//			NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_filePath error:NULL];
+			NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_filePath error:NULL];
 
-//			_fileDate = [fileAttributes objectForKey:NSFileModificationDate]; // File date
+			_fileDate = [fileAttributes objectForKey:NSFileModificationDate]; // File date
 
-//			_fileSize = [fileAttributes objectForKey:NSFileSize]; // File size (bytes)
+			_fileSize = [fileAttributes objectForKey:NSFileSize]; // File size (bytes)
 
 			[self archiveDocumentProperties]; // Archive ReaderDocument object
 		}
@@ -291,64 +243,6 @@
 	return self;
 }
 
-- (instancetype)initWithData:(NSData *)pdfData password:(NSString *)phrase
-{
-    if ((self = [super init])) // Initialize superclass first
-    {
-        if (pdfData != nil) // Valid PDF
-        {
-            _guid = [ReaderDocument GUID]; // Create document's GUID
-            
-            _password = [phrase copy]; // Keep copy of document password
-            
-            _pageNumber = [NSNumber numberWithInteger:1]; // Start on page one
-            
-            _bookmarks = [NSMutableIndexSet new]; // Bookmarked pages index set
-            
-            _fileData = [pdfData copy];
-
-            CFDataRef cfdata = (__bridge CFDataRef)pdfData;
-            CGDataProviderRef data = CGDataProviderCreateWithCFData(cfdata);
-            CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingData(data, _password);
-            
-            if (thePDFDocRef != NULL) // Get the total number of pages in the document
-            {
-                NSInteger pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef);
-                
-                _pageCount = [NSNumber numberWithInteger:pageCount];
-                
-                CGPDFDocumentRelease(thePDFDocRef); // Cleanup
-            }
-            else // Cupertino, we have a problem with the document
-            {
-                NSAssert(NO, @"CGPDFDocumentRef == NULL");
-            }
-            
-//            _lastOpen = [NSDate dateWithTimeIntervalSinceReferenceDate:0.0];
-            
-//            NSFileManager *fileManager = [NSFileManager defaultManager]; // Singleton
-//            
-//            NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_filePath error:NULL];
-            
-//            _fileDate = [fileAttributes objectForKey:NSFileModificationDate]; // File date
-            
-//            _fileSize = [fileAttributes objectForKey:NSFileSize]; // File size (bytes)
-            
-//            [self archiveDocumentProperties]; // Archive ReaderDocument object
-        }
-        else // Not a valid PDF file
-        {
-            self = nil;
-        }
-    }
-    
-    return self;
-}
-- (NSData *)fileData
-{
-    return _fileData;
-}
-
 - (NSString *)fileName
 {
 	if (_fileName == nil) _fileName = [_filePath lastPathComponent];
@@ -356,12 +250,12 @@
 	return _fileName;
 }
 
-//- (NSURL *)fileURL
-//{
-//	if (_fileURL == nil) _fileURL = [[NSURL alloc] initFileURLWithPath:_filePath isDirectory:NO];
-//
-//	return _fileURL;
-//}
+- (NSURL *)fileURL
+{
+	if (_fileURL == nil) _fileURL = [[NSURL alloc] initFileURLWithPath:_filePath isDirectory:NO];
+
+	return _fileURL;
+}
 
 - (BOOL)canEmail
 {
@@ -378,7 +272,6 @@
 	return YES;
 }
 
-
 - (BOOL)archiveDocumentProperties
 {
 	NSString *archiveFilePath = [ReaderDocument archiveFilePath:[self fileName]];
@@ -388,10 +281,9 @@
 
 - (void)updateDocumentProperties
 {
+	CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
 
-//	CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
-
-    CGPDFDocumentRef thePDFDocRef = nil;//CGPDFDocumentCreateUsingUrl(docURLRef, _password);
+	CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(docURLRef, _password);
 
 	if (thePDFDocRef != NULL) // Get the total number of pages in the document
 	{
@@ -406,9 +298,9 @@
 
 	NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_filePath error:NULL];
 
-//	_fileDate = [fileAttributes objectForKey:NSFileModificationDate]; // File date
+	_fileDate = [fileAttributes objectForKey:NSFileModificationDate]; // File date
 
-//	_fileSize = [fileAttributes objectForKey:NSFileSize]; // File size (bytes)
+	_fileSize = [fileAttributes objectForKey:NSFileSize]; // File size (bytes)
 }
 
 #pragma mark - NSCoding protocol methods
@@ -417,7 +309,7 @@
 {
 	[encoder encodeObject:_guid forKey:@"FileGUID"];
 
-//	[encoder encodeObject:_fileDate forKey:@"FileDate"];
+	[encoder encodeObject:_fileDate forKey:@"FileDate"];
 
 	[encoder encodeObject:_pageCount forKey:@"PageCount"];
 
@@ -425,9 +317,9 @@
 
 	[encoder encodeObject:_bookmarks forKey:@"Bookmarks"];
 
-//	[encoder encodeObject:_fileSize forKey:@"FileSize"];
+	[encoder encodeObject:_fileSize forKey:@"FileSize"];
 
-//	[encoder encodeObject:_lastOpen forKey:@"LastOpen"];
+	[encoder encodeObject:_lastOpen forKey:@"LastOpen"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)decoder
@@ -436,7 +328,7 @@
 	{
 		_guid = [decoder decodeObjectForKey:@"FileGUID"];
 
-//		_fileDate = [decoder decodeObjectForKey:@"FileDate"];
+		_fileDate = [decoder decodeObjectForKey:@"FileDate"];
 
 		_pageCount = [decoder decodeObjectForKey:@"PageCount"];
 
@@ -444,9 +336,9 @@
 
 		_bookmarks = [decoder decodeObjectForKey:@"Bookmarks"];
 
-//		_fileSize = [decoder decodeObjectForKey:@"FileSize"];
+		_fileSize = [decoder decodeObjectForKey:@"FileSize"];
 
-//		_lastOpen = [decoder decodeObjectForKey:@"LastOpen"];
+		_lastOpen = [decoder decodeObjectForKey:@"LastOpen"];
 
 		if (_guid == nil) _guid = [ReaderDocument GUID];
 

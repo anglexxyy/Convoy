@@ -297,11 +297,9 @@
 
 	[thumbCell showBookmark:[document.bookmarks containsIndex:page]]; // Show bookmarked status
 
-//	NSURL *fileURL = document.fileURL;
-    NSData *fileData = document.fileData;
-    NSString *guid = document.guid; NSString *phrase = document.password; // Document info
+	NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password; // Document info
 
-	ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:thumbCell fileData:fileData password:phrase guid:guid page:page size:size];
+	ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:thumbCell fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:thumbRequest priority:YES]; // Request the thumbnail
 

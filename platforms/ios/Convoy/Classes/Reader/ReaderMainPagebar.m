@@ -117,11 +117,9 @@
 
 		CGSize size = CGSizeMake(THUMB_LARGE_WIDTH, THUMB_LARGE_HEIGHT); // Maximum thumb size
 
-//		NSURL *fileURL = document.fileURL;
-        NSData* fileData = document.fileData;
-        NSString *guid = document.guid; NSString *phrase = document.password;
+		NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password;
 
-		ReaderThumbRequest *request = [ReaderThumbRequest newForView:pageThumbView fileData:fileData password:phrase guid:guid page:page size:size];
+		ReaderThumbRequest *request = [ReaderThumbRequest newForView:pageThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 		UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the thumb
 
@@ -310,13 +308,11 @@
 		{
 			CGSize size = CGSizeMake(THUMB_SMALL_WIDTH, THUMB_SMALL_HEIGHT); // Maximum thumb size
 
-//			NSURL *fileURL = document.fileURL;
-            NSData* fileData = document.fileData;
-            NSString *guid = document.guid; NSString *phrase = document.password;
+			NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password;
 
 			smallThumbView = [[ReaderPagebarThumb alloc] initWithFrame:thumbRect small:YES]; // Create a small thumb view
 
-			ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:smallThumbView fileData:fileData password:phrase guid:guid page:page size:size];
+			ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:smallThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 			UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:thumbRequest priority:NO]; // Request the thumb
 

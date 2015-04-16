@@ -155,30 +155,30 @@
 
 #endif // end of READER_BOOKMARKS Option
 
-//		if (document.canEmail == YES) // Document email enabled
-//		{
-//			if ([MFMailComposeViewController canSendMail] == YES) // Can email
-//			{
-//				unsigned long long fileSize = [document.fileSize unsignedLongLongValue];
-//
-//				if (fileSize < 15728640ull) // Check attachment size limit (15MB)
-//				{
-//					rightButtonX -= (iconButtonWidth + buttonSpacing); // Next position
-//
-//					UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//					emailButton.frame = CGRectMake(rightButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
-//					[emailButton setImage:[UIImage imageNamed:@"Reader-Email"] forState:UIControlStateNormal];
-//					[emailButton addTarget:self action:@selector(emailButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-//					[emailButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
-//					[emailButton setBackgroundImage:buttonN forState:UIControlStateNormal];
-//					emailButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-//					//emailButton.backgroundColor = [UIColor grayColor];
-//					emailButton.exclusiveTouch = YES;
-//
-//					[self addSubview:emailButton]; titleWidth -= (iconButtonWidth + buttonSpacing);
-//				}
-//			}
-//		}
+		if (document.canEmail == YES) // Document email enabled
+		{
+			if ([MFMailComposeViewController canSendMail] == YES) // Can email
+			{
+				unsigned long long fileSize = [document.fileSize unsignedLongLongValue];
+
+				if (fileSize < 15728640ull) // Check attachment size limit (15MB)
+				{
+					rightButtonX -= (iconButtonWidth + buttonSpacing); // Next position
+
+					UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeCustom];
+					emailButton.frame = CGRectMake(rightButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
+					[emailButton setImage:[UIImage imageNamed:@"Reader-Email"] forState:UIControlStateNormal];
+					[emailButton addTarget:self action:@selector(emailButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+					[emailButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
+					[emailButton setBackgroundImage:buttonN forState:UIControlStateNormal];
+					emailButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+					//emailButton.backgroundColor = [UIColor grayColor];
+					emailButton.exclusiveTouch = YES;
+
+					[self addSubview:emailButton]; titleWidth -= (iconButtonWidth + buttonSpacing);
+				}
+			}
+		}
 
 		if ((document.canPrint == YES) && (document.password == nil)) // Document print enabled
 		{

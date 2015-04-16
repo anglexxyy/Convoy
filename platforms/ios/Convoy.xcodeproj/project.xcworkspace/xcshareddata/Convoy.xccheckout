@@ -10,31 +10,31 @@
 	<string>Convoy</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>56C04CA1DCBA9E02DC154186F30B21B1204260A7</key>
-		<string>https://github.com/anglexxyy/CordovaProjectTemplate.git</string>
+		<key>9BE9DCADAD7A6BBE24218A29944813983FD12DF2</key>
+		<string>https://github.com/anglexxyy/Convoy.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Convoy/platforms/ios/Convoy.xcodeproj</string>
+	<string>platforms/ios/Convoy.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>56C04CA1DCBA9E02DC154186F30B21B1204260A7</key>
-		<string>../../../../..</string>
+		<key>9BE9DCADAD7A6BBE24218A29944813983FD12DF2</key>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/anglexxyy/CordovaProjectTemplate.git</string>
+	<string>https://github.com/anglexxyy/Convoy.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>56C04CA1DCBA9E02DC154186F30B21B1204260A7</string>
+	<string>9BE9DCADAD7A6BBE24218A29944813983FD12DF2</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>56C04CA1DCBA9E02DC154186F30B21B1204260A7</string>
+			<string>9BE9DCADAD7A6BBE24218A29944813983FD12DF2</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Project</string>
+			<string>Convoy</string>
 		</dict>
 	</array>
 </dict>

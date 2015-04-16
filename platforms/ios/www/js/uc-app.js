@@ -1710,27 +1710,19 @@ function clickContent(index) {
 
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-
-        //var  url = ucUrl + 'contents/'+cid+'/checkPremession';
         var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
         $.get(url, function(checkPremession) {
             if(checkPremession){
-                var fileuri = 'file:///mnt/sdcard/ucmobile/' + cid + "/" + cid + "." + format;
+              var appPath = window.app.rootName + "/";
+                var fileuri = appPath + cid + "/" + cid + "." + format;
                 var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-//              ucApp.showIndicator();
                 if (format == 'pdf') {
-                    ucApp.showIndicator();
-                    UCmobile.previewPDF(onSuccess, onFailure, serveruri,format);
-
+                  downloadToPre(fileuri,serveruri,format);
                 } else if (format == 'tif' || format == 'tiff') {
-                    ucApp.showIndicator();
                     showMessage('','此类型文档不支持在线浏览');
-//                    ucApp.hideIndicator();
-//                    UCmobile.previewTIF(onSuccess, onFailure, serveruri,format);
 
                 } else if (format == 'jpg' || format == 'JPG' || format == 'jpeg' || format == 'JPEG' || format == 'png' || format == 'PNG') {
-//                    ucApp.showIndicator();
-                    UCmobile.previewIMG(onSuccess, onFailure, serveruri,format);
+                  downloadToPre(fileuri,serveruri,format);
                 } else{
                     showMessage('','此类型文档不支持在线浏览');
                 }
@@ -1738,17 +1730,6 @@ function clickContent(index) {
                 showMessage('error','没有浏览此文档的权限');
             }
         });
-
-        //var fileuri = 'file:///mnt/sdcard/ucmobile/' + cid + "/" + cid + "." + format;
-        //if (format == 'pdf') {
-        //    previewFirstAttachement(fileuri, cid, format,"previewPDF");
-        //
-        //} else if (format == 'tif' || format == 'tiff') {
-        //    previewFirstAttachement(fileuri, cid, format,"previewTIF");
-        //
-        //} else if (format == 'jpg' || format == 'JPG' || format == 'jpeg' || format == 'JPEG' || format == 'png' || format == 'PNG') {
-        //    previewFirstAttachement(fileuri, cid, format,"previewIMG");
-        //}
     }
 
 }
@@ -1767,43 +1748,40 @@ function previewFirstAttachement(fileuri, cid, format, previewFlag) {
     //);
 }
 
-function downloadToPre(fileURL, cid, format, previewFlag) {
+function downloadToPre(fileURL, serveruri, format) {
     ucApp.showIndicator();
     var fileTransfer = new FileTransfer();
-    var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+//    var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
 
     fileTransfer.download(
-        uri,
+        serveruri,
         fileURL,
         function (entry) {
             ucApp.hideIndicator();
-            doPreview(entry, previewFlag);
+            doPreview(entry, format);
         },
         function (error) {
             ucApp.hideIndicator();
-            showMessage('error','在线浏览失败:' + error.source);
+            showMessage('error','文件下载失败:' + error.source);
             return;
         }
     );
 }
 
-function doPreview(entry, previewFlag) {
-    if (previewFlag == 'previewPDF') {
-        UCmobile.previewPDF(onSuccess, onFailure, entry.toURL());
-
-    } else if (previewFlag == 'previewTIF') {
-        UCmobile.previewTIF(onSuccess, onFailure, entry.toURL());
-
-    } else if (previewFlag == 'previewIMG') {
-        UCmobile.previewIMG(onSuccess, onFailure, entry.toURL());
-    }
+function doPreview(entry, format) {
+    if (format == 'pdf') {
+        UCmobile.previewPDF(onSuccess, onFailure, entry.toURL(),format);
+    } else if (format == 'tif' || format == 'tiff') {
+        UCmobile.previewTIF(onSuccess, onFailure, entry.toURL(),format);
+        
+    } else if (format == 'jpg' || format == 'JPG' || format == 'jpeg' || format == 'JPEG' || format == 'png' || format == 'PNG') {
+        UCmobile.previewIMG(onSuccess, onFailure, entry.toURL(),format);
+    } else {}
 }
 
 function onSuccess(result) {
-    ucApp.hideIndicator();
 }
 function onFailure(err) {
-    ucApp.hideIndicator();
     showMessage('error',"在线浏览失败: " + err.source);
 }
 

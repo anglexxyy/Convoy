@@ -124,132 +124,68 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	if (UIEdgeInsetsEqualToEdgeInsets(self.contentInset, insets) == false) self.contentInset = insets;
 }
 
-//- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
-//{
-//	if ((self = [super initWithFrame:frame]))
-//	{
-//		self.scrollsToTop = NO;
-//		self.delaysContentTouches = NO;
-//		self.showsVerticalScrollIndicator = NO;
-//		self.showsHorizontalScrollIndicator = NO;
-//		self.contentMode = UIViewContentModeRedraw;
-//		self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//		self.backgroundColor = [UIColor clearColor];
-//		self.autoresizesSubviews = NO;
-//		self.clipsToBounds = NO;
-//		self.delegate = self;
-//
-//		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
-//
-//		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
-//
-//		if (theContentPage != nil) // Must have a valid and initialized content page
-//		{
-//			theContainerView = [[UIView alloc] initWithFrame:theContentPage.bounds];
-//
-//			theContainerView.autoresizesSubviews = NO;
-//			theContainerView.userInteractionEnabled = NO;
-//			theContainerView.contentMode = UIViewContentModeRedraw;
-//			theContainerView.autoresizingMask = UIViewAutoresizingNone;
-//			theContainerView.backgroundColor = [UIColor whiteColor];
-//
-//#if (READER_SHOW_SHADOWS == TRUE) // Option
-//
-//			theContainerView.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-//			theContainerView.layer.shadowRadius = 4.0f; theContainerView.layer.shadowOpacity = 1.0f;
-//			theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
-//
-//#endif // end of READER_SHOW_SHADOWS Option
-//
-//			self.contentSize = theContentPage.bounds.size; [self centerScrollViewContent];
-//
-//#if (READER_ENABLE_PREVIEW == TRUE) // Option
-//
-//			theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
-//
-//			[theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
-//
-//#endif // end of READER_ENABLE_PREVIEW Option
-//
-//			[theContainerView addSubview:theContentPage]; // Add the content page to the container view
-//
-//			[self addSubview:theContainerView]; // Add the container view to the scroll view
-//
-//			[self updateMinimumMaximumZoom]; // Update the minimum and maximum zoom scales
-//
-//			self.zoomScale = self.minimumZoomScale; // Set the zoom scale to fit page content
-//
-//			[self addObserver:self forKeyPath:@"frame" options:0 context:ReaderContentViewContext];
-//		}
-//
-//		self.tag = page; // Tag the view with the page number
-//	}
-//
-//	return self;
-//}
-
-- (instancetype)initWithFrame:(CGRect)frame fileData:(NSData *)fileData page:(NSUInteger)page password:(NSString *)phrase
+- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
 {
-    if ((self = [super initWithFrame:frame]))
-    {
-        self.scrollsToTop = NO;
-        self.delaysContentTouches = NO;
-        self.showsVerticalScrollIndicator = NO;
-        self.showsHorizontalScrollIndicator = NO;
-        self.contentMode = UIViewContentModeRedraw;
-        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        self.backgroundColor = [UIColor clearColor];
-        self.autoresizesSubviews = NO;
-        self.clipsToBounds = NO;
-        self.delegate = self;
-        
-        userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
-        
-        theContentPage = [[ReaderContentPage alloc] initWithData:fileData page:page password:phrase];
-        
-        if (theContentPage != nil) // Must have a valid and initialized content page
-        {
-            theContainerView = [[UIView alloc] initWithFrame:theContentPage.bounds];
-            
-            theContainerView.autoresizesSubviews = NO;
-            theContainerView.userInteractionEnabled = NO;
-            theContainerView.contentMode = UIViewContentModeRedraw;
-            theContainerView.autoresizingMask = UIViewAutoresizingNone;
-            theContainerView.backgroundColor = [UIColor whiteColor];
-            
+	if ((self = [super initWithFrame:frame]))
+	{
+		self.scrollsToTop = NO;
+		self.delaysContentTouches = NO;
+		self.showsVerticalScrollIndicator = NO;
+		self.showsHorizontalScrollIndicator = NO;
+		self.contentMode = UIViewContentModeRedraw;
+		self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+		self.backgroundColor = [UIColor clearColor];
+		self.autoresizesSubviews = NO;
+		self.clipsToBounds = NO;
+		self.delegate = self;
+
+		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
+
+		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
+
+		if (theContentPage != nil) // Must have a valid and initialized content page
+		{
+			theContainerView = [[UIView alloc] initWithFrame:theContentPage.bounds];
+
+			theContainerView.autoresizesSubviews = NO;
+			theContainerView.userInteractionEnabled = NO;
+			theContainerView.contentMode = UIViewContentModeRedraw;
+			theContainerView.autoresizingMask = UIViewAutoresizingNone;
+			theContainerView.backgroundColor = [UIColor whiteColor];
+
 #if (READER_SHOW_SHADOWS == TRUE) // Option
-            
-            theContainerView.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-            theContainerView.layer.shadowRadius = 4.0f; theContainerView.layer.shadowOpacity = 1.0f;
-            theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
-            
+
+			theContainerView.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
+			theContainerView.layer.shadowRadius = 4.0f; theContainerView.layer.shadowOpacity = 1.0f;
+			theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
+
 #endif // end of READER_SHOW_SHADOWS Option
-            
-            self.contentSize = theContentPage.bounds.size; [self centerScrollViewContent];
-            
+
+			self.contentSize = theContentPage.bounds.size; [self centerScrollViewContent];
+
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
-            
-            theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
-            
-            [theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
-            
+
+			theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
+
+			[theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
+
 #endif // end of READER_ENABLE_PREVIEW Option
-            
-            [theContainerView addSubview:theContentPage]; // Add the content page to the container view
-            
-            [self addSubview:theContainerView]; // Add the container view to the scroll view
-            
-            [self updateMinimumMaximumZoom]; // Update the minimum and maximum zoom scales
-            
-            self.zoomScale = self.minimumZoomScale; // Set the zoom scale to fit page content
-            
-            [self addObserver:self forKeyPath:@"frame" options:0 context:ReaderContentViewContext];
-        }
-        
-        self.tag = page; // Tag the view with the page number
-    }
-    
-    return self;
+
+			[theContainerView addSubview:theContentPage]; // Add the content page to the container view
+
+			[self addSubview:theContainerView]; // Add the container view to the scroll view
+
+			[self updateMinimumMaximumZoom]; // Update the minimum and maximum zoom scales
+
+			self.zoomScale = self.minimumZoomScale; // Set the zoom scale to fit page content
+
+			[self addObserver:self forKeyPath:@"frame" options:0 context:ReaderContentViewContext];
+		}
+
+		self.tag = page; // Tag the view with the page number
+	}
+
+	return self;
 }
 
 - (void)dealloc
@@ -291,35 +227,20 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	}
 }
 
-//- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
-//{
-//#if (READER_ENABLE_PREVIEW == TRUE) // Option
-//
-//	CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
-//
-//	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
-//
-//	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
-//
-//	if ([image isKindOfClass:[UIImage class]]) [theThumbView showImage:image]; // Show image from cache
-//
-//#endif // end of READER_ENABLE_PREVIEW Option
-//}
-- (void)showPageThumb:(NSData *)fileData page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
+- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
 {
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
-    
-    CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
-    
-    ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileData:fileData password:phrase guid:guid page:page size:size];
-    
-    UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
-    
-    if ([image isKindOfClass:[UIImage class]]) [theThumbView showImage:image]; // Show image from cache
-    
+
+	CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
+
+	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
+
+	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
+
+	if ([image isKindOfClass:[UIImage class]]) [theThumbView showImage:image]; // Show image from cache
+
 #endif // end of READER_ENABLE_PREVIEW Option
 }
-
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer
 {

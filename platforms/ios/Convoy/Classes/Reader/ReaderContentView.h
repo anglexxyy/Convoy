@@ -43,11 +43,9 @@
 
 @property (nonatomic, weak, readwrite) id <ReaderContentViewDelegate> message;
 
-//- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase;
-- (instancetype)initWithFrame:(CGRect)frame fileData:(NSData *)fileData page:(NSUInteger)page password:(NSString *)phrase;
+- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase;
 
-//- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid;
-- (void)showPageThumb:(NSData *)fileData page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid;
+- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid;
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer;
 
