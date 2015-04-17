@@ -7,7 +7,6 @@
 //
 
 #import <Cordova/CDVPlugin.h>
-#import "ImagePreviewViewController.h"
 
 @interface OnlinePreview: CDVPlugin
 - (void)previewPDF:(CDVInvokedUrlCommand*)command;

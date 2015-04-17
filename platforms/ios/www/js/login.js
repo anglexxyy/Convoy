@@ -201,16 +201,42 @@ function enabledLogin() {
 //    loginApp.alert(message, '错误！');
 //}
 
-function test(){
-    function onSuccess(su){
+function test() {
+    var serverURL = "http://www.iteye.com/upload/logo/user/611245/575bf9ef-783c-38ae-8ae9-1d87a944e38f.jpg";
+    var fileURL = window.app.rootName + "/test/test1.jpg";
+    window.app.fileSystem.root.getfile("/test/test.jpg",{create: false}, success, cfail)
+    var transfer = new FileTransfer();
+//    transfer.download(serverURL,fileURL,downloadSucess);
+    window.resolveLocalFileSystemURI(fileURL, onResolveSuccess, fail);
+}
 
-    };
-    function onFailure(error){
+//function success(parent){}
+//function cfail(error){}
 
+function onResolveSuccess(fileEntry){
+    var entity = fileEntry;
+    alert(entity.name);
+}
+
+function fail(evt){
+    alert(evt.target.error.code);
+    console.log(evt.target.error.code);
+}
+
+function downloadSucess(entity){
+    var o = entity;
+    entity.file(gotFile)
+}
+
+function gotFile(file){
+    var reader = new FileReader();
+    reader.onloadend = function(evt) {
+        console.log("Read as text");
+        var result = evt.target.result;
+        console.log(evt.target.result);
+        
     };
-//    loginApp.showIndicator();
-//    UCmobile.previewIMG(onSuccess,onFailure, "http://lskjdfkls.com","jpg");
-    console.log('divice file root: ' + window.app.rootName);
+    var data = reader.readAsDataURL(file);
 }
 
 

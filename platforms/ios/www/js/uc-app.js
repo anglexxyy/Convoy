@@ -1716,16 +1716,21 @@ function clickContent(index) {
               var appPath = window.app.rootName + "/";
                 var fileuri = appPath + cid + "/" + cid + "." + format;
                 var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-                if (format == 'pdf') {
-                  downloadToPre(fileuri,serveruri,format);
-                } else if (format == 'tif' || format == 'tiff') {
-                    showMessage('','此类型文档不支持在线浏览');
-
-                } else if (format == 'jpg' || format == 'JPG' || format == 'jpeg' || format == 'JPEG' || format == 'png' || format == 'PNG') {
-                  downloadToPre(fileuri,serveruri,format);
-                } else{
-                    showMessage('','此类型文档不支持在线浏览');
-                }
+              //判断文件是否已缓存
+              window.app.fileSystem.root.getFile(fileuri,{create: false},
+                                                 function(fileEntity){
+                                                     //文件已存在
+                                                     doPreview(fileEntity,format)
+                                                 },
+                                                 function(error){
+                                                    //文件不存在
+                                                     if(error.code = 1){
+                                                         downloadToPre(fileuri,serveruri,format);
+                                                     } else{
+                                                         showMessage('','此类型文档不支持在线浏览');
+                                                     }
+                                                 });
+              
             }else{
                 showMessage('error','没有浏览此文档的权限');
             }
@@ -1749,6 +1754,11 @@ function previewFirstAttachement(fileuri, cid, format, previewFlag) {
 }
 
 function downloadToPre(fileURL, serveruri, format) {
+
+    if (format == 'tif' || format == 'tiff') {
+        showMessage('','此类型文档不支持在线浏览');
+        return;
+    }
     ucApp.showIndicator();
     var fileTransfer = new FileTransfer();
 //    var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");

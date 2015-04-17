@@ -41,7 +41,8 @@ window.app = {
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.onSuccess, null);
     },
     onSuccess: function(fileSystem){
-        window.app.rootName = fileSystem.root.nativeURL
+        window.app.fileSystem = fileSystem;
+        window.app.rootName = fileSystem.root.nativeURL;
         console.log('divice file root: ' + window.app.rootName);
     }
 };
