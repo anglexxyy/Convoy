@@ -72,8 +72,21 @@ CDVPluginResult* pluginResult;
 
 - (void)previewTIF:(CDVInvokedUrlCommand*)command {
     NSString* filePath = [command.arguments objectAtIndex:0];
-    NSString* format = [command.arguments objectAtIndex:1];
-    NSLog(@"filePath: %@,format: %@",filePath,format);
+    if ([filePath   hasPrefix:@"file://"]){
+        filePath = [filePath stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+    }
+    NSString* countString = [command.arguments objectAtIndex:1];
+    int count = [countString intValue];
+    SingleImage *imageSingle = [SingleImage sharedInstance];
+    imageSingle.imageData = [[NSMutableArray alloc] init];
+    for (int i=0; i<count; i++) {
+        NSString *imagePath = [filePath stringByAppendingFormat:@"%d.tif",i];
+        UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+        [imageSingle.imageData addObject:image];
+    }
+    UIStoryboard *secondStoryboard = [UIStoryboard storyboardWithName:@"ImagesPreview" bundle:nil];
+    [self.viewController presentViewController:secondStoryboard.instantiateInitialViewController animated:YES completion:nil];
+    NSLog(@"filePath: %@,format: %d",filePath,count);
 }
 
 - (void)dismissReaderViewController:(ReaderViewController *)viewController

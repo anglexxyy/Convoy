@@ -177,8 +177,9 @@ var mainView = ucApp.addView('.view-main', {
 
 //全局ajax请求的IP端口地址配置
 //var ucUrl = 'http://192.168.1.116:8080/dm/';
-var ucUrl = 'http://192.168.1.75:8080/ucontent_dm/';
+//var ucUrl = 'http://192.168.1.75:8080/ucontent_dm/';
 //var ucUrl = 'http://221.234.47.116:8028/ucontent_dm/';
+var ucUrl = 'http://192.168.1.156:8080/dm/';
 
 //会话级的存储 - sessionStorage
 var storage = window.sessionStorage;
@@ -1691,6 +1692,55 @@ $$('#returnback').on('click', function () {
 
 });
 
+////点击进入目录
+//function clickContent(index) {
+//    //判断是否有功能点权限
+//    if (!checkAction("docMg_dblClick")){
+//        showMessage('error','没有此操作的权限');
+//        return;
+//    };
+//
+//    var cid = $$('#id' + index).val();
+//    var ctName = $$('#ctName' + index).val();
+//    var format = $$('#format' + index).val();
+//    if (format == 'sysFolder') {
+//        //如果为目录则进入目录
+//        getContentList(cid, '');
+//        storage.setItem('currentFolder', cid);
+//        showHideReturnBack();
+//
+//    } else {
+//        //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
+//        var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
+//        $.get(url, function(checkPremession) {
+//            if(checkPremession){
+//              var appPath = window.app.rootName + "/";
+//              alert(appPath);
+//                var fileuri = appPath + cid + "/" + cid + "." + format;
+//                var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+//              //判断文件是否已缓存
+//              var cdvfile = cid + "/" + cid + "." + format;
+//              window.app.fileSystem.root.getFile(cdvfile,{create: false},
+//                                                 function(fileEntity){
+//                                                     //文件已存在
+//                                                     doPreview(fileEntity,format)
+//                                                 },
+//                                                 function(error){
+//                                                    //文件不存在
+//                                                     if(error.code = 1){
+//                                                 alert(error.code);
+//                                                         downloadToPre(fileuri,serveruri,format);
+//                                                     } else{
+//                                                         showMessage('','此类型文档不支持在线浏览');
+//                                                     }
+//                                                 });
+//              
+//            }else{
+//                showMessage('error','没有浏览此文档的权限');
+//            }
+//        });
+//    }
+//}
 //点击进入目录
 function clickContent(index) {
     //判断是否有功能点权限
@@ -1698,7 +1748,7 @@ function clickContent(index) {
         showMessage('error','没有此操作的权限');
         return;
     };
-
+    
     var cid = $$('#id' + index).val();
     var ctName = $$('#ctName' + index).val();
     var format = $$('#format' + index).val();
@@ -1707,36 +1757,92 @@ function clickContent(index) {
         getContentList(cid, '');
         storage.setItem('currentFolder', cid);
         showHideReturnBack();
-
+        
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-        var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
-        $.get(url, function(checkPremession) {
-            if(checkPremession){
-              var appPath = window.app.rootName + "/";
-                var fileuri = appPath + cid + "/" + cid + "." + format;
-                var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-              //判断文件是否已缓存
-              window.app.fileSystem.root.getFile(fileuri,{create: false},
-                                                 function(fileEntity){
-                                                     //文件已存在
-                                                     doPreview(fileEntity,format)
-                                                 },
-                                                 function(error){
-                                                    //文件不存在
-                                                     if(error.code = 1){
-                                                         downloadToPre(fileuri,serveruri,format);
-                                                     } else{
-                                                         showMessage('','此类型文档不支持在线浏览');
-                                                     }
-                                                 });
-              
-            }else{
-                showMessage('error','没有浏览此文档的权限');
-            }
-        });
+        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
+        $.get(url, function(data) {
+              if(data){
+                  var appPath = window.app.rootName + "/";
+                  var totalCount = data.totalCount;
+                  var urls = data.urls;
+                  var attID = data.encoding.split("\\")[3];
+                  if(format == "tif" || format == "tiff"){
+                        var localuri = cid + "/" + attID + "/";;
+                      var baseURI = appPath + localuri;
+                      window.app.fileSystem.root.getDirectory(localuri,{create: false},
+                                                              function(parent){
+                                                              //直接发送本地地址
+                                                                  UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
+                                                              },
+                                                              function(error){
+                                                              alert(error.code);
+                                                              if(error.code == 1){
+                                                              
+                                                                  downloadTif(urls,cid,attID);
+                                                              }
+                      });
+                  }else{
+                              var localuri = cid + "/" + attID + "." + format;
+                              var fileuri = appPath + localuri;
+                              var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+                            //判断文件是否已缓存
+                            window.app.fileSystem.root.getFile(localuri,{create: false},
+                                                               function(fileEntity){
+                                                                   //文件已存在
+                                                                   doPreview(fileEntity,format)
+                                                               },
+                                                               function(error){
+                                                                  //文件不存在
+                                                                   if(error.code = 1){
+                                                               alert(error.code);
+                                                                       downloadToPre(fileuri,serveruri,format);
+                                                                   } else{
+                                                                       showMessage('','此类型文档不支持在线浏览');
+                                                                   }
+                                                               });
+                  }
+              }
+      });
     }
+}
 
+function downloadTif(urls,cid,attID)
+{
+    var k=0;
+    var t=5;
+    var appPath = window.app.rootName + "/";
+    if(urls.length > 5){
+        t = 5;
+    }else{
+        t = urls.length
+    }
+    for(var i=0;i<urls.length;i++){
+        var serveruri = encodeURI("http://192.168.1.156:8080/dm" + urls[i]);
+        var basePath = appPath + cid + "/" + attID + "/"
+        var fileURL = basePath + i + ".tif";
+        ucApp.showIndicator();
+        var fileTransfer = new FileTransfer();
+
+        fileTransfer.download(
+                                serveruri,
+                                fileURL,
+                                function (entry) {
+                              k++;
+                              if(k == t){
+                                      fileTransfer.abort();
+                                      ucApp.hideIndicator();
+                                      UCmobile.previewTIF(onSuccess, onFailure, basePath,t);
+                              }
+                              
+                                },
+                                function (error) {
+                                    ucApp.hideIndicator();
+//                                    showMessage('error','文件下载失败:' + error.source);
+                                    return;
+                                }
+                            );
+    }
 }
 
 function previewFirstAttachement(fileuri, cid, format, previewFlag) {
@@ -1761,7 +1867,6 @@ function downloadToPre(fileURL, serveruri, format) {
     }
     ucApp.showIndicator();
     var fileTransfer = new FileTransfer();
-//    var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
 
     fileTransfer.download(
         serveruri,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yde-MT-SNm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yde-MT-SNm">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
@@ -37,12 +37,13 @@
                                             <action selector="close:" destination="yde-MT-SNm" eventType="touchUpInside" id="OZe-0A-Dlv"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5h9-Ae-rIw">
-                                        <rect key="frame" x="247" y="5" width="65" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5h9-Ae-rIw">
+                                        <rect key="frame" x="272" y="5" width="40" height="30"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="65" id="l5f-0y-4qx"/>
+                                            <constraint firstAttribute="height" constant="30" id="LtH-Pd-Red"/>
+                                            <constraint firstAttribute="width" constant="40" id="l5f-0y-4qx"/>
                                         </constraints>
-                                        <state key="normal" title="Thumber">
+                                        <state key="normal" backgroundImage="Reader-Thumbs.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -50,7 +51,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szh-8U-HMf">
-                                        <rect key="frame" x="193" y="5" width="46" height="30"/>
+                                        <rect key="frame" x="218" y="5" width="46" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="46" id="uK8-oX-SJu"/>
                                         </constraints>
@@ -213,6 +214,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Reader-Thumbs.png" width="16" height="16"/>
         <image name="kitten.jpg" width="1024" height="681"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
