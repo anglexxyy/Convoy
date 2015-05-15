@@ -177,9 +177,9 @@ var mainView = ucApp.addView('.view-main', {
 
 //全局ajax请求的IP端口地址配置
 //var ucUrl = 'http://192.168.1.116:8080/dm/';
-//var ucUrl = 'http://192.168.1.75:8080/ucontent_dm/';
+var ucUrl = 'http://192.168.1.116:8080/ucontent_dm/';
 //var ucUrl = 'http://221.234.47.116:8028/ucontent_dm/';
-var ucUrl = 'http://192.168.1.156:8080/dm/';
+
 
 //会话级的存储 - sessionStorage
 var storage = window.sessionStorage;
@@ -1818,7 +1818,7 @@ function downloadTif(urls,cid,attID)
         t = urls.length
     }
     for(var i=0;i<urls.length;i++){
-        var serveruri = encodeURI("http://192.168.1.156:8080/dm" + urls[i]);
+        var serveruri = encodeURI(ucUrl + urls[i]);
         var basePath = appPath + cid + "/" + attID + "/"
         var fileURL = basePath + i + ".tif";
         ucApp.showIndicator();
