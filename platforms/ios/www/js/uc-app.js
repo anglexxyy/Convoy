@@ -1776,7 +1776,7 @@ function clickContent(index) {
                                                                   UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
                                                               },
                                                               function(error){
-                                                              alert(error.code);
+                                                              //alert(error.code);
                                                               if(error.code == 1){
                                                               
                                                                   downloadTif(urls,cid,attID);
@@ -1795,7 +1795,7 @@ function clickContent(index) {
                                                                function(error){
                                                                   //文件不存在
                                                                    if(error.code = 1){
-                                                               alert(error.code);
+                                                               //alert(error.code);
                                                                        downloadToPre(fileuri,serveruri,format);
                                                                    } else{
                                                                        showMessage('','此类型文档不支持在线浏览');
