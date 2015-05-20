@@ -86,6 +86,7 @@
                 </div>
 
                 <div class="toolbar tabbar">
+                    <!--
                     <div class="toolbar-inner" id="repository-lr">
                         <a href="#left-repository" id="repository-left" class="tab-link active">
                             <i class="icon icon-repository-on"></i>
@@ -96,6 +97,23 @@
                             <span class="tabbar-label">设置</span>
                         </a>
                     </div>
+                     -->
+                    
+                    <div class="toolbar-inner" id="repository-lr">
+                        <a href="#left-repository" id="repository-left" class="tab-link">
+                            <i class="icon icon-repository-on"></i>
+                            <span class="tabbar-label">库</span>
+                        </a>
+                        <a href="#left-template" id="repository-middle" class="tab-link">
+                            <i class="icon icon-repository"></i>
+                            <span class="tabbar-label">模板</span>
+                        </a>
+                        <a href="#left-set" id="repository-right" class="tab-link">
+                            <i class="icon icon-set"></i>
+                            <span class="tabbar-label">设置</span>
+                        </a>
+                    </div>
+                    
                     <div class="toolbar-inner toolbar-item-display-none" id="toolbar-buttons">
                         <div class="buttons-row toolbar-buttons">
                             <a href="#" id="select-all" class="button">全选</a>
@@ -114,8 +132,51 @@
             </div>
         </div>
     </div>
-
+    
+    
     <!-- view-left - Tab 2 -->
+    <div id="left-template" class="view view-left tab">
+        <div class="pages navbar-fixed toolbar-fixed">
+            <div data-page="template" class="page">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="center">模板列表</div>
+                    </div>
+                </div>
+                
+                <div class="page-content contacts-content">
+                    <!--<div class="content-block">-->
+                    <!--<p align="center">易存文档管理系统</p>-->
+                    <!--</div>-->
+                    <div class="list-block contacts-block">
+                        <ul id="ul_templates">
+                            
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="toolbar tabbar">
+                    <div class="toolbar-inner">
+                        <a href="#left-repository" id="template-left" class="tab-link">
+                            <i class="icon icon-repository"></i>
+                            <span class="tabbar-label">库</span>
+                        </a>
+                        <a href="#left-template" id="template-middle" class="tab-link">
+                            <i class="icon icon-repository-on"></i>
+                            <span class="tabbar-label">模板</span>
+                        </a>
+                        <a href="#left-set" id="template-right" class="tab-link">
+                            <i class="icon icon-set"></i>
+                            <span class="tabbar-label">设置</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- view-left - Tab 3 -->
     <div id="left-set" class="view view-left tab">
         <div class="pages navbar-fixed toolbar-fixed">
             <div data-page="set" class="page">
@@ -173,6 +234,7 @@
                 </div>
 
                 <div class="toolbar tabbar">
+                    <!--
                     <div class="toolbar-inner">
                         <a href="#left-repository" id="set-left" class="tab-link active">
                             <i class="icon icon-repository"></i>
@@ -183,6 +245,23 @@
                             <span class="tabbar-label">设置</span>
                         </a>
                     </div>
+                     -->
+                    
+                    <div class="toolbar-inner">
+                        <a href="#left-repository" id="set-left" class="tab-link">
+                            <i class="icon icon-repository"></i>
+                            <span class="tabbar-label">库</span>
+                        </a>
+                        <a href="#left-template" id="set-middle" class="tab-link">
+                            <i class="icon icon-repository"></i>
+                            <span class="tabbar-label">模板</span>
+                        </a>
+                        <a href="#left-set" id="set-right" class="tab-link">
+                            <i class="icon icon-set-on"></i>
+                            <span class="tabbar-label">设置</span>
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -304,6 +383,65 @@
     </li>
     {{/each}}
 </script>
+
+
+<script type="text/template7" id="querylistTemplate">
+    <li class="row no-gutter swipeout">
+        <div class="swipeout-content">
+            <a href="#" class="item-link item-content" onclick="clickContent({{@index}})">
+                <div class="item-media">
+                    Icon
+                </div>
+                <div class="item-inner">
+                    <div class="item-title-row" style="width: 700px">
+                    <div class="item-title" style="width: 300px">Name</div>
+                    <div class="item-title" style="width: 200px">CreatedBy</div>
+                    <div class="item-title" style="width: 200px">CreationDate</div>
+                </div>
+                <!--<div class="item-title-row" style="background-image: none">-->
+                <!--<div class="item-title">createdBy</div>-->
+                <!--</div>-->
+                <!--<div class="item-title-row" style="background-image: none">-->
+                <!--<div class="item-title">creationDate</div>-->
+                <!--</div>-->
+                </div>
+            </a>
+        </div>
+    </li>
+    {{#each rows}}
+    <li class="row no-gutter swipeout" id=queryli{{@index}}>
+        <div class="swipeout-content">
+            <a href="#" class="item-link item-content" onclick="queryclickContent({{@index}})">
+                <div class="item-media">
+                    <i class = {{getIcons format}}></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title-row" style="width: 700px">
+                        <div id=queryname{{@index}} class="item-title" style="width: 300px">{{NAME}}</div>
+                        <input type="hidden" id=queryid{{@index}} value={{id}} name="queryinput_contentId">
+                        <input type="hidden" id=queryctName{{@index}} value={{contentTypeName}}>
+                        <input type="hidden" id=queryformat{{@index}} value={{format}}>
+                        <div class="item-title" style="width: 200px">{{CREATEDBY}}</div>
+                        <div class="item-title" style="width: 200px">{{convertDateTime CREATIONDATE}}</div>
+                    </div>
+                    <!--<div class="item-title-row" style="background-image: none">-->
+                    <!--<div class="item-title">{{createdBy}}</div>-->
+                    <!--</div>-->
+                    <!--<div class="item-title-row" style="background-image: none">-->
+                    <!--<div class="item-title">{{convertDateTime creationDate}}</div>-->
+                    <!--</div>-->
+                </div>
+            </a>
+        </div>
+        <div class="swipeout-actions-right">
+            <a href="#" class="action1 bg-black" style="width: 55px" onclick="queryrenameContent({{@index}})">重命名</a>
+            <a href="#" class="action2 bg-blue" style="width: 50px" onclick="querygetContentDetails({{@index}})">详细信息</a>
+            <a href="#" class="action3 bg-green" style="width: 50px" onclick="querygetContentPermissions({{@index}})">权限信息</a>
+        </div>
+    </li>
+    {{/each}}
+</script>
+
 
 
 <script type="text/javascript" src="js/uc-app.js"></script>
