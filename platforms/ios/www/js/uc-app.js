@@ -1641,6 +1641,391 @@ $$('#show_about').on('click', function () {
     });
 });
 
+
+//点击模板时加载模板列表
+$$('#repository-middle').on('click', function (e) {
+                            $$('#template-middle').addClass('active');
+                            refreshTemplates();
+                            });
+
+$$('#set-middle').on('click', function (e) {
+                     $$('#template-middle').addClass('active');
+                     refreshTemplates();
+                     });
+
+$$('#template-left').on('click', function (e) {
+                        $$('#repository-left').addClass('active');
+                        mainView.router.back({
+                                             url: 'index.html'
+                                             ,force:true
+                                             })
+                        });
+
+$$('#template-right').on('click', function (e) {
+                         $$('#set-right').addClass('active');
+                         mainView.router.back({
+                                              url: 'index.html',
+                                              force: true,
+                                              animatePages:false
+                                              })
+                         });
+
+function refreshTemplates(){
+    $.ajax({
+           async: true,
+           type: 'GET',
+           url: ucUrl + 'queryTemplate',
+           contentType: "application/json;utf-8"
+           }).success(function (templates) {
+                      $('#ul_templates').empty();
+                      if (templates&&templates.length>0) {
+                          for(var i=0;i<templates.length;i++){
+                              var temp = templates[i];
+                              var tempHtml='<li>'+
+                                            '<a name="'+temp.id+'" tempname="'+temp.qTepName+'" href="#" id="template1" class="item-link">'+
+                                                '<div class="item-content">'+
+                                                '<div class="item-inner">'+
+                                                '<div class="item-title">'+temp.qTepName+'</div>'+
+                                                '</div>'+
+                                                '</div>'+
+                                            '</a>'+
+                                        '</li>';
+                              $('#ul_templates').append(tempHtml);
+                          }
+                      }
+                      
+                      $('#ul_templates').find('a').click(function(){
+                                                         var tempId = $(this).attr('name');
+                                                         var tempName = $(this).attr('tempname');
+                                                         mainView.router.back({
+                                                                              url: 'index.html',
+                                                                              force: true,
+                                                                              animatePages:false
+                                                                              });
+                                                         mainView.router.load({
+                                                                              url: 'tpl/templateDetail.html',
+                                                                              context: {
+                                                                              tempId: tempId,
+                                                                              tempName: tempName
+                                                                              }
+                                                                              });
+                                                         });
+                      }).error(function (jqXHR) {
+                               if (jqXHR.status == '401') {
+                               status401Error();
+                               } else {
+                                    showMessage('error',jqXHR.getResponseHeader('code'));
+                               }
+                               });
+    
+    //将设置页面点出的右侧页面返回到viewmain
+    mainView.router.back({
+                         url: 'index.html',
+                         force: true,
+                         animatePages:false
+                         })
+}
+
+var queryBean=null;
+
+var queryUcql="";
+
+//加载查询模板详细信息页面
+ucApp.onPageInit('templateDetail', function (page) {
+                 var tempId= $('#templateId').val();
+                 $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
+                       if (data) {
+                       queryBean = data;
+                       //alert(JSON.stringify(data));
+                       //if(qt&&qt.queryBean){
+                       //    self.qb =qt.queryBean;
+                       //
+                       //}else{
+                       //    self.qb = data;
+                       //}
+                       var conditionTable =$('#searchTable');
+                       conditionTable.html('');
+                       var conditions = data.conditions;
+                       if(conditions&&conditions.length>0){
+                       for (var i = 0; i < conditions.length; i++) {
+                       var condition = conditions[i];
+                       var type = condition.ptype;
+                       var choices = condition.choices;
+                       if(choices&&choices.length>0){
+                       var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
+                       var choiceSelect = conditionTr.find('select');
+                       var sValue = [];
+                       if(condition.value&&condition.value!=''&&condition.value.length>0){
+                       sValue = condition.value;
+                       }
+                       if(condition.choices&&condition.choices.length>0){
+                       for (var i = 0; i < condition.choices.length; i++) {
+                       if(_.indexOf(sValue, condition.choices[i])>-1){
+                       choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
+                       }else{
+                       choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
+                       }
+                       }
+                       }
+                       }else{
+                       if(type=='DATETIME'){
+                       var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
+                                           +"<input type='date' name='pvalue' value='' />"+"to"
+                                           +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
+                       //conditionTr.find('input:text').datepicker({
+                       //    buttonImageOnly: true,
+                       //    dateFormat: 'yy-mm-dd',
+                       //    showOn: 'both'
+                       //});
+                       if(condition.value&&condition.value!=''){
+                       var values = condition.value;
+                       if(values.indexOf('_')>-1){
+                       var sValue = values.split('_');
+                       if(sValue[0]&&sValue[0]!='undefined'){
+                       conditionTr.find('input:text').eq(0).val(sValue[0]);
+                       }
+                       if(sValue[1]&&sValue[1]!='undefined'){
+                       conditionTr.find('input:text').eq(1).val(sValue[1]);
+                       }
+                       }else{
+                       conditionTr.find('input:text').eq(0).val(values);
+                       }
+                       }
+                       }else if(type=='BOOLEAN'){
+                       var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
+                       if(condition.value&&condition.value!=''){
+                       conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
+                       }
+                       }else{
+                       var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
+                       if(condition.value&&condition.value!=''){
+                       conditionTr.find('input:text').val(condition.value);
+                       }
+                       }
+                       
+                       }
+                       
+                       }
+                       conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
+                       }
+                       }
+                       
+                       }).complete(function(){
+                                   //$('#searchBtn').show();
+                                   });
+                 
+                 
+                 $$('#templateSearch').on('click', function () {
+                                          //alert(JSON.stringify(queryBean));
+                                          queryUcql = getUcql(queryBean);
+                                          
+                                          
+                                          mainView.router.load({
+                                                               url: 'tpl/queryResult.html'
+                                                               });
+                                          
+                                          });
+                 });
+
+
+function getUcql(qb){
+    var self = this;
+    var ucql = "";
+    var flag = true;
+    if (qb && qb.contentTypeName && qb.columns && qb.columns.length > 0) {
+        ucql = "SELECT C.IDENTIFIER IDENTIFIER,C.FACETS FACETS,C.NAME NAME,C.ISCHECKOUT ISCHECKOUT,C.CREATIONDATE CREATIONDATE,C.CREATEDBY CREATEDBY";
+        //        $(qb.columns).each(function() {
+        //            var aliasColumn = this.queryName.replace('.', '_');
+        //            ucql = ucql + "," + this.queryName + ' ' + aliasColumn;
+        //        });
+        ////                ucql = ucql + ","+ qb.contentTypeName + ".*" ;
+        //        ucql = ucql + ","+qb.contentTypeName+".IMAGECREATIONDATE IMAGECREATIONDATE" ;
+        ucql = ucql + " FROM " + qb.contentTypeName;
+    }
+    if(qb && qb.contentTypeName && qb.conditions && qb.conditions.length > 0){
+        ucql = ucql + " WHERE 1=1 ";
+        var conditionTable =$('#searchTable');
+        conditionTable.find('tr').each(function(i){
+                                       var condition = qb.conditions[i];
+                                       if(checkCondition($(this))){
+                                       var conditionSql = parseCondition(condition,$(this));
+                                       if(conditionSql==null){
+                                       flag= false;
+                                       }else{
+                                       ucql = ucql + conditionSql;
+                                       }
+                                       }
+                                       });
+        if(!flag){
+            return null;
+        }
+    }
+    return ucql;
+}
+
+function checkCondition(trObj){
+    var flag = false;
+    if(trObj.find('input:not(:hidden)')&&trObj.find('input:not(:hidden)').length>0){
+        if(trObj.find('input:not(:hidden)').length==1){
+            if($.trim($(trObj).find('input:not(:hidden)').val())!=''){
+                flag = true;
+            }
+        }
+        if(trObj.find('input:not(:hidden)').length==2){
+            trObj.find('input:not(:hidden)').each(function(){
+                                                  if($.trim($(this).val())!=''){
+                                                  flag = true;
+                                                  }
+                                                  });
+        }
+        
+    }
+    if(trObj.find('select')&&trObj.find('select').length>0&&trObj.find('select').val()!=''){
+        flag = true;
+    }
+    return flag;
+}
+
+
+function parseCondition(condition,trObj){
+    var isFs = $('#fsCb').val();
+    if($('#fsCb').attr('checked')!='checked'){
+        isFs = '0';
+    }
+    var conditionSql = "" ;
+    if(condition.ptype=='BOOLEAN'){
+        if(trObj.find('select').val()!=''){
+            conditionSql = conditionSql +  " AND " + condition.localName +" = "+trObj.find('select').val();
+            condition.value = trObj.find('select').val();
+        }
+    }else if(condition.ptype=='DATETIME'){
+        var startDate = trObj.find('input:not(:hidden)')[0].value;
+        var endDate = trObj.find('input:not(:hidden)')[1].value;
+        if($.trim(startDate)!=''&&$.trim(endDate)!=''){
+            if(!checkDate(startDate,endDate)){
+                messageBox.info(msg.documentManagment.search.dateError);
+                return null;
+            }
+        }
+        if($.trim(startDate)!=''){
+            conditionSql = conditionSql + " AND " + condition.localName +" >= '"+startDate+" 00:00:00.000'";
+            condition.value = startDate;
+        }
+        if($.trim(endDate)!=''){
+            conditionSql = conditionSql + " AND " + condition.localName +" <= '"+endDate+" 23:59:59.997'";
+            condition.value = condition.value+'_'+endDate;
+        }
+        
+    }else if(trObj.find('select')&&trObj.find('select').length>0){
+        var sValue = trObj.find('select').val();
+        if(sValue&&sValue.length>0){
+            conditionSql = conditionSql +  " AND (";
+            for(var i=0;i<sValue.length;i++){
+                if(i>0){
+                    conditionSql = conditionSql + " OR ";
+                }
+                conditionSql = conditionSql +  condition.localName +" = '"+sValue[i]+"'";
+            }
+            conditionSql = conditionSql +  ")";
+        }
+        condition.value = sValue;
+    }else{
+        var sValue = trObj.find('input:not(:hidden)').val();
+        condition.value = sValue;
+        if($.trim(sValue)!=''){
+            var values = sValue.split(',');
+            conditionSql = conditionSql +  " AND (";
+            for(var i=0;i<values.length;i++){
+                if(values[i]!=''){
+                    if(i>0){
+                        conditionSql = conditionSql + " OR ";
+                    }
+                    conditionSql = conditionSql +  condition.localName ;
+                    if(condition.ptype=='STRING'){
+                        if(isFs=='1'){
+                            conditionSql  = conditionSql+ " like '%"+values[i]+"%' ";
+                        }else{
+                            conditionSql  = conditionSql +" = '"+values[i]+"'";
+                        }
+                    }else{
+                        conditionSql  = conditionSql +" = "+values[i];
+                    }
+                }
+                
+            }
+            conditionSql = conditionSql +  ")";
+        }
+    }
+    return conditionSql;
+}
+
+function checkDate(startDate,endDate){
+    if (startDate && startDate != '') {
+        var sdate =  new Date(Date.parse(startDate.replace(/-/g,"/")));
+    }
+    if (endDate && endDate != '') {
+        var edate =  new Date(Date.parse(endDate.replace(/-/g,"/")));
+    }
+    if(startDate>endDate){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+//查询结果
+ucApp.onPageInit('queryResult', function (page) {
+                 var currentFolderId = storage.getItem('currentFolder');
+                 
+                 //alert(queryUcql);
+                 ucApp.showIndicator();
+                 $.ajax({
+                        type: 'GET',
+                        url: ucUrl + 'query?ucql',
+                        data: {
+                        'filter': queryUcql,
+                        'pageIndex':1,
+                        'pageSize':50,
+                        'sidx':'C.CREATIONDATE',
+                        'sord':'desc',
+                        'queryName':''
+                        },
+                        contentType: "application/json;utf-8"
+                        }).success(function (data) {
+                                   $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
+                                   ucApp.hideIndicator();
+                                   //alert(JSON.stringify(data));
+                                   }).error(function (jqXHR) {
+                                            ucApp.hideIndicator();
+                                            if (jqXHR.status == '401') {
+                                            status401Error();
+                                            } else {
+                                            showMessage('error',jqXHR.getResponseHeader('code'));
+                                            }
+                                            });
+                 
+                 //$.ajax({
+                 //    async: true,
+                 //    type: 'GET',
+                 //    url: ucUrl + 'folderTree/' + currentFolderId + '/children',
+                 //    data: {
+                 //        'queryName': ''
+                 //    },
+                 //    contentType: "application/json;utf-8"
+                 //}).success(function (data) {
+                 //    $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
+                 //}).error(function (jqXHR) {
+                 //    if (jqXHR.status == '401') {
+                 //        status401Error();
+                 //    } else {
+                 //        showMessage('error',jqXHR.getResponseHeader('code'));
+                 //    }
+                 //});
+                 });
+
+
+
+
 //跳转到ROOT目录
 $$('#returnRoot').on('click', function () {
     $('#search_input').attr('value','');
@@ -1741,7 +2126,9 @@ $$('#returnback').on('click', function () {
 //        });
 //    }
 //}
-//点击进入目录
+
+
+//点击内容
 function clickContent(index) {
     //判断是否有功能点权限
     if (!checkAction("docMg_dblClick")){
@@ -1768,7 +2155,7 @@ function clickContent(index) {
                   var urls = data.urls;
                   var attID = data.encoding.split("\\")[3];
                   if(format == "tif" || format == "tiff"){
-                        var localuri = cid + "/" + attID + "/";;
+                      var localuri = cid + "/" + attID + "/";;
                       var baseURI = appPath + localuri;
                       window.app.fileSystem.root.getDirectory(localuri,{create: false},
                                                               function(parent){
@@ -1778,16 +2165,15 @@ function clickContent(index) {
                                                               function(error){
                                                               //alert(error.code);
                                                               if(error.code == 1){
-                                                              
                                                                   downloadTif(urls,cid,attID);
                                                               }
                       });
-                  }else{
-                              var localuri = cid + "/" + attID + "." + format;
-                              var fileuri = appPath + localuri;
-                              var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-                            //判断文件是否已缓存
-                            window.app.fileSystem.root.getFile(localuri,{create: false},
+                  }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
+                      var localuri = cid + "/" + attID + "." + format;
+                      var fileuri = appPath + localuri;
+                      var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+                      //判断文件是否已缓存
+                      window.app.fileSystem.root.getFile(localuri,{create: false},
                                                                function(fileEntity){
                                                                    //文件已存在
                                                                    doPreview(fileEntity,format)
@@ -1795,17 +2181,89 @@ function clickContent(index) {
                                                                function(error){
                                                                   //文件不存在
                                                                    if(error.code = 1){
-                                                               //alert(error.code);
+                                                                       //alert(error.code);
                                                                        downloadToPre(fileuri,serveruri,format);
                                                                    } else{
                                                                        showMessage('','此类型文档不支持在线浏览');
                                                                    }
                                                                });
-                  }
+                }else{
+                      showMessage('','此类型文档不支持在线浏览');
+                }
               }
       });
     }
 }
+
+
+//查询模版查询结果内容点击事件
+function queryclickContent(index) {
+    //判断是否有功能点权限
+    if (!checkAction("docMg_dblClick")){
+        showMessage('error','没有此操作的权限');
+        return;
+    };
+    
+    var cid = $$('#queryid' + index).val();
+    var ctName = $$('#queryctName' + index).val();
+    var format = $$('#queryformat' + index).val();
+    
+    if (format == 'sysFolder') {
+        //如果为目录则进入目录
+        getContentList(cid, '');
+        storage.setItem('currentFolder', cid);
+        showHideReturnBack();
+        
+    } else {
+        //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
+        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
+        $.get(url, function(data) {
+              if(data){
+              var appPath = window.app.rootName + "/";
+              var totalCount = data.totalCount;
+              var urls = data.urls;
+              var attID = data.encoding.split("\\")[3];
+              if(format == "tif" || format == "tiff"){
+              var localuri = cid + "/" + attID + "/";;
+              var baseURI = appPath + localuri;
+              window.app.fileSystem.root.getDirectory(localuri,{create: false},
+                                                      function(parent){
+                                                      //直接发送本地地址
+                                                      UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
+                                                      },
+                                                      function(error){
+                                                      //alert(error.code);
+                                                      if(error.code == 1){
+                                                      downloadTif(urls,cid,attID);
+                                                      }
+                                                      });
+              }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
+              var localuri = cid + "/" + attID + "." + format;
+              var fileuri = appPath + localuri;
+              var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+              //判断文件是否已缓存
+              window.app.fileSystem.root.getFile(localuri,{create: false},
+                                                 function(fileEntity){
+                                                 //文件已存在
+                                                 doPreview(fileEntity,format)
+                                                 },
+                                                 function(error){
+                                                 //文件不存在
+                                                 if(error.code = 1){
+                                                 //alert(error.code);
+                                                 downloadToPre(fileuri,serveruri,format);
+                                                 } else{
+                                                 showMessage('','此类型文档不支持在线浏览');
+                                                 }
+                                                 });
+              }else{
+              showMessage('','此类型文档不支持在线浏览');
+              }
+              }
+              });
+    }
+}
+
 
 function downloadTif(urls,cid,attID)
 {
@@ -1927,6 +2385,36 @@ function renameContent(index){
         }
     });
 
+}
+
+//查询模板rename
+function queryrenameContent(index){
+    //判断是否有功能点权限
+    if (!checkAction("docMg_rename")){
+        showMessage('error','没有此操作的权限');
+        return;
+    };
+    
+    var cid = $$('#queryid'+index).val();
+    
+    //判断当前用户对此内容是否有update权限
+    var  url = ucUrl + 'contents/' + cid + '/allowedActions/update';
+    $.get(url, function(checkPremession) {
+          if(checkPremession){
+          var cName = "'"+$$('#queryname'+index).html()+"'";
+          mainView.router.load({
+                               url:'tpl/rename.html',
+                               context: {
+                               contentId : cid,
+                               contentName : cName
+                               }
+                               ,force:true
+                               });
+          }else{
+          showMessage('error','没有此文档的重命名权限');
+          }
+          });
+    
 }
 
 //page初始化_rename
@@ -2554,6 +3042,38 @@ ucApp.onPageInit('contentPermission', function (page) {
 });
 
 
+//模板查询结果点击Details
+function querygetContentDetails(index){
+    //判断是否有功能点权限
+    if (!checkAction("docMg_details")){
+        showMessage('error','没有此操作的权限');
+        return;
+    };
+    
+    var cid = $$('#queryid'+index).val();
+    //发请求获取详情信息
+    $.ajax({
+           async: true,
+           type: 'GET',
+           url: ucUrl + 'contents/' + cid ,
+           data: '',
+           contentType: "application/json;utf-8"
+           }).success(function (data) {
+                      mainView.router.load({
+                                           url:'tpl/contentDetail.html',
+                                           context: data
+                                           });
+                      }).error(function (jqXHR) {
+                               if (jqXHR.status == '401') {
+                               status401Error();
+                               } else {
+                               showMessage('error',jqXHR.getResponseHeader('code'));
+                               }
+                               });
+}
+
+
+
 //点击Permissions
 function getContentPermissions(index){
     //判断是否有功能点权限
@@ -2584,6 +3104,38 @@ function getContentPermissions(index){
             showMessage('error',jqXHR.getResponseHeader('code'));
         }
     });
+}
+
+//模板查询点击Permissions
+function querygetContentPermissions(index){
+    //判断是否有功能点权限
+    if (!checkAction("docMg_details")){
+        showMessage('error','没有此操作的权限');
+        return;
+    };
+    
+    var cid = $$('#queryid'+index).val();
+    
+    //发请求获取详情信息
+    $.ajax({
+           async: true,
+           type: 'GET',
+           url: ucUrl + 'contents/' + cid ,
+           data: '',
+           contentType: "application/json;utf-8"
+           }).success(function (data) {
+                      mainView.router.load({
+                                           url:'tpl/contentPermission.html',
+                                           context: data
+                                           });
+                      
+                      }).error(function (jqXHR) {
+                               if (jqXHR.status == '401') {
+                               status401Error();
+                               } else {
+                               showMessage('error',jqXHR.getResponseHeader('code'));
+                               }
+                               });
 }
 
 //被踢后跳转到登录页面
