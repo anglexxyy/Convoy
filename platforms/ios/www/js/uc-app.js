@@ -1735,79 +1735,82 @@ ucApp.onPageInit('templateDetail', function (page) {
                  var tempId= $('#templateId').val();
                  $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
                        if (data) {
-                       queryBean = data;
-                       //alert(JSON.stringify(data));
-                       //if(qt&&qt.queryBean){
-                       //    self.qb =qt.queryBean;
-                       //
-                       //}else{
-                       //    self.qb = data;
-                       //}
-                       var conditionTable =$('#searchTable');
-                       conditionTable.html('');
-                       var conditions = data.conditions;
-                       if(conditions&&conditions.length>0){
-                       for (var i = 0; i < conditions.length; i++) {
-                       var condition = conditions[i];
-                       var type = condition.ptype;
-                       var choices = condition.choices;
-                       if(choices&&choices.length>0){
-                       var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
-                       var choiceSelect = conditionTr.find('select');
-                       var sValue = [];
-                       if(condition.value&&condition.value!=''&&condition.value.length>0){
-                       sValue = condition.value;
-                       }
-                       if(condition.choices&&condition.choices.length>0){
-                       for (var i = 0; i < condition.choices.length; i++) {
-                       if(_.indexOf(sValue, condition.choices[i])>-1){
-                       choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
-                       }else{
-                       choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
-                       }
-                       }
-                       }
-                       }else{
-                       if(type=='DATETIME'){
-                       var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
-                                           +"<input type='date' name='pvalue' value='' />"+"to"
-                                           +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
-                       //conditionTr.find('input:text').datepicker({
-                       //    buttonImageOnly: true,
-                       //    dateFormat: 'yy-mm-dd',
-                       //    showOn: 'both'
-                       //});
-                       if(condition.value&&condition.value!=''){
-                       var values = condition.value;
-                       if(values.indexOf('_')>-1){
-                       var sValue = values.split('_');
-                       if(sValue[0]&&sValue[0]!='undefined'){
-                       conditionTr.find('input:text').eq(0).val(sValue[0]);
-                       }
-                       if(sValue[1]&&sValue[1]!='undefined'){
-                       conditionTr.find('input:text').eq(1).val(sValue[1]);
-                       }
-                       }else{
-                       conditionTr.find('input:text').eq(0).val(values);
-                       }
-                       }
-                       }else if(type=='BOOLEAN'){
-                       var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
-                       if(condition.value&&condition.value!=''){
-                       conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
-                       }
-                       }else{
-                       var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
-                       if(condition.value&&condition.value!=''){
-                       conditionTr.find('input:text').val(condition.value);
-                       }
-                       }
+                           queryBean = data;
+                           //alert(JSON.stringify(data));
+                           //if(qt&&qt.queryBean){
+                           //    self.qb =qt.queryBean;
+                           //
+                           //}else{
+                           //    self.qb = data;
+                           //}
+                           var conditionTable =$('#searchTable');
+                           conditionTable.html('');
+                           var conditions = data.conditions;
+                           if(conditions&&conditions.length>0){
                        
-                       }
+                                $("<p><input type='checkbox'  checked='checked' name='fsCb' id='fsCb' value='1' /><lable>模糊查询:</lable></p>").appendTo($('#searchTable'));
                        
-                       }
-                       conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
-                       }
+                               for (var i = 0; i < conditions.length; i++) {
+                               var condition = conditions[i];
+                               var type = condition.ptype;
+                               var choices = condition.choices;
+                               if(choices&&choices.length>0){
+                               var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
+                               var choiceSelect = conditionTr.find('select');
+                               var sValue = [];
+                               if(condition.value&&condition.value!=''&&condition.value.length>0){
+                               sValue = condition.value;
+                               }
+                               if(condition.choices&&condition.choices.length>0){
+                               for (var i = 0; i < condition.choices.length; i++) {
+                               if(_.indexOf(sValue, condition.choices[i])>-1){
+                               choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
+                               }else{
+                               choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
+                               }
+                               }
+                               }
+                               }else{
+                               if(type=='DATETIME'){
+                               var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
+                                                   +"<input type='date' name='pvalue' value='' />"+"to"
+                                                   +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
+                               //conditionTr.find('input:text').datepicker({
+                               //    buttonImageOnly: true,
+                               //    dateFormat: 'yy-mm-dd',
+                               //    showOn: 'both'
+                               //});
+                               if(condition.value&&condition.value!=''){
+                               var values = condition.value;
+                               if(values.indexOf('_')>-1){
+                               var sValue = values.split('_');
+                               if(sValue[0]&&sValue[0]!='undefined'){
+                               conditionTr.find('input:text').eq(0).val(sValue[0]);
+                               }
+                               if(sValue[1]&&sValue[1]!='undefined'){
+                               conditionTr.find('input:text').eq(1).val(sValue[1]);
+                               }
+                               }else{
+                               conditionTr.find('input:text').eq(0).val(values);
+                               }
+                               }
+                               }else if(type=='BOOLEAN'){
+                               var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
+                               if(condition.value&&condition.value!=''){
+                               conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
+                               }
+                               }else{
+                               var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
+                               if(condition.value&&condition.value!=''){
+                               conditionTr.find('input:text').val(condition.value);
+                               }
+                               }
+                               
+                               }
+                               
+                               }
+                               conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
+                           }
                        }
                        
                        }).complete(function(){
@@ -1825,7 +1828,19 @@ ucApp.onPageInit('templateDetail', function (page) {
                                                                });
                                           
                                           });
-                 });
+                 
+                 $$('#fullscreen_templateDetail').on('click', function (e) {
+                                                fullscreen('#fullscreen_templateDetail');
+                                                });
+                 
+                 $$('#back_templateDetail').on('click', function () {
+                                         mainView.router.back({
+                                                              url: 'index.html'
+                                                              , force: true
+                                                              });
+                                         syncHomeFullscreen('#fullscreen_templateDetail');
+                                         });
+});
 
 
 function getUcql(qb){
@@ -2021,7 +2036,21 @@ ucApp.onPageInit('queryResult', function (page) {
                  //        showMessage('error',jqXHR.getResponseHeader('code'));
                  //    }
                  //});
-                 });
+                 
+                 $$('#fullscreen_queryResult').on('click', function (e) {
+                                                fullscreen('#fullscreen_queryResult');
+                                                });
+                 
+//                 $$('#back_queryResult').on('click', function () {
+//                                               mainView.router.back({
+//                                                                    url: 'index.html'
+//                                                                    , force: true
+//                                                                    });
+//                                               syncHomeFullscreen('#fullscreen_queryResult');
+//                                               });
+                 
+                 
+});
 
 
 

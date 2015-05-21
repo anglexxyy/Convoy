@@ -1,0 +1,43 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_templateDetail" class="button">全屏</a>
+        </div>
+        <div class="center sliding">{{tempName}}</div>
+        <!--<div class="right"><p><a href="login-screen-page.html" class="open-login-screen">Open page with Login Screen</a></p></div>-->
+        <div class="right">
+            <a href="#" class="link" id="back_templateDetail">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="templateDetail" class="page">
+        <div class="page-content" style="padding-bottom: 35px;">
+            <div class="content-block">
+                <input type="hidden" id="templateId" value="{{tempId}}">
+                <!--
+                <p><input type="checkbox"  checked="checked" name="fsCb" id="fsCb" value="1" /><lable>模糊查询:</lable><p>
+                -->
+                <div id="search">
+                    <table id="searchTable"></table>
+                </div>
+                <!--<div>-->
+                    <!--<p><button id="searchBtn" >Search</button><p>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="" id="templateSearch" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">查询</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
