@@ -2219,8 +2219,10 @@ function clickContent(index) {
                 }else{
                       showMessage('','此类型文档不支持在线浏览');
                 }
-              }
-      });
+            }
+      }).fail(function() {
+           showMessage('','此类型文档不支持在线浏览');
+      })
     }
 }
 
