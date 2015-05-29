@@ -360,9 +360,12 @@ ucApp.onPageInit('newFile', function (page) {
                                                                                                  })
                                                                             } ,
                                                                             error: function(jqXHR, textStatus, errorThrown) {
-                                                                            ucApp.hideIndicator();
-                                                                            //alert(jqXHR.getResponseHeader('code'));
-                                                                            showMessage('error',jqXHR.getResponseHeader('code'));
+                                                                                ucApp.hideIndicator();
+                                                                                if (jqXHR.getResponseHeader('code').length>80){
+                                                                                    showMessage('error','存储流失败');
+                                                                                }else{
+                                                                                    showMessage('error',jqXHR.getResponseHeader('code'));
+                                                                                }
                                                                             }
                                                                             });
                                        });
@@ -631,7 +634,12 @@ ucApp.onPageInit('newOther', function (page) {
              error: function(jqXHR, textStatus, errorThrown) {
                  ucApp.hideIndicator();
                  //showErrorMassage(jqXHR.getResponseHeader('code'));
+                 //showMessage('error',jqXHR.getResponseHeader('code'));
+                 if (jqXHR.getResponseHeader('code').length>80){
+                 showMessage('error','存储流失败');
+                 }else{
                  showMessage('error',jqXHR.getResponseHeader('code'));
+                 }
              }
        });
     });
@@ -1383,16 +1391,24 @@ $$('#cancel-paste').on('click', function (e) {
 });
 
 //全屏显示和取消全屏显示
+var flag_fullscreen = false;
 function fullscreen(id) {
     if ($$('.view-left')[0].style.display == '') {
-        $$('.view-left').css('display', 'none');
-        $$('.view-main').addClass('view-main-fullscreen');
-        $$(id).html("取消全屏");
+        flag_fullscreen = true;
+        $$('.swipeout').on('closed', function () {
+                           if (flag_fullscreen) {
+                           $$('.view-left').css('display', 'none');
+                           $$('.view-main').addClass('view-main-fullscreen');
+                           $$(id).html("取消全屏");
+                           }
+                           });
     } else {
+        flag_fullscreen = false;
         $$('.view-left').css('display', '');
         $$('.view-main').removeClass('view-main-fullscreen');
         $$(id).html("全屏");
     }
+    
 }
 
 //为了点击返回按钮时，主页上的全屏按钮文字能够同步
@@ -1418,6 +1434,8 @@ document.onkeydown=function(e){
         var searchStr = $$('#search_input').val();
         var cid = storage.getItem('currentFolder');
         getContentList(cid, searchStr);
+    }else if (keycode == 13){
+        return false;
     }
 }
 
@@ -2240,10 +2258,11 @@ function queryclickContent(index) {
     var format = $$('#queryformat' + index).val();
     
     if (format == 'sysFolder') {
-        //如果为目录则进入目录
-        getContentList(cid, '');
-        storage.setItem('currentFolder', cid);
-        showHideReturnBack();
+//        //如果为目录则进入目录
+//        getContentList(cid, '');
+//        storage.setItem('currentFolder', cid);
+//        showHideReturnBack();
+      //此处为查询结果，故为目录时点击不进入
         
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
@@ -2804,8 +2823,13 @@ ucApp.onPageInit('contentDetail', function (page) {
                } ,
                error: function(jqXHR, textStatus, errorThrown) {
                    //showErrorMassage(jqXHR.getResponseHeader('code'));
-                   showMessage('error',jqXHR.getResponseHeader('code'));
+                   //showMessage('error',jqXHR.getResponseHeader('code'));
                    ucApp.hideIndicator();
+                   if (jqXHR.getResponseHeader('code').length>80){
+                   showMessage('error','存储流失败');
+                   }else{
+                   showMessage('error',jqXHR.getResponseHeader('code'));
+                   }
                }
                });
         });
