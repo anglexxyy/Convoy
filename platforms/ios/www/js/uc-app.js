@@ -353,7 +353,7 @@ ucApp.onPageInit('newFile', function (page) {
                                                                             $('#search_input').attr('value','');
                                                                             getContentList(currentFolderId,'');
                                                                             ucApp.hideIndicator();
-                                                                            ucApp.alert('新建成功!');
+                                                                            showMessage('success','新建成功!');
                                                                             mainView.router.back({
                                                                                                  url: 'index.html'
                                                                                                  ,force:true
@@ -1186,6 +1186,10 @@ $$('#to-paste').on('click', function () {
 
         //清空剪切板
         cleanClipboard();
+                   
+       //应jira UCDM-938 要求，取消显示粘贴工具栏
+       $$('#toolbar-buttons-paste').addClass('toolbar-item-display-none');
+                   
         return;
     };
 
@@ -2189,6 +2193,7 @@ function clickContent(index) {
     if (format == 'sysFolder') {
         //如果为目录则进入目录
         getContentList(cid, '');
+        $('#search_input').attr('value','');
         storage.setItem('currentFolder', cid);
         showHideReturnBack();
         
