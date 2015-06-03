@@ -421,8 +421,8 @@
                         <input type="hidden" id=queryid{{@index}} value={{id}} name="queryinput_contentId">
                         <input type="hidden" id=queryctName{{@index}} value={{contentTypeName}}>
                         <input type="hidden" id=queryformat{{@index}} value={{format}}>
-                        <div class="item-title" style="width: 200px">{{CREATEDBY}}</div>
-                        <div class="item-title" style="width: 200px">{{convertDateTime CREATIONDATE}}</div>
+                        <div class="item-title" style="width: 150px">{{CREATEDBY}}</div>
+                        <div class="item-title" style="width: 250px">{{convertDateTime CREATIONDATE}}</div>
                     </div>
                     <!--<div class="item-title-row" style="background-image: none">-->
                     <!--<div class="item-title">{{createdBy}}</div>-->
@@ -434,9 +434,9 @@
             </a>
         </div>
         <div class="swipeout-actions-right">
-            <a href="#" class="action1 bg-black" style="width: 55px" onclick="queryrenameContent({{@index}})">重命名</a>
-            <a href="#" class="action2 bg-blue" style="width: 50px" onclick="querygetContentDetails({{@index}})">详细信息</a>
-            <a href="#" class="action3 bg-green" style="width: 50px" onclick="querygetContentPermissions({{@index}})">权限信息</a>
+            <a href="#" class="action1 bg-black" style="width: 170px" onclick="queryrenameContent({{@index}})">重命名</a>
+            <a href="#" class="action2 bg-blue" style="width: 170px" onclick="querygetContentDetails({{@index}})">详细信息</a>
+            <a href="#" class="action3 bg-green" style="width: 170px" onclick="querygetContentPermissions({{@index}})">权限信息</a>
         </div>
     </li>
     {{/each}}
