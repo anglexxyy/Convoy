@@ -1131,9 +1131,12 @@ $$('#select-all').on('click', function () {
 $$('#btn_cut').on('click', function () {
     //判断是否有功能点权限
     if (!checkAction("docMg_multiCut")){
+        adjustToolbar();
         showMessage('error','没有此操作的权限');
         return;
     };
+                  
+    showToolbar();
 
     var ids = getCheckedIDs();
     if (ids == '') {
@@ -1148,9 +1151,12 @@ $$('#btn_cut').on('click', function () {
 $$('#btn_copy').on('click', function () {
     //判断是否有功能点权限
     if (!checkAction("docMg_multiCopy")){
+        adjustToolbar();
         showMessage('error','没有此操作的权限');
         return;
     };
+                   
+    showToolbar();
 
     var ids = getCheckedIDs();
     if (ids == '') {
@@ -1189,9 +1195,6 @@ $$('#to-paste').on('click', function () {
 
         //清空剪切板
         cleanClipboard();
-                   
-       //应jira UCDM-938 要求，取消显示粘贴工具栏
-       $$('#toolbar-buttons-paste').addClass('toolbar-item-display-none');
                    
         return;
     };
@@ -1342,60 +1345,49 @@ function show_toolbar_buttons() {
 }
 
 //工具栏 - 粘贴和取消按钮
-$$('.paste-buttons-show').on('click', function (e) {
+function showToolbar() {
     //隐藏全部的勾选框
     $$('.label-checkbox').css('display', 'none');
-
+    
     //调整工具栏的显示
     $$('#repository-lr').addClass('toolbar-item-display-none');
     $$('#toolbar-buttons').addClass('toolbar-item-display-none');
     $$('#toolbar-buttons-paste').removeClass('toolbar-item-display-none');
-});
+}
 
-$$('#btn_delete').on('click', function () {
+function adjustToolbar() {
     //删除完毕后，初始化多选框
     $$('input[type=checkbox]').prop('checked', false);
     select_all = false;
     $$('#select-all')[0].innerHTML = '全选';
-
+    
     //调整工具栏的显示
     $$('#repository-lr').removeClass('toolbar-item-display-none');
     $$('#toolbar-buttons').addClass('toolbar-item-display-none');
     $$('#toolbar-buttons-paste').addClass('toolbar-item-display-none');
+}
+
+$$('#btn_delete').on('click', function () {
+    adjustToolbar();
 });
 
 $$('#to-paste').on('click', function (e) {
-    //显示全部的勾选框
-    $$('.label-checkbox').css('display', '');
-
-    //粘贴完毕后，初始化多选框
-    $$('input[type=checkbox]').prop('checked', false);
-    select_all = false;
-    $$('#select-all')[0].innerHTML = '全选';
-
-    //调整工具栏的显示
-    $$('#repository-lr').removeClass('toolbar-item-display-none');
-    $$('#toolbar-buttons').addClass('toolbar-item-display-none');
-    $$('#toolbar-buttons-paste').addClass('toolbar-item-display-none');
+   //显示全部的勾选框
+   $$('.label-checkbox').css('display', '');
+   
+   adjustToolbar();
 });
 
 $$('#cancel-paste').on('click', function (e) {
-    //显示全部的勾选框
-    $$('.label-checkbox').css('display', '');
-
-    //初始化多选框
-    $$('input[type=checkbox]').prop('checked', false);
-    select_all = false;
-    $$('#select-all')[0].innerHTML = '全选';
-
-    //调整工具栏的显示
-    $$('#toolbar-buttons').addClass('toolbar-item-display-none');
-    $$('#repository-lr').removeClass('toolbar-item-display-none');
-    $$('#toolbar-buttons-paste').addClass('toolbar-item-display-none');
-
-    //清空剪切板
+   //显示全部的勾选框
+   $$('.label-checkbox').css('display', '');
+   
+   adjustToolbar();
+   
+   //清空剪切板
    cleanClipboard();
 });
+
 
 var flag_fullscreen = false;
 var swipeout_closed = true;
