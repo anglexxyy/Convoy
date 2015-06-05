@@ -164,6 +164,9 @@ var sysfilecontenttype='SYSFILECONTENTTYPE';
 //文件夹类型名称
 var sysfoldercontenttype='SYSFOLDERCONTENTTYPE';
 
+//多页tiff在线浏览时下载的页数
+var preViewPagesNumber=8;
+
 var $$ = Framework7.$;
 
 var mainView = ucApp.addView('.view-main', {
@@ -1394,18 +1397,18 @@ $$('#cancel-paste').on('click', function (e) {
    cleanClipboard();
 });
 
-//全屏显示和取消全屏显示
 var flag_fullscreen = false;
+var swipeout_closed = true;
+//全屏显示和取消全屏显示
 function fullscreen(id) {
     if ($$('.view-left')[0].style.display == '') {
         flag_fullscreen = true;
-        $$('.swipeout').on('closed', function () {
-                           if (flag_fullscreen) {
-                           $$('.view-left').css('display', 'none');
-                           $$('.view-main').addClass('view-main-fullscreen');
-                           $$(id).html("取消全屏");
-                           }
-                           });
+        if(swipeout_closed){
+            $$('.view-left').css('display', 'none');
+            $$('.view-main').addClass('view-main-fullscreen');
+        }
+        $$(id).html("取消全屏");
+        
     } else {
         flag_fullscreen = false;
         $$('.view-left').css('display', '');
@@ -1752,116 +1755,153 @@ var queryBean=null;
 
 var queryUcql="";
 
+var queryResultData=null;
+
 //加载查询模板详细信息页面
 ucApp.onPageInit('templateDetail', function (page) {
-                 var tempId= $('#templateId').val();
-                 $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
-                       if (data) {
-                           queryBean = data;
-                           //alert(JSON.stringify(data));
-                           //if(qt&&qt.queryBean){
-                           //    self.qb =qt.queryBean;
-                           //
-                           //}else{
-                           //    self.qb = data;
-                           //}
-                           var conditionTable =$('#searchTable');
-                           conditionTable.html('');
-                           var conditions = data.conditions;
-                           if(conditions&&conditions.length>0){
+     var tempId= $('#templateId').val();
+     $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
+           if (data) {
+               queryBean = data;
+               //alert(JSON.stringify(data));
+               //if(qt&&qt.queryBean){
+               //    self.qb =qt.queryBean;
+               //
+               //}else{
+               //    self.qb = data;
+               //}
+               var conditionTable =$('#searchTable');
+               conditionTable.html('');
+               var conditions = data.conditions;
+               if(conditions&&conditions.length>0){
+           
+                    $("<p><input type='checkbox'  checked='checked' name='fsCb' id='fsCb' value='1' /><lable>模糊查询:</lable></p>").appendTo($('#searchTable'));
+           
+                   for (var i = 0; i < conditions.length; i++) {
+                   var condition = conditions[i];
+                   var type = condition.ptype;
+                   var choices = condition.choices;
+                   if(choices&&choices.length>0){
+                   var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
+                   var choiceSelect = conditionTr.find('select');
+                   var sValue = [];
+                   if(condition.value&&condition.value!=''&&condition.value.length>0){
+                   sValue = condition.value;
+                   }
+                   if(condition.choices&&condition.choices.length>0){
+                   for (var i = 0; i < condition.choices.length; i++) {
+                   if(_.indexOf(sValue, condition.choices[i])>-1){
+                   choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
+                   }else{
+                   choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
+                   }
+                   }
+                   }
+                   }else{
+                   if(type=='DATETIME'){
+                   var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
+                                       +"<input type='date' name='pvalue' value='' />"+"to"
+                                       +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
+                   //conditionTr.find('input:text').datepicker({
+                   //    buttonImageOnly: true,
+                   //    dateFormat: 'yy-mm-dd',
+                   //    showOn: 'both'
+                   //});
+                   if(condition.value&&condition.value!=''){
+                   var values = condition.value;
+                   if(values.indexOf('_')>-1){
+                   var sValue = values.split('_');
+                   if(sValue[0]&&sValue[0]!='undefined'){
+                   conditionTr.find('input:text').eq(0).val(sValue[0]);
+                   }
+                   if(sValue[1]&&sValue[1]!='undefined'){
+                   conditionTr.find('input:text').eq(1).val(sValue[1]);
+                   }
+                   }else{
+                   conditionTr.find('input:text').eq(0).val(values);
+                   }
+                   }
+                   }else if(type=='BOOLEAN'){
+                   var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
+                   if(condition.value&&condition.value!=''){
+                   conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
+                   }
+                   }else{
+                   var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
+                   if(condition.value&&condition.value!=''){
+                   conditionTr.find('input:text').val(condition.value);
+                   }
+                   }
+                   
+                   }
+                   
+                   }
+                   conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
+           }else{
+                $("<p><lable>无自定义查询条件，请直接点击查询</lable></p>").appendTo($('#searchTable'));
+           }
+           }
+           
+           }).complete(function(){
                        
-                                $("<p><input type='checkbox'  checked='checked' name='fsCb' id='fsCb' value='1' /><lable>模糊查询:</lable></p>").appendTo($('#searchTable'));
-                       
-                               for (var i = 0; i < conditions.length; i++) {
-                               var condition = conditions[i];
-                               var type = condition.ptype;
-                               var choices = condition.choices;
-                               if(choices&&choices.length>0){
-                               var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
-                               var choiceSelect = conditionTr.find('select');
-                               var sValue = [];
-                               if(condition.value&&condition.value!=''&&condition.value.length>0){
-                               sValue = condition.value;
-                               }
-                               if(condition.choices&&condition.choices.length>0){
-                               for (var i = 0; i < condition.choices.length; i++) {
-                               if(_.indexOf(sValue, condition.choices[i])>-1){
-                               choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
-                               }else{
-                               choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
-                               }
-                               }
-                               }
-                               }else{
-                               if(type=='DATETIME'){
-                               var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
-                                                   +"<input type='date' name='pvalue' value='' />"+"to"
-                                                   +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
-                               //conditionTr.find('input:text').datepicker({
-                               //    buttonImageOnly: true,
-                               //    dateFormat: 'yy-mm-dd',
-                               //    showOn: 'both'
-                               //});
-                               if(condition.value&&condition.value!=''){
-                               var values = condition.value;
-                               if(values.indexOf('_')>-1){
-                               var sValue = values.split('_');
-                               if(sValue[0]&&sValue[0]!='undefined'){
-                               conditionTr.find('input:text').eq(0).val(sValue[0]);
-                               }
-                               if(sValue[1]&&sValue[1]!='undefined'){
-                               conditionTr.find('input:text').eq(1).val(sValue[1]);
-                               }
-                               }else{
-                               conditionTr.find('input:text').eq(0).val(values);
-                               }
-                               }
-                               }else if(type=='BOOLEAN'){
-                               var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
-                               if(condition.value&&condition.value!=''){
-                               conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
-                               }
-                               }else{
-                               var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
-                               if(condition.value&&condition.value!=''){
-                               conditionTr.find('input:text').val(condition.value);
-                               }
-                               }
-                               
-                               }
-                               
-                               }
-                               conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
-                           }
-                       }
-                       
-                       }).complete(function(){
-                                   //$('#searchBtn').show();
-                                   });
-                 
-                 
-                 $$('#templateSearch').on('click', function () {
-                                          //alert(JSON.stringify(queryBean));
-                                          queryUcql = getUcql(queryBean);
-                                          
-                                          
-                                          mainView.router.load({
-                                                               url: 'tpl/queryResult.html'
-                                                               });
-                                          
-                                          });
-                 
-                 $$('#fullscreen_templateDetail').on('click', function (e) {
-                                                fullscreen('#fullscreen_templateDetail');
-                                                });
-                 
-                 $$('#back_templateDetail').on('click', function () {
-                                         mainView.router.back({
-                                                              url: 'index.html'
-                                                              , force: true
-                                                              });
-                                         syncHomeFullscreen('#fullscreen_templateDetail');
-                                         });
+                       });
+     
+     
+     $$('#templateSearch').on('click', function () {
+                              //alert(JSON.stringify(queryBean));
+          queryUcql = getUcql(queryBean);
+                              
+          var currentFolderId = storage.getItem('currentFolder');
+          
+          //alert(queryUcql);
+          ucApp.showIndicator();
+          $.ajax({
+                 type: 'GET',
+                 url: ucUrl + 'query?ucql',
+                 data: {
+                 'filter': queryUcql,
+                 'pageIndex':1,
+                 'pageSize':50,
+                 'sidx':'C.CREATIONDATE',
+                 'sord':'desc',
+                 'queryName':''
+                 },
+                 contentType: "application/json;utf-8"
+                 }).success(function (data) {
+                            queryResultData = data;
+                            mainView.router.load({
+                                url: 'tpl/queryResult.html'
+                            });
+                            ucApp.hideIndicator();
+                            //alert(JSON.stringify(data));
+                 }).error(function (jqXHR) {
+                         ucApp.hideIndicator();
+                         if (jqXHR.status == '401') {
+                             status401Error();
+                         } else {
+                             var errorMsg = jqXHR.getResponseHeader('code');
+                             if(errorMsg.length>30){
+                                 showMessage('error',"输入条件有误！");
+                             }else{
+                                 showMessage('error',jqXHR.getResponseHeader('code'));
+                             }
+                         }
+                 });
+          
+      
+      });
+     
+     $$('#fullscreen_templateDetail').on('click', function (e) {
+        fullscreen('#fullscreen_templateDetail');
+     });
+     
+     $$('#back_templateDetail').on('click', function () {
+         mainView.router.back({
+                              url: 'index.html'
+                              , force: true
+         });
+         syncHomeFullscreen('#fullscreen_templateDetail');
+     });
 });
 
 
@@ -2012,64 +2052,51 @@ function checkDate(startDate,endDate){
 
 //查询结果
 ucApp.onPageInit('queryResult', function (page) {
-                 var currentFolderId = storage.getItem('currentFolder');
+     if (queryResultData==null){
+     
+     }else{
+        $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(queryResultData);
+     }
+//                 var currentFolderId = storage.getItem('currentFolder');
+//                 
+//                 //alert(queryUcql);
+//                 ucApp.showIndicator();
+//                 $.ajax({
+//                        type: 'GET',
+//                        url: ucUrl + 'query?ucql',
+//                        data: {
+//                        'filter': queryUcql,
+//                        'pageIndex':1,
+//                        'pageSize':50,
+//                        'sidx':'C.CREATIONDATE',
+//                        'sord':'desc',
+//                        'queryName':''
+//                        },
+//                        contentType: "application/json;utf-8"
+//                        }).success(function (data) {
+//                            $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
+//                            ucApp.hideIndicator();
+//                            //alert(JSON.stringify(data));
+//                        }).error(function (jqXHR) {
+//                            ucApp.hideIndicator();
+//                            if (jqXHR.status == '401') {
+//                                status401Error();
+//                            } else {
+//                                 var errorMsg = jqXHR.getResponseHeader('code');
+//                                 if(errorMsg.length>30){
+//                                    showMessage('error',"输入条件有误！");
+//                                 }else{
+//                                    showMessage('error',jqXHR.getResponseHeader('code'));
+//                                 }
+//                                 //$$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(null);
+//                            }
+//                        });
                  
-                 //alert(queryUcql);
-                 ucApp.showIndicator();
-                 $.ajax({
-                        type: 'GET',
-                        url: ucUrl + 'query?ucql',
-                        data: {
-                        'filter': queryUcql,
-                        'pageIndex':1,
-                        'pageSize':50,
-                        'sidx':'C.CREATIONDATE',
-                        'sord':'desc',
-                        'queryName':''
-                        },
-                        contentType: "application/json;utf-8"
-                        }).success(function (data) {
-                                   $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
-                                   ucApp.hideIndicator();
-                                   //alert(JSON.stringify(data));
-                                   }).error(function (jqXHR) {
-                                            ucApp.hideIndicator();
-                                            if (jqXHR.status == '401') {
-                                            status401Error();
-                                            } else {
-                                            showMessage('error',jqXHR.getResponseHeader('code'));
-                                            }
-                                            });
-                 
-                 //$.ajax({
-                 //    async: true,
-                 //    type: 'GET',
-                 //    url: ucUrl + 'folderTree/' + currentFolderId + '/children',
-                 //    data: {
-                 //        'queryName': ''
-                 //    },
-                 //    contentType: "application/json;utf-8"
-                 //}).success(function (data) {
-                 //    $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
-                 //}).error(function (jqXHR) {
-                 //    if (jqXHR.status == '401') {
-                 //        status401Error();
-                 //    } else {
-                 //        showMessage('error',jqXHR.getResponseHeader('code'));
-                 //    }
-                 //});
                  
                  $$('#fullscreen_queryResult').on('click', function (e) {
                                                 fullscreen('#fullscreen_queryResult');
                                                 });
-                 
-//                 $$('#back_queryResult').on('click', function () {
-//                                               mainView.router.back({
-//                                                                    url: 'index.html'
-//                                                                    , force: true
-//                                                                    });
-//                                               syncHomeFullscreen('#fullscreen_queryResult');
-//                                               });
+    
                  
                  
 });
@@ -2196,57 +2223,125 @@ function clickContent(index) {
         $('#search_input').attr('value','');
         storage.setItem('currentFolder', cid);
         showHideReturnBack();
-        
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
-        $.get(url, function(data) {
-              if(data){
-                  var appPath = window.app.rootName + "/";
-                  var totalCount = data.totalCount;
-                  var urls = data.urls;
-                  var attID = data.encoding.split("\\")[3];
-                  if(format == "tif" || format == "tiff"){
-                      var localuri = cid + "/" + attID + "/";;
-                      var baseURI = appPath + localuri;
-                      window.app.fileSystem.root.getDirectory(localuri,{create: false},
-                                                              function(parent){
-                                                              //直接发送本地地址
-                                                                  UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
-                                                              },
-                                                              function(error){
-                                                              //alert(error.code);
-                                                              if(error.code == 1){
-                                                                  downloadTif(urls,cid,attID);
-                                                              }
-                      });
-                  }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
-                      var localuri = cid + "/" + attID + "." + format;
-                      var fileuri = appPath + localuri;
-                      var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-                      //判断文件是否已缓存
-                      window.app.fileSystem.root.getFile(localuri,{create: false},
-                                                               function(fileEntity){
-                                                                   //文件已存在
-                                                                   doPreview(fileEntity,format)
-                                                               },
-                                                               function(error){
-                                                                  //文件不存在
-                                                                   if(error.code = 1){
-                                                                       //alert(error.code);
-                                                                       downloadToPre(fileuri,serveruri,format);
-                                                                   } else{
-                                                                       showMessage('','此类型文档不支持在线浏览');
-                                                                   }
-                                                               });
-                }else{
-                      showMessage('','此类型文档不支持在线浏览');
-                }
-            }
-      }).fail(function() {
-           showMessage('','此类型文档不支持在线浏览');
-      })
+        toPreview(cid,format);
+//        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
+//        $.get(url, function(data) {
+//              if(data){
+//                  var appPath = window.app.rootName + "/";
+//                  var totalCount = data.totalCount;
+//                  var urls = data.urls;
+//                  var attID = data.encoding.split("\\")[3];
+//                  if(format == "tif" || format == "tiff"){
+//                      var localuri = cid + "/" + attID + "/";;
+//                      var baseURI = appPath + localuri;
+//                      window.app.fileSystem.root.getDirectory(localuri,{create: false},
+//                                                              function(parent){
+//                                                                //直接发送本地地址
+//                                                              var pageCount = 5;
+//                                                              if (urls.length<5){
+//                                                                  pageCount = urls.length;
+//                                                              }
+//                                                                UCmobile.previewTIF(onSuccess, onFailure, baseURI,pageCount);
+//                                                              },
+//                                                              function(error){
+//                                                                  //alert(error.code);
+//                                                                  if(error.code == 1){
+//                                                                    ucApp.showIndicator();
+//                                                                    downloadMutiTifs(urls,cid,attID,0,urls.length);
+//                                                                    //downloadTif(urls,cid,attID);
+//                                                                  }
+//                                                              });
+//                  }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
+//                      var localuri = cid + "/" + attID + "." + format;
+//                      var fileuri = appPath + localuri;
+//                      var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+//                      //判断文件是否已缓存
+//                      window.app.fileSystem.root.getFile(localuri,{create: false},
+//                                                               function(fileEntity){
+//                                                                   //文件已存在
+//                                                                   doPreview(fileEntity,format)
+//                                                               },
+//                                                               function(error){
+//                                                                  //文件不存在
+//                                                                   if(error.code = 1){
+//                                                                       //alert(error.code);
+//                                                                       downloadToPre(fileuri,serveruri,format);
+//                                                                   } else{
+//                                                                       showMessage('','此类型文档不支持在线浏览');
+//                                                                   }
+//                                                               });
+//                }else{
+//                      showMessage('','此类型文档不支持在线浏览');
+//                }
+//            }
+//      }).fail(function() {
+//           showMessage('','此类型文档不支持在线浏览');
+//      })
     }
+}
+
+function toPreview(cid,format){
+    var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
+    ucApp.showIndicator();
+    $.get(url, function(data) {
+          if(data){
+          var appPath = window.app.rootName + "/";
+          var totalCount = data.totalCount;
+          var urls = data.urls;
+          var attID = data.encoding.split("\\")[3];
+          if(format == "tif" || format == "tiff"){
+          var localuri = cid + "/" + attID + "/";;
+          var baseURI = appPath + localuri;
+          window.app.fileSystem.root.getDirectory(localuri,{create: false},
+                                                  function(parent){
+                                                  //直接发送本地地址
+                                                      var pageCount = preViewPagesNumber;
+                                                      if (urls.length<preViewPagesNumber){
+                                                        pageCount = urls.length;
+                                                      }
+                                                      UCmobile.previewTIF(onSuccess, onFailure, baseURI,pageCount);
+                                                      ucApp.hideIndicator();
+                                                  },
+                                                  function(error){
+                                                      //alert(error.code);
+                                                      if(error.code == 1){
+                                                          //ucApp.showIndicator();
+                                                          downloadMutiTifs(urls,cid,attID,0,urls.length);
+                                                          //downloadTif(urls,cid,attID);
+                                                      }
+                                                  });
+          }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
+              var localuri = cid + "/" + attID + "." + format;
+              var fileuri = appPath + localuri;
+              var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
+              //判断文件是否已缓存
+              window.app.fileSystem.root.getFile(localuri,{create: false},
+                                                 function(fileEntity){
+                                                    //文件已存在
+                                                 doPreview(fileEntity,format);
+                                                 ucApp.hideIndicator();
+                                                 },
+                                                 function(error){
+                                                 //文件不存在
+                                                 if(error.code = 1){
+                                                 //alert(error.code);
+                                                    downloadToPre(fileuri,serveruri,format);
+                                                 } else{
+                                                    showMessage('','此类型文档不支持在线浏览');
+                                                 }
+                                                 });
+          }else{
+            showMessage('','此类型文档不支持在线浏览');
+            ucApp.hideIndicator();
+          }
+          }
+          }).fail(function() {
+                  showMessage('','此类型文档不支持在线浏览');
+                  ucApp.hideIndicator();
+          });
+
 }
 
 
@@ -2268,54 +2363,9 @@ function queryclickContent(index) {
 //        storage.setItem('currentFolder', cid);
 //        showHideReturnBack();
       //此处为查询结果，故为目录时点击不进入
-        
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
-        $.get(url, function(data) {
-              if(data){
-              var appPath = window.app.rootName + "/";
-              var totalCount = data.totalCount;
-              var urls = data.urls;
-              var attID = data.encoding.split("\\")[3];
-              if(format == "tif" || format == "tiff"){
-              var localuri = cid + "/" + attID + "/";;
-              var baseURI = appPath + localuri;
-              window.app.fileSystem.root.getDirectory(localuri,{create: false},
-                                                      function(parent){
-                                                      //直接发送本地地址
-                                                      UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
-                                                      },
-                                                      function(error){
-                                                      //alert(error.code);
-                                                      if(error.code == 1){
-                                                      downloadTif(urls,cid,attID);
-                                                      }
-                                                      });
-              }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
-              var localuri = cid + "/" + attID + "." + format;
-              var fileuri = appPath + localuri;
-              var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-              //判断文件是否已缓存
-              window.app.fileSystem.root.getFile(localuri,{create: false},
-                                                 function(fileEntity){
-                                                 //文件已存在
-                                                 doPreview(fileEntity,format)
-                                                 },
-                                                 function(error){
-                                                 //文件不存在
-                                                 if(error.code = 1){
-                                                 //alert(error.code);
-                                                 downloadToPre(fileuri,serveruri,format);
-                                                 } else{
-                                                 showMessage('','此类型文档不支持在线浏览');
-                                                 }
-                                                 });
-              }else{
-              showMessage('','此类型文档不支持在线浏览');
-              }
-              }
-              });
+        toPreview(cid,format);
     }
 }
 
@@ -2358,6 +2408,57 @@ function downloadTif(urls,cid,attID)
     }
 }
 
+
+//download tiffs
+function downloadMutiTifs(urls,cid,attID,compCount,allCount)
+{
+    var appPath = window.app.rootName + "/";
+    var basePath = appPath + cid + "/" + attID + "/";
+    var completeCount = compCount;
+    var tempUrls = urls;
+    
+//    if((completeCount==5)||(((tempUrls)&&(tempUrls.length==0))){
+//       UCmobile.previewTIF(onSuccess, onFailure, basePath,5);
+//    }
+    
+    if(completeCount==preViewPagesNumber){
+        ucApp.hideIndicator();
+        //alert(basePath);
+        UCmobile.previewTIF(onSuccess, onFailure, basePath,preViewPagesNumber);
+        //UCmobile.previewTIF(onSuccess, onFailure, baseURI,urls.length);
+    }else{
+        if((tempUrls)&&(tempUrls.length==0)){
+            ucApp.hideIndicator();
+            //alert(basePath);
+            UCmobile.previewTIF(onSuccess, onFailure, basePath,allCount);
+        }
+       
+    }
+    
+    if ((completeCount<preViewPagesNumber)&&(tempUrls)&&(tempUrls.length>0)){
+        var currentUrl = tempUrls[0];
+        var serveruri = encodeURI(ucUrl + currentUrl);
+        var fileURL = basePath + completeCount + ".tif";
+        var fileTransfer = new FileTransfer();
+        //alert(serveruri+"---"+completeCount);
+        fileTransfer.download(
+                             serveruri,
+                             fileURL,
+                             function (entry) {
+                                tempUrls.shift();
+                                completeCount = completeCount +1;
+                                //之前并行下载会导致服务端阻塞，还会导致没有下载完成的页面被abort,坑爹啊，还是用递归一个一个下载吧，哎。。。。。
+                                downloadMutiTifs(tempUrls,cid,attID,completeCount,allCount);
+                             },
+                             function (error) {
+                                ucApp.hideIndicator();
+                                showMessage('error','文件下载失败:' + error.source);
+                                return;
+                             }
+        );
+   }
+}
+
 function previewFirstAttachement(fileuri, cid, format, previewFlag) {
     //因为内容的附件可以任意的添加删除，可能第一个附件被删除后，原来的第二个附件变成了第一个附件。
     //故此处的缓存暂时没有意义，待日后手动清空缓存的功能实现后再放开。
@@ -2378,7 +2479,7 @@ function downloadToPre(fileURL, serveruri, format) {
         showMessage('','此类型文档不支持在线浏览');
         return;
     }
-    ucApp.showIndicator();
+    //ucApp.showIndicator();
     var fileTransfer = new FileTransfer();
 
     fileTransfer.download(
@@ -2458,7 +2559,7 @@ function queryrenameContent(index){
           if(checkPremession){
           var cName = "'"+$$('#queryname'+index).html()+"'";
           mainView.router.load({
-                               url:'tpl/rename.html',
+                               url:'tpl/query/queryRename.html',
                                context: {
                                contentId : cid,
                                contentName : cName
@@ -2522,6 +2623,58 @@ ucApp.onPageInit('rename', function (page) {
         syncHomeFullscreen('#fullscreen_rename');
     });
 
+});
+
+//page初始化_rename
+ucApp.onPageInit('queryRename', function (page) {
+     $$('#fullscreen_rename').on('click', function () {
+                                 fullscreen('#fullscreen_rename');
+                                 });
+     
+     $('#contentRenameForm').validate({
+                                      rules: {
+                                      newContentName: {
+                                      required: true,
+                                      maxlength: 50,
+                                      invalidData: true
+                                      }
+                                      }
+                                      });
+     
+     $$('#rename_modify').on('click', function () {
+                             if (!$("#contentRenameForm").valid()) {
+                             return;
+                             }
+                             var newName = $('#newContentName').val();
+                             //newName = encodeURI(newName);
+                             var cid = $('#contentId_rename').val();
+                             var data = $.param({
+                                                'name': newName
+                                                });
+                             $.put(ucUrl+'contents/' + cid + '/name?' + data, function() {
+                                   var currentFolderId = storage.getItem('currentFolder');
+                                   $('#search_input').attr('value','');
+                                   getContentList(currentFolderId,'');
+                                   showMessage('success','修改成功!');
+                                   mainView.router.back({
+                                                        url: 'index.html'
+                                                        ,force:true
+                                                        })
+                                   }).error(function(jqXHR, textStatus, errorThrown) {
+                                            showMessage('error',jqXHR.getResponseHeader('code'));
+                                            }).complete(function() {
+                                                        
+                                                        });
+                             });
+     
+     $$('#back_rename').on('click', function () {
+                           mainView.router.back({
+                                                url: 'index.html'
+                                                ,force:true
+                                                });
+                           syncHomeFullscreen('#fullscreen_rename');
+                           });
+     
 });
 
 function getArrayToString(arr){
@@ -2850,6 +3003,305 @@ ucApp.onPageInit('contentDetail', function (page) {
 
 });
 
+//page初始化_queryContentDetail
+ucApp.onPageInit('queryContentDetail', function (page) {
+     $$('#fullscreen_contentDetail').on('click', function () {
+                                        fullscreen('#fullscreen_contentDetail');
+                                        });
+     var cid = $('#contentId_contentDetail').val();
+     
+     var validateRule = {rules: {
+     contentDetail_contentName: {
+     required: true,
+     maxlength: 50,
+     invalidData: true
+     },
+     contentDetail_description: {
+     maxlength: 200,
+     invalidData: true
+     }
+     }};
+     var validator = $('#contentDetailForm').validate(validateRule);
+     
+     //发请求获取内容扩展信息
+     $.ajax({
+            async: true,
+            type: 'GET',
+            url: ucUrl + 'contents/' + cid ,
+            data: '',
+            contentType: "application/json;utf-8"
+            }).success(function (data) {
+                       
+                       //File类型的文档只能添加一个
+                       //        if (data.contentTypeName==sysfilecontenttype){
+                       //            $('#contentDetail_upload').find('a[name="addUpload"]').hide();
+                       //            if(data.attachments.length){
+                       //                $('#contentDetail_upload').find('button').hide();
+                       //            }
+                       //        }
+                       
+                       if(data.attachments.length){
+                       $('#contentDetail_upload').find('input').hide();
+                       }
+                       
+                       //判断是否可以删除附件
+                       if (!data.canUpdateProperty){
+                       $('#attachmentTable').find('a[action="delete"]').hide();
+                       }
+                       
+                       //判f断是否可以下载
+                       if (!data.canDownloadOrigin){
+                       $('#attachmentTable').find('a[action="download"]').hide();
+                       }
+                       
+                       
+                       //展示属性信息中的标签
+                       var facetValue="";
+                       if((data.facets!=null)&&(data.facets.length>0)){
+                       var fcs = data.facets;
+                       for(var m=0;m<fcs.length;m++){
+                       if(fcs[m].toLowerCase()=='versionable'){
+                       facetValue="带版本控制的文件";
+                       }else if(fcs[m].toLowerCase()=='folderish'){
+                       facetValue="目录";
+                       }else{
+                       
+                       }
+                       }
+                       }else{
+                       facetValue="普通文件";
+                       }
+                       $('#contentFacets').html(facetValue);
+                       
+                       validateRule = drawContentDetailPropsDiv(data,validateRule);
+                       $.extend(validator.settings, validateRule);
+                       tempContentData = data;
+                       }).error(function (jqXHR) {
+                                if (jqXHR.status == '401') {
+                                status401Error();
+                                } else {
+                                showMessage('error',jqXHR.getResponseHeader('code'));
+                                }
+                                });
+     
+     
+     //$("#contentDetail_upload").append('<p><button name="file_upload0" type="button">选择文档</button><input type="hidden" name="input_upload0"/><label name="label_upload0"></label><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>');
+     $('#contentDetail_upload').find('a[name="addUpload"]').click(function(){
+                                                                  var index = $('#contentDetail_upload').find('p').length;
+                                                                  var newP = $(this).parent().clone(true);
+                                                                  newP.find('a[name="deleteUpload"]').removeAttr("hidden");
+                                                                  newP.find('button').attr('name','file_upload'+index);
+                                                                  newP.find('label').attr('name','label_upload'+index);
+                                                                  newP.find('input').attr('name','input_upload'+index);
+                                                                  newP.find('label').html("");
+                                                                  newP.find('input').attr("value","");
+                                                                  $('#contentDetail_upload').append(newP);
+                                                                  });
+     
+     $('#contentDetail_upload').find('a[name="deleteUpload"]').click(function(){
+                                                                     $(this).parent().remove();
+                                                                     });
+     
+     $('#contentDetail_upload').find('button').click(function(){
+                                                     var pObj = $(this).parent();
+                                                     fileChooser.open(
+                                                                      function(uri) {
+                                                                      var fname = decodeURI(uri.substr(uri.lastIndexOf('/')+1));
+                                                                      pObj.find("input").val(uri);
+                                                                      pObj.find("label").html(fname);
+                                                                      }
+                                                                      );
+                                                     });
+     
+     
+     //下载附件
+     $$('#attachmentTable').find('a').click(function() {
+                                            var action = $(this).attr("action");
+                                            var encoding = $(this).attr("encoding");
+                                            var atname = $(this).attr("atname");
+                                            var chooseAttObj = $(this);
+                                            if (action=="delete"){
+                                            $.each(tempContentData.attachments, function(key, atta) {
+                                                   if(atta.name==atname){
+                                                   chooseAttObj.parent().parent().remove();
+                                                   $('#contentDetail_upload').find('input').show();
+                                                   atta.status = 2;
+                                                   }
+                                                   });
+                                            }else if (action=="download"){
+                                            ucApp.showIndicator();
+                                            var fileTransfer = new FileTransfer();
+                                            var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/" + encoding+"?renditionType=0&attachmentName=&encoding="+atname);
+                                            var fileURL = "/mnt/sdcard/"+atname;
+                                            fileTransfer.download(
+                                                                  uri,
+                                                                  fileURL,
+                                                                  function(entry) {
+                                                                  showMessage('success','下载成功!');
+                                                                  ucApp.hideIndicator();
+                                                                  //console.log("download complete: " + entry.toURL());
+                                                                  },
+                                                                  function(error) {
+                                                                  showMessage('error','下载失败:'+error.source);
+                                                                  ucApp.hideIndicator();
+                                                                  //console.log("download error source " + error.source);
+                                                                  //console.log("download error target " + error.target);
+                                                                  //console.log("upload error code" + error.code);
+                                                                  }
+                                                                  );
+                                            }
+                                            });
+     
+     //    $$('#contentDetail_modify').on('click', function () {
+     //        if (!$("#contentDetailForm").valid()) {
+     //            return;
+     //        }
+     //
+     //        ucApp.showIndicator();
+     //        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
+     //            $('#contentDetail_upload').find('input').each(function(i){
+     //                if(i>0){
+     //                    if($(this).val()==''){
+     //                        $(this).parent().remove();
+     //                    }
+     //                }
+     //            });
+     //            var files = $('#contentDetail_upload').find('input');
+     //            if(files.length>1){
+     //                for(var i=0;i<files.length;i++){
+     //                    for(var j=(i+1);j<files.length;j++){
+     //                        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
+     //                        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
+     //                        if(fileName1==fileName2){
+     //                            showMessage('error','上传列表中存在重复的附件');
+     //                            ucApp.hideIndicator();
+     //                            return ;
+     //                        }
+     //                    }
+     //                }
+     //            }
+     //        }
+     //
+     //        var content = organizationDetailDocument(tempContentData);
+     //        var contentString = JSON.stringify(content);
+     //        $('#content_update_contentString').val(contentString);
+     //        //写入元数据
+     //        $.ajax({
+     //            type: "POST",
+     //            url: ucUrl + 'contents/'+cid+'/update/mobile',
+     //            data: {
+     //                'jsonContent': JSON.stringify(content)
+     //            }
+     //        }).success(function (data) {
+     //            //回传内容ID
+     //            //var contentId = data;
+     //
+     //            //开始写入流数据
+     //            var files = $('#contentDetail_upload').find('input');
+     //            if(ifHaveFiles(files)){
+     //                if(files.length>0){
+     //                    var uriArray = new Array();
+     //                    for(var i=0;i<files.length;i++){
+     //                        uriArray.push(files[i].value);
+     //                    }
+     //                    uploadMultiFiles("update",uriArray,cid,0,0,"","");
+     //                }
+     //            }else{
+     //                var currentFolderId = storage.getItem('currentFolder');
+     //                getContentList(currentFolderId,'');
+     //                showMessage('success','修改成功!');
+     //                mainView.router.back({
+     //                    url: 'index.html'
+     //                    ,force:true
+     //                });
+     //                ucApp.hideIndicator();
+     //            }
+     //
+     //            //ucApp.hideIndicator();
+     //        }).error(function (jqXHR) {
+     //            if (jqXHR.status == '401') {
+     //                status401Error();
+     //            } else {
+     //                showMessage('error',jqXHR.getResponseHeader('code'));
+     //            }
+     //            ucApp.hideIndicator();
+     //        });
+     //    });
+     
+     
+     $$('#contentDetail_modify').on('click', function () {
+                                    if (!$("#contentDetailForm").valid()) {
+                                    return;
+                                    }
+                                    ucApp.showIndicator();
+                                    
+                                    //        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
+                                    //        $('#contentDetail_upload').find('input:file').each(function(i){
+                                    //                                                           if(i>0){
+                                    //                                                           if($(this).val()==''){
+                                    //                                                           $(this).parent().remove();
+                                    //                                                           }
+                                    //                                                           }
+                                    //                                                           });
+                                    //        var files = $('#contentDetail_upload').find('input:file');
+                                    //        if(files.length>1){
+                                    //        for(var i=0;i<files.length;i++){
+                                    //        for(var j=(i+1);j<files.length;j++){
+                                    //        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
+                                    //        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
+                                    //        if(fileName1==fileName2){
+                                    //        ucApp.alert('上传重复附件');
+                                    //        ucApp.hideIndicator();
+                                    //        return ;
+                                    //        }
+                                    //        }
+                                    //        }
+                                    //        }
+                                    //        }
+                                    
+                                    var content = organizationDetailDocument(tempContentData);
+                                    var contentString = JSON.stringify(content);
+                                    $('#content_update_contentString').val(contentString);
+                                    $('#contentDetailForm').ajaxSubmit({
+                                                                       url : ucUrl + 'contents/' + cid+'?_method=PUT',
+                                                                       type : 'POST',
+                                                                       success : function(responseText, statusText) {
+                                                                       var currentFolderId = storage.getItem('currentFolder');
+                                                                       $('#search_input').attr('value','');
+                                                                       getContentList(currentFolderId,'');
+                                                                       showMessage('success','修改成功!');
+                                                                       ucApp.hideIndicator();
+                                                                       mainView.router.back({
+                                                                                            url: 'index.html'
+                                                                                            ,force:true
+                                                                                            })
+                                                                       } ,
+                                                                       error: function(jqXHR, textStatus, errorThrown) {
+                                                                       //showErrorMassage(jqXHR.getResponseHeader('code'));
+                                                                       //showMessage('error',jqXHR.getResponseHeader('code'));
+                                                                       ucApp.hideIndicator();
+                                                                       if (jqXHR.getResponseHeader('code').length>80){
+                                                                       showMessage('error','存储流失败');
+                                                                       }else{
+                                                                       showMessage('error',jqXHR.getResponseHeader('code'));
+                                                                       }
+                                                                       }
+                                                                       });
+                                    });
+     
+     
+     $$('#back_contentDetail').on('click', function () {
+                                  mainView.router.back({
+                                                       url: 'index.html'
+                                                       ,force:true
+                                                       });
+                                  syncHomeFullscreen('#fullscreen_contentDetail');
+                                  });
+                 
+});
+
+
+
 //判断是否上传了附件
 function ifHaveFiles(files){
     var result = false;
@@ -3101,6 +3553,32 @@ ucApp.onPageInit('contentPermission', function (page) {
 
 });
 
+//page初始化_contentPermission
+ucApp.onPageInit('queryContentPermission', function (page) {
+     $$('#fullscreen_contentPermission').on('click', function () {
+                                            fullscreen('#fullscreen_contentPermission');
+                                            });
+     
+     //$('#contentPermissionForm').validate({
+     //    rules: {
+     //        contentName: {
+     //            required: true,
+     //            maxlength: 50,
+     //            invalidData: true
+     //        }
+     //    }
+     //});
+     
+     $$('#back_contentPermission').on('click', function () {
+                                      mainView.router.back({
+                                                           url: 'index.html'
+                                                           ,force:true
+                                                           });
+                                      syncHomeFullscreen('#fullscreen_contentPermission');
+                                      });
+     
+});
+
 
 //模板查询结果点击Details
 function querygetContentDetails(index){
@@ -3120,7 +3598,7 @@ function querygetContentDetails(index){
            contentType: "application/json;utf-8"
            }).success(function (data) {
                       mainView.router.load({
-                                           url:'tpl/contentDetail.html',
+                                           url:'tpl/query/queryContentDetail.html',
                                            context: data
                                            });
                       }).error(function (jqXHR) {
@@ -3185,7 +3663,7 @@ function querygetContentPermissions(index){
            contentType: "application/json;utf-8"
            }).success(function (data) {
                       mainView.router.load({
-                                           url:'tpl/contentPermission.html',
+                                           url:'tpl/query/queryContentPermission.html',
                                            context: data
                                            });
                       
@@ -3216,6 +3694,7 @@ function status401Error() {
 
 //根据传入的FolderId和查询的str来刷新内容列表
 function getContentList(folderId, qName) {
+    ucApp.showIndicator();
     qName = $.trim(qName);
     $.ajax({
         async: true,
@@ -3228,13 +3707,23 @@ function getContentList(folderId, qName) {
     }).success(function (data) {
         $$('#itemList')[0].innerHTML = Template7.templates.listTemplate(data);
 
-        //防止滑动点击第二个内容的按钮时，第一个页面已经存在，导致不触发请求
-        $$('.swipeout').on('open', function () {
-            mainView.router.back({
-                url: 'index.html',
-                force:true
-            });
-        });
+       //防止滑动点击第二个内容的按钮时，第一个页面已经存在，导致不触发请求
+       $$('.swipeout').on('open', function () {
+                          swipeout_closed = false;
+                          mainView.router.back({
+                                               url: 'index.html',
+                                               force:true
+                                               });
+                          });
+       
+       $$('.swipeout').on('closed', function () {
+                          swipeout_closed = true;
+                          if (flag_fullscreen) {
+                          $$('.view-left').css('display', 'none');
+                          $$('.view-main').addClass('view-main-fullscreen');
+                          }
+                          
+                          });
 
         //在后退上一级或回到根目录时，若剪切板有数据，则后退到的目录隐藏全部的勾选框
         var ids = storage.getItem('clipboard');
@@ -3248,12 +3737,14 @@ function getContentList(folderId, qName) {
         };
 
         ucApp.attachInfiniteScroll($$('.infinite-scroll'));
+        ucApp.hideIndicator();
     }).error(function (jqXHR) {
         if (jqXHR.status == '401') {
             status401Error();
         } else {
             showMessage('error',jqXHR.getResponseHeader('code'));
         }
+        ucApp.hideIndicator();
     });
 }
 

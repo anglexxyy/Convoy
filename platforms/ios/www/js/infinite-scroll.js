@@ -47,6 +47,8 @@ function appendNextPageContentList(folderId, qName) {
         pageSize=lastIndex+10;
         pageSize=(Math.ceil(pageSize/10))*10;
     }
+    
+    ucApp.showIndicator();
 
     qName = $.trim(qName);
     $.ajax({
@@ -87,8 +89,9 @@ function appendNextPageContentList(folderId, qName) {
             }else{
                 ucApp.attachInfiniteScroll($$('.infinite-scroll'));
             }
+                   ucApp.hideIndicator();
         }).error(function (jqXHR) {
-
+                 ucApp.hideIndicator();
         });
 
 
@@ -117,5 +120,6 @@ function appendNextPageContentList(folderId, qName) {
             var code = jqXHR.getResponseHeader('code');
             showMessage('error',"在线浏览失败: " +code);
         }
+             ucApp.hideIndicator();
     });
 }

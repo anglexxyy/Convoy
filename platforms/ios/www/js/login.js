@@ -18,7 +18,7 @@ if(storedUserId){
     $$('#login_userId').val(storedUserId);
 }
 
-$$('#login_userId').focus();
+//$$('#login_userId').focus();
 $$('#login_password').val('');
 
 ////登录框响应回车事件
@@ -193,50 +193,6 @@ function disabledLogin() {
 
 function enabledLogin() {
     $$('#login_login').removeClass('ui-state-disabled').prop('disabled', false);
-}
-
-//展示错误代码讯息
-//function showErrorMessage(code){
-//    var message = msg.erorrCode[code] ? msg.erorrCode[code] : code;
-//    loginApp.alert(message, '错误！');
-//}
-
-function test() {
-    var serverURL = "http://www.iteye.com/upload/logo/user/611245/575bf9ef-783c-38ae-8ae9-1d87a944e38f.jpg";
-    var fileURL = window.app.rootName + "/test/test1.jpg";
-    window.app.fileSystem.root.getfile("/test/test.jpg",{create: false}, success, cfail)
-    var transfer = new FileTransfer();
-//    transfer.download(serverURL,fileURL,downloadSucess);
-    window.resolveLocalFileSystemURI(fileURL, onResolveSuccess, fail);
-}
-
-//function success(parent){}
-//function cfail(error){}
-
-function onResolveSuccess(fileEntry){
-    var entity = fileEntry;
-    alert(entity.name);
-}
-
-function fail(evt){
-    alert(evt.target.error.code);
-    console.log(evt.target.error.code);
-}
-
-function downloadSucess(entity){
-    var o = entity;
-    entity.file(gotFile)
-}
-
-function gotFile(file){
-    var reader = new FileReader();
-    reader.onloadend = function(evt) {
-        console.log("Read as text");
-        var result = evt.target.result;
-        console.log(evt.target.result);
-        
-    };
-    var data = reader.readAsDataURL(file);
 }
 
 
