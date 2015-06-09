@@ -1,0 +1,50 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_rename" class="button">全屏</a>
+        </div>
+        <div class="center sliding">重命名</div>
+        <div class="right">
+            <a href="#" class="back link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="queryRename" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <form id="contentRenameForm">
+                    <h3>
+                        请输入内容名称！
+                    </h3>
+                    <hr>
+
+                    <div class="row">
+                        <!--<div class="col-15">-->
+                            <!--<label for="newContentName">New Password：</label>-->
+                        <!--</div>-->
+                        <div class="col-85">
+                            <input type="hidden" id="contentId_rename" name="contentId_rename" value={{contentId}}>
+                            <input id="newContentName" name="newContentName" type="text" value={{contentName}}>
+                        </div>
+                    </div>
+                    <hr>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="#" id="rename_modify" class="tab-link active">
+                    <i class="icon icon-save"></i>
+                    <span class="tabbar-label">保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

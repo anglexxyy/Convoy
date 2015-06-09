@@ -1,0 +1,140 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" id="fullscreen_contentPermission" class="button">全屏</a>
+        </div>
+        <div class="center sliding">权限信息</div>
+        <div class="right">
+            <a href="#" class="back link">
+                <i class="icon icon-back"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="pages">
+    <div data-page="queryContentPermission" class="page">
+        <div class="page-content">
+            <div class="content-block">
+                <h3><strong>{{name}}</strong></h3>
+                <input type="hidden" id="contentId_contentPermission" name="contentId_contentPermission" value={{id}}>
+
+                <form id="contentPermissionForm">
+                    <div class="accordion-list">
+                        <div class="accordion-item accordion-item-expanded">
+                            <div class="accordion-item-toggle">基本权限</div>
+
+                            <div class="accordion-item-content">
+                                <div class="row">
+                                    <div class="col-40">
+                                        <label><b>用户/组/组织</b></label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label><b>权限</b></label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label><b>是否继承于父</b></label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label><b>是否可被子继承</b></label>
+                                    </div>
+                                </div>
+                                <hr>
+
+                                {{#each basicAcls}}
+                                <div class="row">
+                                    <div class="col-40">
+                                        <i class={{getIcons accessorType}}></i>
+                                        <label>{{accessorName}}</label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label>{{convertPermits permits[0].permissionId}}</label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label>{{convertBoolean_reverse isLocal}}</label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label>{{convertBoolean canBeInherited}}</label>
+                                    </div>
+                                </div>
+                                <hr>
+                                {{/each}}
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-item-toggle">扩展权限</div>
+
+                            <div class="accordion-item-content">
+                                <div class="row">
+                                    <div class="col-40">
+                                        <label><b>用户/组/组织</b></label>
+                                    </div>
+                                    <div class="col-40">
+                                        <label><b>权限</b></label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label><b>是否可被子继承</b></label>
+                                    </div>
+                                </div>
+                                <hr>
+
+                                {{#each extendAcls}}
+                                <div class="row">
+                                    <div class="col-40">
+                                        <i class={{getIcons accessorType}}></i>
+                                        <label>{{accessorName}}</label>
+                                    </div>
+                                    <div class="col-40">
+                                        <label>{{convertPermits permits[0].permissionId}}</label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label>{{convertBoolean canBeInherited}}</label>
+                                    </div>
+                                </div>
+                                <hr>
+                                {{/each}}
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <div class="accordion-item-toggle">属性权限</div>
+
+                            <div class="accordion-item-content" style="margin-left: 30px">
+                                <div class="row">
+                                    <div class="col-40">
+                                        <label><b>属性名称</b></label>
+                                    </div>
+                                    <div class="col-40">
+                                        <label><b>用户/组/组织</b></label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label><b>权限操作</b></label>
+                                    </div>
+                                </div>
+                                <hr>
+
+                                {{#each propAcls}}
+                                <div class="row">
+                                    <div class="col-40">
+                                        <label>{{propertyName}}</label>
+                                    </div>
+                                    <div class="col-40">
+                                        <i class={{getIcons accessorType}}></i>
+                                        <label>{{accessorName}}</label>
+                                    </div>
+                                    <div class="col-20">
+                                        <label>{{convertPermits permits.permissionId}}</label>
+                                    </div>
+                                </div>
+                                <hr>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
