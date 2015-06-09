@@ -35,10 +35,10 @@
                                 <div class="row">
                                     <div class="col-50">
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <em>*</em><label>文档名称:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 {{#if canUpdateProperty}}
                                                     <input type="text" name="contentDetail_contentName" id="contentDetail_contentName" value='{{name}}'>
                                                 {{else}}
@@ -49,10 +49,10 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>文档描述:</label>
                                             </div>
-                                            <div class="col-80 item-input">
+                                            <div class="col-60 item-input">
                                                 {{#if canUpdateProperty}}
                                                     <textarea id="contentDetail_description" name="contentDetail_description">{{description}}</textarea>
                                                 {{else}}
@@ -63,55 +63,55 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>文档ID:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <label>{{id}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>文档类型:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <label> {{contentTypeDisplayName}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>创建者:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <label>{{createdByDispalyName}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>拥有者:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <label>{{ownerDispalyName}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>修改者:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <label>{{lastModifiedByDispalyName}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 &nbsp;<label>标签:</label>
                                             </div>
-                                            <div class="col-80">
+                                            <div class="col-60">
                                                 <!--<label>{{convertFacets facets}} </label>-->
                                                 <label id="contentFacets"></label>
                                             </div>
@@ -120,74 +120,74 @@
 
                                     <div class="col-50">
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <label>&nbsp;&nbsp;</label>
                                             </div>
-                                            <div class="col-80" align="left">
-                                                <label>&nbsp;&nbsp;</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-20">
-                                                <label>&nbsp;&nbsp;</label>
-                                            </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>&nbsp;&nbsp;</label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <label>&nbsp;&nbsp;</label>
                                             </div>
-                                            <div class="col-80" align="left">
-                                                <label>&nbsp;&nbsp;</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-20">
-                                                <label>&nbsp;&nbsp;</label>
-                                            </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>&nbsp;&nbsp;</label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-60" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-40">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="col-60" align="left">
+                                                <label>&nbsp;&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-40">
                                                 <label>创建时间:</label>
                                             </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>{{convertDateTime creationDate}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <label>拥有时间:</label>
                                             </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>{{convertDateTime ownDate}} </label>
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <label>修改时间:</label>
                                             </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>{{convertDateTime lastModificationDate}} </label>
                                             </div>
                                         </div>
 
                                         {{#if hasVersion}}
                                         <div class="row">
-                                            <div class="col-20">
+                                            <div class="col-40">
                                                 <label>版本号:</label>
                                             </div>
-                                            <div class="col-80" align="left">
+                                            <div class="col-60" align="left">
                                                 <label>{{versionLabel}} </label>
                                             </div>
                                         </div>
@@ -225,10 +225,10 @@
                             {{#if attachments.length}}
                             <div class="accordion-item-content" style="margin-left: 30px">
                                 <div class="row">
-                                    <div class="col-5">
+                                    <div class="col-10">
                                         <label><b>图标</b></label>
                                     </div>
-                                    <div class="col-60">
+                                    <div class="col-55">
                                         <label><b>文件名</b></label>
                                     </div>
                                     <div class="col-10">
@@ -244,10 +244,10 @@
                                 <div id="attachmentTable">
                                 {{#each attachments}}
                                     <div  class="row">
-                                        <div class="col-5">
+                                        <div class="col-10">
                                             <i class={{getIcons format}}></i>
                                         </div>
-                                        <div class="col-60">
+                                        <div class="col-55">
                                             <label>'{{name}}'</label>
                                         </div>
                                         <div class="col-10">
