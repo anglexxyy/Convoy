@@ -2217,7 +2217,15 @@ function clickContent(index) {
         showHideReturnBack();
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-        toPreview(cid,format);
+        var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
+        $.get(url, function(checkPremession) {
+            if(checkPremession){
+                toPreview(cid,format);
+            }else{
+                showMessage('error','没有浏览此文档的权限');
+            }
+        });
+        
 //        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
 //        $.get(url, function(data) {
 //              if(data){
@@ -2357,7 +2365,14 @@ function queryclickContent(index) {
       //此处为查询结果，故为目录时点击不进入
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-        toPreview(cid,format);
+        var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
+        $.get(url, function(checkPremession) {
+              if(checkPremession){
+                    toPreview(cid,format);
+              }else{
+                    showMessage('error','没有浏览此文档的权限');
+              }
+        });
     }
 }
 
