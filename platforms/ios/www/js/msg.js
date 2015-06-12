@@ -6,7 +6,7 @@ var msg = {
 	name : '易存影像管理系统',
 	description : '欢迎使用易存影像管理系统，在这里可以实现影像管理自动化，流程处理高效化，真正有效的提高个人和团体的生产率，并保证信息的安全。',
 	company : '赞华（中国）电子系统有限公司',
-	copyRight : '赞华（中国）电子系统有限公司 版权所有 ©1985-2013',
+	copyRight : '赞华（中国）电子系统有限公司 版权所有 ©1985-2015',
 	language : '系统语言：',
 	root : '文档库',
 	tree_flush : '刷新',
@@ -47,7 +47,7 @@ var msg = {
 	about : {
 		title : '关于易存影像管理系统',
 		version : '版本',
-		versionNO : '7.4',
+		versionNO : '7.4.5',
 		copyRight : '版权所有',
 		warning : '本文所含信息的产权归赞华香港有限公司所有。未经赞华香港有限公司事先书面许可，仅是收到或拥有本文并不表示被授予转让复制或泄露本文任何部分内容的任何权利。不过，使用本文所含信息无须承担任何专利责任。',
 		trademark : '商标',
@@ -98,7 +98,9 @@ var msg = {
 		licence : '许可证',
 		backup : '数据备份',
 		global : '库配置',
-		repositoryPath : '存储管理'
+		repositoryPath : '存储管理',
+		fsServerInfo : '文件服务器配置',
+		discoveryServerInfo : '文件服务器通知服务配置'
 	},
 	moduleMenu : {
 		documentMgr : '文档管理',
@@ -385,7 +387,8 @@ var msg = {
 				dialogName : '新建文件夹',
 				name : '名称',
 				description : '描述',
-				noAttachment : '附件'
+				noAttachment : '附件',
+				
 			},
 			newImageDialog : {
 				dialogName : '新建图片',
@@ -426,6 +429,7 @@ var msg = {
 				choice : '选择约束值',
 				choicePrompt : '（说明：按“Shift”键或者“Ctrl”可以选择多值）',
 				noAttachment : '请上传附件',
+				fileNameLengthoutOfSize : '上传附件名称超过限制，应不超过50',
 				attachmentErrorInfo : '上传重复附件'
 			},
 			importDocumentDialog : {
@@ -955,10 +959,11 @@ var msg = {
 				restrictValue : "约束值",
 				addChoice : "添加约束值",
 				delChoice : "删除约束值",
+				repeatChoice : "约束值重复",
 				choiceRule : "约束值必须为所选类型",
 				defaultValue : "默认值",
 				defaultValueRule : "存在约束值，则默认值必须为约束值之一",
-				defaultValueRule1 : "默认值必须为所选类型",
+				defaultValueRule1 : "默认值必须为所选类型,而且字符串长度不能超过500，整型必须在（ -2147483647, 2147483647）之间",
 				defaultValueRule2 : "布尔型的默认值请输入1（1代表是）或0（0代表否）",
 				propertyType : "类型",
 				multipleValue : "多值",
@@ -1210,6 +1215,7 @@ var msg = {
 			girdList : {
 				name : '存储路径名称',
 				path : '位置',
+				leastSpace : '保留空间',
 				totalSpace : '磁盘总大小',
 				useSpace : '已用空间',
 				freeSpace : '可用空间',
@@ -1219,12 +1225,61 @@ var msg = {
 			noUse : '没有使用',
 			canUse : '正在使用',
 			fullUse : '磁盘已满',
+			leaveUse :'离线',
 			setName : '设置名称',
 			setPath : '设置存储路径',
 			setMinimumSpace : '设置最小存储空间',
 			deleteDateStorePath : '删除',
 			isDelete : '是否删除该存储路径?'
 
+		},
+		fsServerInfo : {
+			addFsServerInfo : '添加文件服务器信息',
+			updateFsServerInfo : '文件服务器信息',
+			refreshFsServerInfo : '刷新服务器信息',
+			girdList : {
+				name : '服务器名称',
+				ip : '服务器IP地址',
+				port : '服务器端口号',
+				isOnline : '状态'
+			},
+			status : {
+				online : '在线',
+				offline : '离线'
+			},
+			setName : '服务器名称',
+			setIp : '服务器IP地址',
+			setPort : '服务器端口号',
+			deleteFsServer : '删除',
+			updateFsServer : '修改',
+			ipRule : '请输入正确的IP地址',
+			isDelete : '是否删除该文件服务器?'
+
+		},
+		discoveryServerInfo : {
+			tabs : {
+				info : '文件服务器通知服务信息'
+			},
+			label : {
+				name : '服务器名称',
+				ip : '服务器IP地址',
+				port : '服务器端口号',
+				status : '状态',
+				modify : '修改'
+			},
+			status : {
+				online : '在线',
+				offline : '离线'
+			},
+			confirm : {
+				modify : '确认修改？'
+			},
+			setName : '服务器名称',
+			setIp : '服务器IP地址',
+			setPort : '服务器端口号',
+			deleteFsServer : '删除',
+			ipRule : '请输入正确的IP地址',
+			isDelete : '是否删除该文件服务器?'
 		},
 		repositoryPermit: {
 			rootName : '库节点名称',
@@ -1246,7 +1301,7 @@ var msg = {
 			isTrue : '是',
 			isFalse : '否',
 			emptyRootName : '库节点名称输入为空',
-			updateSuccess: '权限更改成功'
+			updateSuccess: '权限更改成功',
 		}
 	},
 
@@ -1638,7 +1693,7 @@ var msg = {
 		'06-content-6008' : '文档复制失败,目标文档是源文档的子文档',
 		'06-content-6009' : '获取文档的子文档失败',
 		'06-content-6010' : '当前文档的ONWER不合法',
-		'06-content-6011' : '当前属性值必须是默认值中的一种',
+		'06-content-6011' : '当前属性值必须是约束值中的一种',
 		'06-content-6012' : '切面VERSIONABLE和FOLDRISH互斥',
 		'06-content-6013' : '文档复制失败,root不能被复制',
 		'06-content-6014' : '文档不存在',
@@ -1700,12 +1755,16 @@ var msg = {
 		'document_not_exist' : '此内容不存在',
 		'backup_faild' : '备份失败，请检查配置',
 		'no_create_premession' : '没有创建内容的权限',
+		
+		'fsserver_offline' : '输入的FS服务器无法连接',
+		'discoveryServer_offline' : '输入的Discovery服务器无法连接',
+		
 
 		'05-version-5005' : '该内容从来未被签出，不能取消签出',
 		'02-content-2003' : '路径已经存在，无法添加存储路径',
 		'02-content-2002' : '名称已经存在，无法添加存储路径',
 		'06-content-6026' : '文件夹已经被使用',
-		//'06-content-6027' : '系统必须保留一个磁盘',
+		'06-content-6027' : '系统必须保留一个磁盘',
 		'06-content-6028' : '磁盘空间小于预留空间设置值',
 		'06-content-6029' : '文档被签出，不可移动',
 		'01-content-1007' : '磁盘位置不存在',
@@ -1722,7 +1781,10 @@ var msg = {
 		'06-content-6032':'文档名称重复',
 		'06-content-6033':'源文档已经位于该目录下',
 		'06-content-6027': '至少保留一个存储磁盘',
-		'06-content-6034': '磁盘空间不足，请添加新的存储设备'
+		'06-content-6034': '磁盘空间不足，请添加新的存储设备',
+		'maxUploadSizeExceeded_Exception':'上传文件大小超过限制!',
+		save_advance_templement_error :'查询模板保存失败',
+		'04-content-query' :'查询条件的格式不正确'
 		
 
 	},

@@ -199,6 +199,13 @@ if (isLogin == 'Y') {
     getContentList(root, '');
     showHideReturnBack();
     storage.removeItem('isLogin');
+    
+    //判断是否有“显示查询模板”权限
+    if ((!checkAction("docMg_queryTemplate"))&&(!checkAction("docMg_queryTemplate_delete"))){
+        $$('#repository-middle').hide();
+        $$('#template-middle').hide();
+        $$('#set-middle').hide();
+    };
 };
 
 //左侧工具栏点击高亮
@@ -1546,6 +1553,8 @@ ucApp.onPageInit('userInfo', function (page) {
     $$(page.container).find('#userInfo_userId').html(user.id);
     $$(page.container).find('#userInfo_userName').attr("value", user.name);
     $$(page.container).find('#userInfo_email').attr("value", user.email);
+                 
+    //$$('#userInfo_userName').focus();
 
     $$('#userInfo_modify').on('click', function () {
         if (!$("#userInfoForm").valid()) {
@@ -1687,6 +1696,8 @@ $$('#template-right').on('click', function (e) {
                                               })
                          });
 
+var currentTemplateId = null;
+
 function refreshTemplates(){
     $.ajax({
            async: true,
@@ -1702,7 +1713,9 @@ function refreshTemplates(){
                                             '<a name="'+temp.id+'" tempname="'+temp.qTepName+'" href="#" id="template1" class="item-link">'+
                                                 '<div class="item-content">'+
                                                 '<div class="item-inner">'+
-                                                '<div class="item-title">'+temp.qTepName+'</div>'+
+                                               '<div class="item-title-row" style="background-image: none">'+
+                                                '<div class="item-title" >'+temp.qTepName+'</div>'+
+                                                '</div>'+
                                                 '</div>'+
                                                 '</div>'+
                                             '</a>'+
@@ -1714,6 +1727,7 @@ function refreshTemplates(){
                       $('#ul_templates').find('a').click(function(){
                                                          var tempId = $(this).attr('name');
                                                          var tempName = $(this).attr('tempname');
+                                                         currentTemplateId = tempId;
                                                          mainView.router.back({
                                                                               url: 'index.html',
                                                                               force: true,
@@ -1751,93 +1765,8 @@ var queryResultData=null;
 
 //加载查询模板详细信息页面
 ucApp.onPageInit('templateDetail', function (page) {
-     var tempId= $('#templateId').val();
-     $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
-           if (data) {
-               queryBean = data;
-               //alert(JSON.stringify(data));
-               //if(qt&&qt.queryBean){
-               //    self.qb =qt.queryBean;
-               //
-               //}else{
-               //    self.qb = data;
-               //}
-               var conditionTable =$('#searchTable');
-               conditionTable.html('');
-               var conditions = data.conditions;
-               if(conditions&&conditions.length>0){
-           
-                    $("<p><input type='checkbox'  checked='checked' name='fsCb' id='fsCb' value='1' /><lable>模糊查询:</lable></p>").appendTo($('#searchTable'));
-           
-                   for (var i = 0; i < conditions.length; i++) {
-                   var condition = conditions[i];
-                   var type = condition.ptype;
-                   var choices = condition.choices;
-                   if(choices&&choices.length>0){
-                   var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
-                   var choiceSelect = conditionTr.find('select');
-                   var sValue = [];
-                   if(condition.value&&condition.value!=''&&condition.value.length>0){
-                   sValue = condition.value;
-                   }
-                   if(condition.choices&&condition.choices.length>0){
-                   for (var i = 0; i < condition.choices.length; i++) {
-                   if(_.indexOf(sValue, condition.choices[i])>-1){
-                   choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
-                   }else{
-                   choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
-                   }
-                   }
-                   }
-                   }else{
-                   if(type=='DATETIME'){
-                   var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
-                                       +"<input type='date' name='pvalue' value='' />"+"to"
-                                       +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
-                   //conditionTr.find('input:text').datepicker({
-                   //    buttonImageOnly: true,
-                   //    dateFormat: 'yy-mm-dd',
-                   //    showOn: 'both'
-                   //});
-                   if(condition.value&&condition.value!=''){
-                   var values = condition.value;
-                   if(values.indexOf('_')>-1){
-                   var sValue = values.split('_');
-                   if(sValue[0]&&sValue[0]!='undefined'){
-                   conditionTr.find('input:text').eq(0).val(sValue[0]);
-                   }
-                   if(sValue[1]&&sValue[1]!='undefined'){
-                   conditionTr.find('input:text').eq(1).val(sValue[1]);
-                   }
-                   }else{
-                   conditionTr.find('input:text').eq(0).val(values);
-                   }
-                   }
-                   }else if(type=='BOOLEAN'){
-                   var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
-                   if(condition.value&&condition.value!=''){
-                   conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
-                   }
-                   }else{
-                   var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
-                   if(condition.value&&condition.value!=''){
-                   conditionTr.find('input:text').val(condition.value);
-                   }
-                   }
-                   
-                   }
-                   
-                   }
-                   conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
-           }else{
-                $("<p><lable>无自定义查询条件，请直接点击查询</lable></p>").appendTo($('#searchTable'));
-           }
-           }
-           
-           }).complete(function(){
-                       
-                       });
-     
+                 
+     drawQueryCondition();
      
      $$('#templateSearch').on('click', function () {
                               //alert(JSON.stringify(queryBean));
@@ -1847,39 +1776,8 @@ ucApp.onPageInit('templateDetail', function (page) {
           
           //alert(queryUcql);
           ucApp.showIndicator();
-          $.ajax({
-                 type: 'GET',
-                 url: ucUrl + 'query?ucql',
-                 data: {
-                 'filter': queryUcql,
-                 'pageIndex':1,
-                 'pageSize':50,
-                 'sidx':'C.CREATIONDATE',
-                 'sord':'desc',
-                 'queryName':''
-                 },
-                 contentType: "application/json;utf-8"
-                 }).success(function (data) {
-                            queryResultData = data;
-                            mainView.router.load({
-                                url: 'tpl/queryResult.html'
-                            });
-                            ucApp.hideIndicator();
-                            //alert(JSON.stringify(data));
-                 }).error(function (jqXHR) {
-                         ucApp.hideIndicator();
-                         if (jqXHR.status == '401') {
-                             status401Error();
-                         } else {
-                             var errorMsg = jqXHR.getResponseHeader('code');
-                             if(errorMsg.length>30){
-                                 showMessage('error',"输入条件有误！");
-                             }else{
-                                 showMessage('error',jqXHR.getResponseHeader('code'));
-                             }
-                         }
-                 });
-          
+                              
+          doQuery();
       
       });
      
@@ -1896,6 +1794,131 @@ ucApp.onPageInit('templateDetail', function (page) {
      });
 });
 
+function drawQueryCondition(){
+    var tempId= currentTemplateId;
+    ucApp.showIndicator();
+    $.get(ucUrl + 'queryTemplate/' + tempId, function(data) {
+          if (data) {
+              queryBean = data;
+              //alert(JSON.stringify(data));
+              //if(qt&&qt.queryBean){
+              //    self.qb =qt.queryBean;
+              //
+              //}else{
+              //    self.qb = data;
+              //}
+              var conditionTable =$('#searchTable');
+              conditionTable.html('');
+              var conditions = data.conditions;
+              if(conditions&&conditions.length>0){
+              
+              $("<p><input type='checkbox'  checked='checked' name='fsCb' id='fsCb' value='1' /><lable>模糊查询:</lable></p>").appendTo($('#searchTable'));
+              
+              for (var i = 0; i < conditions.length; i++) {
+              var condition = conditions[i];
+              var type = condition.ptype;
+              var choices = condition.choices;
+              if(choices&&choices.length>0){
+              var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue'  style='min-width: :100px;' multiple='multiple'></select></td></tr>").appendTo($('#searchTable'));
+              var choiceSelect = conditionTr.find('select');
+              var sValue = [];
+              if(condition.value&&condition.value!=''&&condition.value.length>0){
+              sValue = condition.value;
+              }
+              if(condition.choices&&condition.choices.length>0){
+              for (var i = 0; i < condition.choices.length; i++) {
+              if(_.indexOf(sValue, condition.choices[i])>-1){
+              choiceSelect.append('<option value="'+condition.choices[i]+'" selected="selected">'+condition.choices[i]+'</option>');
+              }else{
+              choiceSelect.append('<option value="'+condition.choices[i]+'">'+condition.choices[i]+'</option>');
+              }
+              }
+              }
+              }else{
+              if(type=='DATETIME'){
+              var conditionTr = $("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'>"+"From"
+                                  +"<input type='date' name='pvalue' value='' />"+"to"
+                                  +"<input type='date' name='pvalue' value='' /></td></tr>").appendTo($('#searchTable'));
+              //conditionTr.find('input:text').datepicker({
+              //    buttonImageOnly: true,
+              //    dateFormat: 'yy-mm-dd',
+              //    showOn: 'both'
+              //});
+              if(condition.value&&condition.value!=''){
+              var values = condition.value;
+              if(values.indexOf('_')>-1){
+              var sValue = values.split('_');
+              if(sValue[0]&&sValue[0]!='undefined'){
+              conditionTr.find('input:text').eq(0).val(sValue[0]);
+              }
+              if(sValue[1]&&sValue[1]!='undefined'){
+              conditionTr.find('input:text').eq(1).val(sValue[1]);
+              }
+              }else{
+              conditionTr.find('input:text').eq(0).val(values);
+              }
+              }
+              }else if(type=='BOOLEAN'){
+              var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><select  name='pvalue' style='min-width: :70px;'><option value=''></option><option value='1'>" + "True" + "</option><option value='0'>" + "False" + "</option></select></td></tr>").appendTo($('#searchTable'));
+              if(condition.value&&condition.value!=''){
+              conditionTr.find('select').find('option[name="condition.value"]').attr('selected','selected');
+              }
+              }else{
+              var conditionTr =$("<tr><td>"+condition.displayName+"</td><td style='margin-left:10px;'><input type='text' name='pvalue' value='' style='width:300px;' /><label <td class='promptmessage'>"+'多条件用","分隔'+"</label></td></tr>").appendTo($('#searchTable'));
+              if(condition.value&&condition.value!=''){
+              conditionTr.find('input:text').val(condition.value);
+              }
+              }
+              
+              }
+              
+              }
+              conditionTable.find('tr:first td:first').append("<input type='hidden' id='tId' name='tId' value='"+tempId+"'  />");
+              }else{
+              $("<p><lable>无自定义查询条件，请直接点击查询</lable></p>").appendTo($('#searchTable'));
+              }
+          }
+          ucApp.hideIndicator();
+          }).complete(function(){
+                      
+                      });
+}
+
+function doQuery(){
+    ucApp.showIndicator();
+    $.ajax({
+           type: 'GET',
+           url: ucUrl + 'query?ucql',
+           data: {
+           'filter': queryUcql,
+           'pageIndex':1,
+           'pageSize':50,
+           'sidx':'C.CREATIONDATE',
+           'sord':'desc',
+           'queryName':''
+           },
+           contentType: "application/json;utf-8"
+           }).success(function (data) {
+                      queryResultData = data;
+                      mainView.router.load({
+                                           url: 'tpl/queryResult.html'
+                                           });
+                      ucApp.hideIndicator();
+                      //alert(JSON.stringify(data));
+                      }).error(function (jqXHR) {
+                               ucApp.hideIndicator();
+                               if (jqXHR.status == '401') {
+                               status401Error();
+                               } else {
+                               var errorMsg = jqXHR.getResponseHeader('code');
+                               if(errorMsg.length>30){
+                               showMessage('error',"输入条件有误！");
+                               }else{
+                               showMessage('error',jqXHR.getResponseHeader('code'));
+                               }
+                               }
+                               });
+}
 
 function getUcql(qb){
     var self = this;
@@ -2049,48 +2072,21 @@ ucApp.onPageInit('queryResult', function (page) {
      }else{
         $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(queryResultData);
      }
-//                 var currentFolderId = storage.getItem('currentFolder');
-//                 
-//                 //alert(queryUcql);
-//                 ucApp.showIndicator();
-//                 $.ajax({
-//                        type: 'GET',
-//                        url: ucUrl + 'query?ucql',
-//                        data: {
-//                        'filter': queryUcql,
-//                        'pageIndex':1,
-//                        'pageSize':50,
-//                        'sidx':'C.CREATIONDATE',
-//                        'sord':'desc',
-//                        'queryName':''
-//                        },
-//                        contentType: "application/json;utf-8"
-//                        }).success(function (data) {
-//                            $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(data);
-//                            ucApp.hideIndicator();
-//                            //alert(JSON.stringify(data));
-//                        }).error(function (jqXHR) {
-//                            ucApp.hideIndicator();
-//                            if (jqXHR.status == '401') {
-//                                status401Error();
-//                            } else {
-//                                 var errorMsg = jqXHR.getResponseHeader('code');
-//                                 if(errorMsg.length>30){
-//                                    showMessage('error',"输入条件有误！");
-//                                 }else{
-//                                    showMessage('error',jqXHR.getResponseHeader('code'));
-//                                 }
-//                                 //$$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(null);
-//                            }
-//                        });
+
+     $$('#fullscreen_queryResult').on('click', function (e) {
+           fullscreen('#fullscreen_queryResult');
+     });
                  
-                 
-                 $$('#fullscreen_queryResult').on('click', function (e) {
-                                                fullscreen('#fullscreen_queryResult');
-                                                });
-    
-                 
-                 
+     $$('#back_queryResult').on('click', function () {
+           syncHomeFullscreen('#fullscreen_queryResult');
+           if (flag_fullscreen) {
+                $$("#fullscreen_templateDetail").html("取消全屏");
+           } else {
+                $$("#fullscreen_templateDetail").html("全屏");
+           }
+           drawQueryCondition();
+                                
+     });
 });
 
 
@@ -2147,55 +2143,7 @@ $$('#returnback').on('click', function () {
 
 });
 
-////点击进入目录
-//function clickContent(index) {
-//    //判断是否有功能点权限
-//    if (!checkAction("docMg_dblClick")){
-//        showMessage('error','没有此操作的权限');
-//        return;
-//    };
-//
-//    var cid = $$('#id' + index).val();
-//    var ctName = $$('#ctName' + index).val();
-//    var format = $$('#format' + index).val();
-//    if (format == 'sysFolder') {
-//        //如果为目录则进入目录
-//        getContentList(cid, '');
-//        storage.setItem('currentFolder', cid);
-//        showHideReturnBack();
-//
-//    } else {
-//        //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
-//        var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
-//        $.get(url, function(checkPremession) {
-//            if(checkPremession){
-//              var appPath = window.app.rootName + "/";
-//              alert(appPath);
-//                var fileuri = appPath + cid + "/" + cid + "." + format;
-//                var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-//              //判断文件是否已缓存
-//              var cdvfile = cid + "/" + cid + "." + format;
-//              window.app.fileSystem.root.getFile(cdvfile,{create: false},
-//                                                 function(fileEntity){
-//                                                     //文件已存在
-//                                                     doPreview(fileEntity,format)
-//                                                 },
-//                                                 function(error){
-//                                                    //文件不存在
-//                                                     if(error.code = 1){
-//                                                 alert(error.code);
-//                                                         downloadToPre(fileuri,serveruri,format);
-//                                                     } else{
-//                                                         showMessage('','此类型文档不支持在线浏览');
-//                                                     }
-//                                                 });
-//              
-//            }else{
-//                showMessage('error','没有浏览此文档的权限');
-//            }
-//        });
-//    }
-//}
+
 
 
 //点击内容
@@ -2215,78 +2163,89 @@ function clickContent(index) {
         $('#search_input').attr('value','');
         storage.setItem('currentFolder', cid);
         showHideReturnBack();
+    } else if (format == 'sysLink') {
+        //如果为链接则找到源内容
+        var  url = ucUrl + 'contents/' + cid + '/target';
+        $.get(url, function(target) {
+              if(target){
+                openContent(target);
+              }else{
+                showMessage('error',msg.documentManagment.content.view.destContentNotExit);
+              }
+        });
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
         var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
         $.get(url, function(checkPremession) {
             if(checkPremession){
-                toPreview(cid,format);
+                toPreview(cid);
             }else{
                 showMessage('error','没有浏览此文档的权限');
             }
         });
         
-//        var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
-//        $.get(url, function(data) {
-//              if(data){
-//                  var appPath = window.app.rootName + "/";
-//                  var totalCount = data.totalCount;
-//                  var urls = data.urls;
-//                  var attID = data.encoding.split("\\")[3];
-//                  if(format == "tif" || format == "tiff"){
-//                      var localuri = cid + "/" + attID + "/";;
-//                      var baseURI = appPath + localuri;
-//                      window.app.fileSystem.root.getDirectory(localuri,{create: false},
-//                                                              function(parent){
-//                                                                //直接发送本地地址
-//                                                              var pageCount = 5;
-//                                                              if (urls.length<5){
-//                                                                  pageCount = urls.length;
-//                                                              }
-//                                                                UCmobile.previewTIF(onSuccess, onFailure, baseURI,pageCount);
-//                                                              },
-//                                                              function(error){
-//                                                                  //alert(error.code);
-//                                                                  if(error.code == 1){
-//                                                                    ucApp.showIndicator();
-//                                                                    downloadMutiTifs(urls,cid,attID,0,urls.length);
-//                                                                    //downloadTif(urls,cid,attID);
-//                                                                  }
-//                                                              });
-//                  }else if(format == "pdf" || format == "jpg" || format == "JPG" || format == "jpeg" || format == "png" || format == "PNG"){
-//                      var localuri = cid + "/" + attID + "." + format;
-//                      var fileuri = appPath + localuri;
-//                      var serveruri = encodeURI(ucUrl + "contents/" + cid + "/attachments/download");
-//                      //判断文件是否已缓存
-//                      window.app.fileSystem.root.getFile(localuri,{create: false},
-//                                                               function(fileEntity){
-//                                                                   //文件已存在
-//                                                                   doPreview(fileEntity,format)
-//                                                               },
-//                                                               function(error){
-//                                                                  //文件不存在
-//                                                                   if(error.code = 1){
-//                                                                       //alert(error.code);
-//                                                                       downloadToPre(fileuri,serveruri,format);
-//                                                                   } else{
-//                                                                       showMessage('','此类型文档不支持在线浏览');
-//                                                                   }
-//                                                               });
-//                }else{
-//                      showMessage('','此类型文档不支持在线浏览');
-//                }
-//            }
-//      }).fail(function() {
-//           showMessage('','此类型文档不支持在线浏览');
-//      })
     }
 }
 
-function toPreview(cid,format){
+function openContent(content){
+    if ((content.facets == 'folderish')) {
+        openFolder(content);
+    } else if (content.contentTypeName === 'SYSLINKCONTENTTYPE') {
+        openLink(content);
+    } else {
+        openFile(content);
+    }
+}
+
+function openFolder(content){
+    //如果为目录则进入目录
+    $('#search_input').attr("value","");
+    getContentList(content.id, '');
+    storage.setItem('currentFolder', content.id);
+    showHideReturnBack();
+}
+
+function openLink(content){
+    //如果为链接则找到源内容
+    var  url = ucUrl + 'contents/' + content.id + '/target';
+    $.get(url, function(target) {
+          if(target){
+            openContent(target);
+          }else{
+            showMessage('error',msg.documentManagment.content.view.destContentNotExit);
+          }
+    });
+}
+
+function openFile(content){
+    //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
+    var  url = ucUrl + 'contents/' + content.id + '/allowedActions/read';
+    $.get(url, function(checkPremession) {
+          if(checkPremession){
+//            //alert(JSON.stringify(content));
+//            //alert(JSON.stringify(content.facets));
+//              var  att_url = ucUrl + 'contents/' + content.id + '/attachments';
+//              $.get(att_url, function(attachments) {
+//                    if(attachments){
+//                        //alert(JSON.stringify(attachments));
+//                        toPreview(content.id,attachments[0].format);
+//                    }
+//              });
+            toPreview(content.id);
+          }else{
+            showMessage('error','没有浏览此文档的权限');
+          }
+    });
+}
+
+
+function toPreview(cid){
     var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
     ucApp.showIndicator();
     $.get(url, function(data) {
+          alert(JSON.stringify(data));
           if(data){
+          var format = data.format;
           var appPath = window.app.rootName + "/";
           var totalCount = data.totalCount;
           var urls = data.urls;
@@ -2363,12 +2322,22 @@ function queryclickContent(index) {
 //        storage.setItem('currentFolder', cid);
 //        showHideReturnBack();
       //此处为查询结果，故为目录时点击不进入
+    } else if (format == 'sysLink') {
+        //如果为链接则找到源内容
+        var  url = ucUrl + 'contents/' + cid + '/target';
+        $.get(url, function(target) {
+              if(target){
+                openContent(target);
+              }else{
+                showMessage('error',msg.documentManagment.content.view.destContentNotExit);
+              }
+        });
     } else {
         //如果为file，则进入在线浏览，首先判断当前用户对此内容是否有Read权限
         var  url = ucUrl + 'contents/' + cid + '/allowedActions/read';
         $.get(url, function(checkPremession) {
               if(checkPremession){
-                    toPreview(cid,format);
+                    toPreview(cid);
               }else{
                     showMessage('error','没有浏览此文档的权限');
               }
@@ -2634,9 +2603,18 @@ ucApp.onPageInit('rename', function (page) {
 
 //page初始化_rename
 ucApp.onPageInit('queryRename', function (page) {
-     $$('#fullscreen_rename').on('click', function () {
-                                 fullscreen('#fullscreen_rename');
-                                 });
+     $$('#fullscreen_queryRename').on('click', function () {
+                                             fullscreen('#fullscreen_queryRename');
+                                             });
+     
+     $$('#back_queryRename').on('click', function () {
+                                       syncHomeFullscreen('#fullscreen_queryRename');
+                                       if (flag_fullscreen) {
+                                       $$("#fullscreen_queryResult").html("取消全屏");
+                                       } else {
+                                       $$("#fullscreen_queryResult").html("全屏");
+                                       }
+                                       });
      
      $('#contentRenameForm').validate({
                                       rules: {
@@ -2663,24 +2641,17 @@ ucApp.onPageInit('queryRename', function (page) {
                                    $('#search_input').attr('value','');
                                    getContentList(currentFolderId,'');
                                    showMessage('success','修改成功!');
-                                   mainView.router.back({
-                                                        url: 'index.html'
-                                                        ,force:true
-                                                        })
+                                   doQuery();
+//                                   mainView.router.back({
+//                                                        url: 'index.html'
+//                                                        ,force:true
+//                                                        })
                                    }).error(function(jqXHR, textStatus, errorThrown) {
                                             showMessage('error',jqXHR.getResponseHeader('code'));
                                             }).complete(function() {
                                                         
                                                         });
                              });
-     
-     $$('#back_rename').on('click', function () {
-                           mainView.router.back({
-                                                url: 'index.html'
-                                                ,force:true
-                                                });
-                           syncHomeFullscreen('#fullscreen_rename');
-                           });
      
 });
 
@@ -3012,9 +2983,19 @@ ucApp.onPageInit('contentDetail', function (page) {
 
 //page初始化_queryContentDetail
 ucApp.onPageInit('queryContentDetail', function (page) {
-     $$('#fullscreen_contentDetail').on('click', function () {
-                                        fullscreen('#fullscreen_contentDetail');
+     $$('#fullscreen_queryContentDetail').on('click', function () {
+                                        fullscreen('#fullscreen_queryContentDetail');
                                         });
+                 
+     $$('#back_queryContentDetail').on('click', function () {
+                                       syncHomeFullscreen('#fullscreen_queryContentDetail');
+                                       if (flag_fullscreen) {
+                                       $$("#fullscreen_queryResult").html("取消全屏");
+                                       } else {
+                                       $$("#fullscreen_queryResult").html("全屏");
+                                       }
+                                       });
+                 
      var cid = $('#contentId_contentDetail').val();
      
      var validateRule = {rules: {
@@ -3278,10 +3259,11 @@ ucApp.onPageInit('queryContentDetail', function (page) {
                                                                        getContentList(currentFolderId,'');
                                                                        showMessage('success','修改成功!');
                                                                        ucApp.hideIndicator();
-                                                                       mainView.router.back({
-                                                                                            url: 'index.html'
-                                                                                            ,force:true
-                                                                                            })
+                                                                       doQuery();
+//                                                                       mainView.router.back({
+//                                                                                            url: 'tpl/queryResult.html'
+//                                                                                            ,force:true
+//                                                                                            })
                                                                        } ,
                                                                        error: function(jqXHR, textStatus, errorThrown) {
                                                                        //showErrorMassage(jqXHR.getResponseHeader('code'));
@@ -3296,14 +3278,6 @@ ucApp.onPageInit('queryContentDetail', function (page) {
                                                                        });
                                     });
      
-     
-     $$('#back_contentDetail').on('click', function () {
-                                  mainView.router.back({
-                                                       url: 'index.html'
-                                                       ,force:true
-                                                       });
-                                  syncHomeFullscreen('#fullscreen_contentDetail');
-                                  });
                  
 });
 
@@ -3562,27 +3536,19 @@ ucApp.onPageInit('contentPermission', function (page) {
 
 //page初始化_contentPermission
 ucApp.onPageInit('queryContentPermission', function (page) {
-     $$('#fullscreen_contentPermission').on('click', function () {
-                                            fullscreen('#fullscreen_contentPermission');
-                                            });
-     
-     //$('#contentPermissionForm').validate({
-     //    rules: {
-     //        contentName: {
-     //            required: true,
-     //            maxlength: 50,
-     //            invalidData: true
-     //        }
-     //    }
-     //});
-     
-     $$('#back_contentPermission').on('click', function () {
-                                      mainView.router.back({
-                                                           url: 'index.html'
-                                                           ,force:true
-                                                           });
-                                      syncHomeFullscreen('#fullscreen_contentPermission');
+     $$('#fullscreen_queryContentPermission').on('click', function () {
+                                      fullscreen('#fullscreen_queryContentPermission');
                                       });
+     
+     $$('#back_queryContentPermission').on('click', function () {
+                                syncHomeFullscreen('#fullscreen_queryContentPermission');
+                                if (flag_fullscreen) {
+                                $$("#fullscreen_queryResult").html("取消全屏");
+                                } else {
+                                $$("#fullscreen_queryResult").html("全屏");
+                                }
+                                });
+     
      
 });
 

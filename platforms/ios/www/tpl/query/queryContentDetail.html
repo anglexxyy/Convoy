@@ -1,11 +1,11 @@
 <div class="navbar">
     <div class="navbar-inner">
         <div class="left">
-            <a href="#" id="fullscreen_contentDetail" class="button">全屏</a>
+            <a href="#" id="fullscreen_queryContentDetail" class="button">全屏</a>
         </div>
         <div class="center sliding">详细信息</div>
         <div class="right">
-            <a href="#" class="back link">
+            <a href="#" id="back_queryContentDetail" class="back link">
                 <i class="icon icon-back"></i>
                 <span>返回</span>
             </a>
@@ -228,13 +228,13 @@
                                     <div class="col-10">
                                         <label><b>图标</b></label>
                                     </div>
-                                    <div class="col-55">
+                                    <div class="col-50">
                                         <label><b>文件名</b></label>
                                     </div>
-                                    <div class="col-10">
+                                    <div class="col-15">
                                         <label><b>大小</b></label>
                                     </div>
-                                    <div class="col-20">
+                                    <div class="col-15">
 
                                     </div>
                                 </div>
@@ -247,13 +247,13 @@
                                         <div class="col-10">
                                             <i class={{getIcons format}}></i>
                                         </div>
-                                        <div class="col-55">
+                                        <div class="col-50">
                                             <label>'{{name}}'</label>
                                         </div>
-                                        <div class="col-10">
+                                        <div class="col-15">
                                             <label>{{convertSize size}}</label>
                                         </div>
-                                        <div class="col-20">
+                                        <div class="col-15">
                                             <a href="" action="delete" atname="{{name}}" encoding="{{encoding}}">
                                                 <ins>删除</ins>
                                             </a>
