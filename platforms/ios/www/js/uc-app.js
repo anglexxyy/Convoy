@@ -2222,15 +2222,6 @@ function openFile(content){
     var  url = ucUrl + 'contents/' + content.id + '/allowedActions/read';
     $.get(url, function(checkPremession) {
           if(checkPremession){
-//            //alert(JSON.stringify(content));
-//            //alert(JSON.stringify(content.facets));
-//              var  att_url = ucUrl + 'contents/' + content.id + '/attachments';
-//              $.get(att_url, function(attachments) {
-//                    if(attachments){
-//                        //alert(JSON.stringify(attachments));
-//                        toPreview(content.id,attachments[0].format);
-//                    }
-//              });
             toPreview(content.id);
           }else{
             showMessage('error','没有浏览此文档的权限');
@@ -2243,7 +2234,6 @@ function toPreview(cid){
     var  url = ucUrl + 'contents/' + cid + '/attachments/imageUrls';
     ucApp.showIndicator();
     $.get(url, function(data) {
-          alert(JSON.stringify(data));
           if(data){
           var format = data.format;
           var appPath = window.app.rootName + "/";
