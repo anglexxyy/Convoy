@@ -3348,7 +3348,7 @@ function drawContentDetailPropsDiv(contentData, validateRule) {
 
             if((!contentData.canUpdateProperty)||(props.readonly)){
                 if(props.multiple){
-                    p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><input type="text" disabled="disabled" value="' + props.value + '" name="' + props.localName + '"/></div>');
+                    p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><label>' + props.value + '</label><input type="hidden" disabled="disabled" value="' + props.value + '" name="' + props.localName + '"/></div>');
                 }else if(props.type.toUpperCase()=='BOOLEAN'){
                     if(props.value.toLowerCase()=='true'){
                         p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><input type="checkbox" disabled="disabled" checked="checked" name="' + props.localName + '"/></div>');
@@ -3356,7 +3356,7 @@ function drawContentDetailPropsDiv(contentData, validateRule) {
                         p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><input type="checkbox" disabled="disabled" name="' + props.localName + '"/></div>');
                     }
                 }else{
-                    p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><input type="text" disabled="disabled" value="' + props.value + '" name="' + props.localName + '"/></div>');
+                    p.append('<div class="col-20"><label for="' + props.localName + '">' + props.displayName + '</label></div><div class="col-80"><label>' + props.value + '</label><input type="hidden" disabled="disabled" value="' + props.value + '" name="' + props.localName + '"/></div>');
                 }
             }else{
                 if (props.choices && props.choices != '') {
