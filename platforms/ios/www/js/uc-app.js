@@ -1450,6 +1450,8 @@ ucApp.onPageInit('about', function (page) {
     $$('#fullscreen_about').on('click', function () {
         fullscreen('#fullscreen_about');
     });
+                 
+    blurActivedBom();
 
     $$('#back_about').on('click', function () {
         mainView.router.back({
@@ -1465,6 +1467,8 @@ ucApp.onPageInit('changePass', function (page) {
     $$('#fullscreen_changePass').on('click', function () {
         fullscreen('#fullscreen_changePass');
     });
+                 
+    blurActivedBom();
 
     $('#changePassForm').validate({
         rules: {
@@ -1524,11 +1528,21 @@ ucApp.onPageInit('changePass', function (page) {
 
 });
 
+function blurActivedBom(){
+    var activeId = document.activeElement.id;
+    if ((activeId=="userInfo_userName")||(activeId=="userInfo_email")||
+        (activeId=="newPassword")||(activeId=="confirmPassword")){
+       $$('#'+activeId).blur();
+    }
+}
+
 //page初始化_userInfo
 ucApp.onPageInit('userInfo', function (page) {
     $$('#fullscreen_userInfo').on('click', function () {
         fullscreen('#fullscreen_userInfo');
     });
+                 
+    blurActivedBom();
 
     $('#userInfoForm').validate({
         rules: {
@@ -1697,6 +1711,7 @@ $$('#template-right').on('click', function (e) {
                          });
 
 var currentTemplateId = null;
+var currentTemplateName = null;
 
 function refreshTemplates(){
     $.ajax({
@@ -1725,14 +1740,25 @@ function refreshTemplates(){
                       }
                       
                       $('#ul_templates').find('a').click(function(){
+                                                         
+                                                         if(!query_swipeout_closed){
+                                                         ucApp.swipeoutClose(swipeoutLi,function(){});
+                                                         }
+                                                         
                                                          var tempId = $(this).attr('name');
                                                          var tempName = $(this).attr('tempname');
                                                          currentTemplateId = tempId;
+                                                         currentTemplateName = tempName;
                                                          mainView.router.back({
                                                                               url: 'index.html',
                                                                               force: true,
                                                                               animatePages:false
                                                                               });
+                                                         
+                                                         //alert(query_swipeout_closed);
+                                                         //alert(swipeoutLi);
+                                                         
+                                                         
                                                          mainView.router.load({
                                                                               url: 'tpl/templateDetail.html',
                                                                               context: {
@@ -1766,6 +1792,12 @@ var queryResultData=null;
 //加载查询模板详细信息页面
 ucApp.onPageInit('templateDetail', function (page) {
                  
+     if (flag_fullscreen) {
+     $$("#fullscreen_templateDetail").html("取消全屏");
+     } else {
+     $$("#fullscreen_templateDetail").html("全屏");
+     };
+                 
      drawQueryCondition();
      
      $$('#templateSearch').on('click', function () {
@@ -1773,9 +1805,10 @@ ucApp.onPageInit('templateDetail', function (page) {
           queryUcql = getUcql(queryBean);
                               
           var currentFolderId = storage.getItem('currentFolder');
+                              
+          //alert(document.activeElement.id);
           
           //alert(queryUcql);
-          ucApp.showIndicator();
                               
           doQuery();
       
@@ -1790,6 +1823,11 @@ ucApp.onPageInit('templateDetail', function (page) {
                               url: 'index.html'
                               , force: true
          });
+       if (flag_fullscreen) {
+            $$("#fullscreen_view_main").html("取消全屏");
+       } else {
+            $$("#fullscreen_view_main").html("全屏");
+       };
          syncHomeFullscreen('#fullscreen_templateDetail');
      });
 });
@@ -1900,9 +1938,21 @@ function doQuery(){
            contentType: "application/json;utf-8"
            }).success(function (data) {
                       queryResultData = data;
+                      
+                      mainView.router.back({
+                                           url: 'index.html',
+                                           force: true,
+                                           animatePages:false
+                                           });
+                      
                       mainView.router.load({
                                            url: 'tpl/queryResult.html'
                                            });
+                      
+                      //syncHomeFullscreen('#fullscreen_queryResult');
+                      
+                      
+                      
                       ucApp.hideIndicator();
                       //alert(JSON.stringify(data));
                       }).error(function (jqXHR) {
@@ -2065,6 +2115,9 @@ function checkDate(startDate,endDate){
     }
 }
 
+
+var swipeoutLi = null;
+var query_swipeout_closed = true;
 //查询结果
 ucApp.onPageInit('queryResult', function (page) {
      if (queryResultData==null){
@@ -2072,20 +2125,41 @@ ucApp.onPageInit('queryResult', function (page) {
      }else{
         $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(queryResultData);
      }
+                 
+                 //alert(flag_fullscreen);
+     if (flag_fullscreen) {
+        $$("#fullscreen_queryResult").html("取消全屏");
+     } else {
+        $$("#fullscreen_queryResult").html("全屏");
+     };
+                 
+     $$('.swipeout').on('open', function () {
+                        //alert("open");
+        swipeoutLi = $$('#queryli'+index);
+        query_swipeout_closed = false;
+     });
+                 
+     $$('.swipeout').on('closed', function () {
+                        //alert("close");
+        query_swipeout_closed = true;
+     });
 
      $$('#fullscreen_queryResult').on('click', function (e) {
            fullscreen('#fullscreen_queryResult');
      });
                  
      $$('#back_queryResult').on('click', function () {
-           syncHomeFullscreen('#fullscreen_queryResult');
-           if (flag_fullscreen) {
-                $$("#fullscreen_templateDetail").html("取消全屏");
-           } else {
-                $$("#fullscreen_templateDetail").html("全屏");
-           }
-           drawQueryCondition();
-                                
+
+            mainView.router.load({
+                                 url: 'tpl/templateDetail.html',
+                                 context: {
+                                 tempId: currentTemplateId,
+                                 tempName: currentTemplateName
+                                 }
+                                 });
+                 
+                 
+           //drawQueryCondition();
      });
 });
 
@@ -2499,7 +2573,8 @@ function renameContent(index){
                 url:'tpl/rename.html',
                 context: {
                     contentId : cid,
-                    contentName : cName
+                    contentName : cName,
+                    isquery : 'false'
                 }
             });
         }else{
@@ -2517,21 +2592,26 @@ function queryrenameContent(index){
         return;
     };
     
+    var selectLi = $$('#queryli'+index);
+    ucApp.swipeoutClose(selectLi,function(){});
+    
     var cid = $$('#queryid'+index).val();
     
     //判断当前用户对此内容是否有update权限
     var  url = ucUrl + 'contents/' + cid + '/allowedActions/update';
     $.get(url, function(checkPremession) {
           if(checkPremession){
-          var cName = "'"+$$('#queryname'+index).html()+"'";
-          mainView.router.load({
-                               url:'tpl/query/queryRename.html',
-                               context: {
-                               contentId : cid,
-                               contentName : cName
-                               }
-                               ,force:true
-                               });
+              var cName = "'"+$$('#queryname'+index).html()+"'";
+              mainView.router.load({
+                                   url:'tpl/rename.html',
+                                   context: {
+                                   contentId : cid,
+                                   contentName : cName,
+                                   isquery : 'true'
+                                   }
+                                   ,force:true
+                                   });
+          
           }else{
           showMessage('error','没有此文档的重命名权限');
           }
@@ -2541,6 +2621,12 @@ function queryrenameContent(index){
 
 //page初始化_rename
 ucApp.onPageInit('rename', function (page) {
+     if (flag_fullscreen) {
+     $$("#fullscreen_rename").html("取消全屏");
+     } else {
+     $$("#fullscreen_rename").html("全屏");
+     };
+                 
     $$('#fullscreen_rename').on('click', function () {
         fullscreen('#fullscreen_rename');
     });
@@ -2570,10 +2656,24 @@ ucApp.onPageInit('rename', function (page) {
             $('#search_input').attr('value','');
             getContentList(currentFolderId,'');
             showMessage('success','修改成功!');
-            mainView.router.back({
-                url: 'index.html'
-                ,force:true
-            })
+//            mainView.router.back({
+//                url: 'index.html'
+//                ,force:true
+//            })
+              var isquery = $$('#isquery_rename').val();
+              if(isquery=="false"){
+                    mainView.router.back({
+                                   url: 'index.html'
+                                   ,force:true
+                                   });
+              }else if (isquery=="true"){
+                    doQuery();
+              }else{
+                    mainView.router.back({
+                                   url: 'index.html'
+                                   ,force:true
+                                   });
+              }
         }).error(function(jqXHR, textStatus, errorThrown) {
             showMessage('error',jqXHR.getResponseHeader('code'));
         }).complete(function() {
@@ -2582,68 +2682,31 @@ ucApp.onPageInit('rename', function (page) {
     });
 
     $$('#back_rename').on('click', function () {
-        mainView.router.back({
-            url: 'index.html'
-            ,force:true
-        });
-        syncHomeFullscreen('#fullscreen_rename');
+//        mainView.router.back({
+//            url: 'index.html'
+//            ,force:true
+//        });
+//        syncHomeFullscreen('#fullscreen_rename');
+          var isquery = $$('#isquery_rename').val();
+          if(isquery=="false"){
+              mainView.router.back({
+                                   url: 'index.html'
+                                   ,force:true
+                                   });
+              syncHomeFullscreen('#fullscreen_rename');
+          }else if (isquery=="true"){
+              doQuery();
+          }else{
+              mainView.router.back({
+                                   url: 'index.html'
+                                   ,force:true
+                                   });
+              syncHomeFullscreen('#fullscreen_rename');
+          }
     });
 
 });
 
-//page初始化_rename
-ucApp.onPageInit('queryRename', function (page) {
-     $$('#fullscreen_queryRename').on('click', function () {
-                                             fullscreen('#fullscreen_queryRename');
-                                             });
-     
-     $$('#back_queryRename').on('click', function () {
-                                       syncHomeFullscreen('#fullscreen_queryRename');
-                                       if (flag_fullscreen) {
-                                       $$("#fullscreen_queryResult").html("取消全屏");
-                                       } else {
-                                       $$("#fullscreen_queryResult").html("全屏");
-                                       }
-                                       });
-     
-     $('#contentRenameForm').validate({
-                                      rules: {
-                                      newContentName: {
-                                      required: true,
-                                      maxlength: 50,
-                                      invalidData: true
-                                      }
-                                      }
-                                      });
-     
-     $$('#rename_modify').on('click', function () {
-                             if (!$("#contentRenameForm").valid()) {
-                             return;
-                             }
-                             var newName = $('#newContentName').val();
-                             //newName = encodeURI(newName);
-                             var cid = $('#contentId_rename').val();
-                             var data = $.param({
-                                                'name': newName
-                                                });
-                             $.put(ucUrl+'contents/' + cid + '/name?' + data, function() {
-                                   var currentFolderId = storage.getItem('currentFolder');
-                                   $('#search_input').attr('value','');
-                                   getContentList(currentFolderId,'');
-                                   showMessage('success','修改成功!');
-                                   doQuery();
-//                                   mainView.router.back({
-//                                                        url: 'index.html'
-//                                                        ,force:true
-//                                                        })
-                                   }).error(function(jqXHR, textStatus, errorThrown) {
-                                            showMessage('error',jqXHR.getResponseHeader('code'));
-                                            }).complete(function() {
-                                                        
-                                                        });
-                             });
-     
-});
 
 function getArrayToString(arr){
     if(arr!=null&&arr.length>0){
@@ -2676,6 +2739,12 @@ var tempContentData = null;
 
 //page初始化_contentDetail
 ucApp.onPageInit('contentDetail', function (page) {
+     if (flag_fullscreen) {
+     $$("#fullscreen_contentDetail").html("取消全屏");
+     } else {
+     $$("#fullscreen_contentDetail").html("全屏");
+     };
+                 
     $$('#fullscreen_contentDetail').on('click', function () {
         fullscreen('#fullscreen_contentDetail');
     });
@@ -2942,10 +3011,24 @@ ucApp.onPageInit('contentDetail', function (page) {
                    getContentList(currentFolderId,'');
                    showMessage('success','修改成功!');
                    ucApp.hideIndicator();
-                   mainView.router.back({
+//                   mainView.router.back({
+//                                        url: 'index.html'
+//                                        ,force:true
+//                                        })
+                   var isquery = $$('#isquery_contentDetail').val();
+                   if(isquery=="false"){
+                        mainView.router.back({
                                         url: 'index.html'
                                         ,force:true
-                                        })
+                                        });
+                   }else if (isquery=="true"){
+                        doQuery();
+                   }else{
+                        mainView.router.back({
+                                        url: 'index.html'
+                                        ,force:true
+                                        });
+                   }
                } ,
                error: function(jqXHR, textStatus, errorThrown) {
                    //showErrorMassage(jqXHR.getResponseHeader('code'));
@@ -2962,313 +3045,29 @@ ucApp.onPageInit('contentDetail', function (page) {
      
 
     $$('#back_contentDetail').on('click', function () {
-        mainView.router.back({
-            url: 'index.html'
-            ,force:true
-        });
-        syncHomeFullscreen('#fullscreen_contentDetail');
+        var isquery = $$('#isquery_contentDetail').val();
+         if(isquery=="false"){
+            mainView.router.back({
+                              url: 'index.html'
+                              ,force:true
+                              });
+            syncHomeFullscreen('#fullscreen_contentDetail');
+         }else if (isquery=="true"){
+            doQuery();
+         }else{
+            mainView.router.back({
+                              url: 'index.html'
+                              ,force:true
+                              });
+            syncHomeFullscreen('#fullscreen_contentDetail');
+         }
+//        mainView.router.back({
+//            url: 'index.html'
+//            ,force:true
+//        });
+//        syncHomeFullscreen('#fullscreen_contentDetail');
     });
 
-});
-
-//page初始化_queryContentDetail
-ucApp.onPageInit('queryContentDetail', function (page) {
-     $$('#fullscreen_queryContentDetail').on('click', function () {
-                                        fullscreen('#fullscreen_queryContentDetail');
-                                        });
-                 
-     $$('#back_queryContentDetail').on('click', function () {
-                                       syncHomeFullscreen('#fullscreen_queryContentDetail');
-                                       if (flag_fullscreen) {
-                                       $$("#fullscreen_queryResult").html("取消全屏");
-                                       } else {
-                                       $$("#fullscreen_queryResult").html("全屏");
-                                       }
-                                       });
-                 
-     var cid = $('#contentId_contentDetail').val();
-     
-     var validateRule = {rules: {
-     contentDetail_contentName: {
-     required: true,
-     maxlength: 50,
-     invalidData: true
-     },
-     contentDetail_description: {
-     maxlength: 200,
-     invalidData: true
-     }
-     }};
-     var validator = $('#contentDetailForm').validate(validateRule);
-     
-     //发请求获取内容扩展信息
-     $.ajax({
-            async: true,
-            type: 'GET',
-            url: ucUrl + 'contents/' + cid ,
-            data: '',
-            contentType: "application/json;utf-8"
-            }).success(function (data) {
-                       
-                       //File类型的文档只能添加一个
-                       //        if (data.contentTypeName==sysfilecontenttype){
-                       //            $('#contentDetail_upload').find('a[name="addUpload"]').hide();
-                       //            if(data.attachments.length){
-                       //                $('#contentDetail_upload').find('button').hide();
-                       //            }
-                       //        }
-                       
-                       if(data.attachments.length){
-                       $('#contentDetail_upload').find('input').hide();
-                       }
-                       
-                       //判断是否可以删除附件
-                       if (!data.canUpdateProperty){
-                       $('#attachmentTable').find('a[action="delete"]').hide();
-                       }
-                       
-                       //判f断是否可以下载
-                       if (!data.canDownloadOrigin){
-                       $('#attachmentTable').find('a[action="download"]').hide();
-                       }
-                       
-                       
-                       //展示属性信息中的标签
-                       var facetValue="";
-                       if((data.facets!=null)&&(data.facets.length>0)){
-                       var fcs = data.facets;
-                       for(var m=0;m<fcs.length;m++){
-                       if(fcs[m].toLowerCase()=='versionable'){
-                       facetValue="带版本控制的文件";
-                       }else if(fcs[m].toLowerCase()=='folderish'){
-                       facetValue="目录";
-                       }else{
-                       
-                       }
-                       }
-                       }else{
-                       facetValue="普通文件";
-                       }
-                       $('#contentFacets').html(facetValue);
-                       
-                       validateRule = drawContentDetailPropsDiv(data,validateRule);
-                       $.extend(validator.settings, validateRule);
-                       tempContentData = data;
-                       }).error(function (jqXHR) {
-                                if (jqXHR.status == '401') {
-                                status401Error();
-                                } else {
-                                showMessage('error',jqXHR.getResponseHeader('code'));
-                                }
-                                });
-     
-     
-     //$("#contentDetail_upload").append('<p><button name="file_upload0" type="button">选择文档</button><input type="hidden" name="input_upload0"/><label name="label_upload0"></label><a href="" name="addUpload">添加文档</a>&nbsp;&nbsp;<a href="" name="deleteUpload" hidden="hidden">删除文档</a></p>');
-     $('#contentDetail_upload').find('a[name="addUpload"]').click(function(){
-                                                                  var index = $('#contentDetail_upload').find('p').length;
-                                                                  var newP = $(this).parent().clone(true);
-                                                                  newP.find('a[name="deleteUpload"]').removeAttr("hidden");
-                                                                  newP.find('button').attr('name','file_upload'+index);
-                                                                  newP.find('label').attr('name','label_upload'+index);
-                                                                  newP.find('input').attr('name','input_upload'+index);
-                                                                  newP.find('label').html("");
-                                                                  newP.find('input').attr("value","");
-                                                                  $('#contentDetail_upload').append(newP);
-                                                                  });
-     
-     $('#contentDetail_upload').find('a[name="deleteUpload"]').click(function(){
-                                                                     $(this).parent().remove();
-                                                                     });
-     
-     $('#contentDetail_upload').find('button').click(function(){
-                                                     var pObj = $(this).parent();
-                                                     fileChooser.open(
-                                                                      function(uri) {
-                                                                      var fname = decodeURI(uri.substr(uri.lastIndexOf('/')+1));
-                                                                      pObj.find("input").val(uri);
-                                                                      pObj.find("label").html(fname);
-                                                                      }
-                                                                      );
-                                                     });
-     
-     
-     //下载附件
-     $$('#attachmentTable').find('a').click(function() {
-                                            var action = $(this).attr("action");
-                                            var encoding = $(this).attr("encoding");
-                                            var atname = $(this).attr("atname");
-                                            var chooseAttObj = $(this);
-                                            if (action=="delete"){
-                                            $.each(tempContentData.attachments, function(key, atta) {
-                                                   if(atta.name==atname){
-                                                   chooseAttObj.parent().parent().remove();
-                                                   $('#contentDetail_upload').find('input').show();
-                                                   atta.status = 2;
-                                                   }
-                                                   });
-                                            }else if (action=="download"){
-                                            ucApp.showIndicator();
-                                            var fileTransfer = new FileTransfer();
-                                            var uri = encodeURI(ucUrl + "contents/" + cid + "/attachments/" + encoding+"?renditionType=0&attachmentName=&encoding="+atname);
-                                            var fileURL = "/mnt/sdcard/"+atname;
-                                            fileTransfer.download(
-                                                                  uri,
-                                                                  fileURL,
-                                                                  function(entry) {
-                                                                  showMessage('success','下载成功!');
-                                                                  ucApp.hideIndicator();
-                                                                  //console.log("download complete: " + entry.toURL());
-                                                                  },
-                                                                  function(error) {
-                                                                  showMessage('error','下载失败:'+error.source);
-                                                                  ucApp.hideIndicator();
-                                                                  //console.log("download error source " + error.source);
-                                                                  //console.log("download error target " + error.target);
-                                                                  //console.log("upload error code" + error.code);
-                                                                  }
-                                                                  );
-                                            }
-                                            });
-     
-     //    $$('#contentDetail_modify').on('click', function () {
-     //        if (!$("#contentDetailForm").valid()) {
-     //            return;
-     //        }
-     //
-     //        ucApp.showIndicator();
-     //        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
-     //            $('#contentDetail_upload').find('input').each(function(i){
-     //                if(i>0){
-     //                    if($(this).val()==''){
-     //                        $(this).parent().remove();
-     //                    }
-     //                }
-     //            });
-     //            var files = $('#contentDetail_upload').find('input');
-     //            if(files.length>1){
-     //                for(var i=0;i<files.length;i++){
-     //                    for(var j=(i+1);j<files.length;j++){
-     //                        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
-     //                        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
-     //                        if(fileName1==fileName2){
-     //                            showMessage('error','上传列表中存在重复的附件');
-     //                            ucApp.hideIndicator();
-     //                            return ;
-     //                        }
-     //                    }
-     //                }
-     //            }
-     //        }
-     //
-     //        var content = organizationDetailDocument(tempContentData);
-     //        var contentString = JSON.stringify(content);
-     //        $('#content_update_contentString').val(contentString);
-     //        //写入元数据
-     //        $.ajax({
-     //            type: "POST",
-     //            url: ucUrl + 'contents/'+cid+'/update/mobile',
-     //            data: {
-     //                'jsonContent': JSON.stringify(content)
-     //            }
-     //        }).success(function (data) {
-     //            //回传内容ID
-     //            //var contentId = data;
-     //
-     //            //开始写入流数据
-     //            var files = $('#contentDetail_upload').find('input');
-     //            if(ifHaveFiles(files)){
-     //                if(files.length>0){
-     //                    var uriArray = new Array();
-     //                    for(var i=0;i<files.length;i++){
-     //                        uriArray.push(files[i].value);
-     //                    }
-     //                    uploadMultiFiles("update",uriArray,cid,0,0,"","");
-     //                }
-     //            }else{
-     //                var currentFolderId = storage.getItem('currentFolder');
-     //                getContentList(currentFolderId,'');
-     //                showMessage('success','修改成功!');
-     //                mainView.router.back({
-     //                    url: 'index.html'
-     //                    ,force:true
-     //                });
-     //                ucApp.hideIndicator();
-     //            }
-     //
-     //            //ucApp.hideIndicator();
-     //        }).error(function (jqXHR) {
-     //            if (jqXHR.status == '401') {
-     //                status401Error();
-     //            } else {
-     //                showMessage('error',jqXHR.getResponseHeader('code'));
-     //            }
-     //            ucApp.hideIndicator();
-     //        });
-     //    });
-     
-     
-     $$('#contentDetail_modify').on('click', function () {
-                                    if (!$("#contentDetailForm").valid()) {
-                                    return;
-                                    }
-                                    ucApp.showIndicator();
-                                    
-                                    //        if($('#contentDetail_upload').find('p')&&$('#contentDetail_upload').find('p').length>0){
-                                    //        $('#contentDetail_upload').find('input:file').each(function(i){
-                                    //                                                           if(i>0){
-                                    //                                                           if($(this).val()==''){
-                                    //                                                           $(this).parent().remove();
-                                    //                                                           }
-                                    //                                                           }
-                                    //                                                           });
-                                    //        var files = $('#contentDetail_upload').find('input:file');
-                                    //        if(files.length>1){
-                                    //        for(var i=0;i<files.length;i++){
-                                    //        for(var j=(i+1);j<files.length;j++){
-                                    //        var fileName1 = files[i].value.substring(files[i].value.lastIndexOf("\\")+1,files[i].value.length);
-                                    //        var fileName2 = files[j].value.substring(files[j].value.lastIndexOf("\\")+1,files[j].value.length);
-                                    //        if(fileName1==fileName2){
-                                    //        ucApp.alert('上传重复附件');
-                                    //        ucApp.hideIndicator();
-                                    //        return ;
-                                    //        }
-                                    //        }
-                                    //        }
-                                    //        }
-                                    //        }
-                                    
-                                    var content = organizationDetailDocument(tempContentData);
-                                    var contentString = JSON.stringify(content);
-                                    $('#content_update_contentString').val(contentString);
-                                    $('#contentDetailForm').ajaxSubmit({
-                                                                       url : ucUrl + 'contents/' + cid+'?_method=PUT',
-                                                                       type : 'POST',
-                                                                       success : function(responseText, statusText) {
-                                                                       var currentFolderId = storage.getItem('currentFolder');
-                                                                       $('#search_input').attr('value','');
-                                                                       getContentList(currentFolderId,'');
-                                                                       showMessage('success','修改成功!');
-                                                                       ucApp.hideIndicator();
-                                                                       doQuery();
-//                                                                       mainView.router.back({
-//                                                                                            url: 'tpl/queryResult.html'
-//                                                                                            ,force:true
-//                                                                                            })
-                                                                       } ,
-                                                                       error: function(jqXHR, textStatus, errorThrown) {
-                                                                       //showErrorMassage(jqXHR.getResponseHeader('code'));
-                                                                       //showMessage('error',jqXHR.getResponseHeader('code'));
-                                                                       ucApp.hideIndicator();
-                                                                       if (jqXHR.getResponseHeader('code').length>80){
-                                                                       showMessage('error','存储流失败');
-                                                                       }else{
-                                                                       showMessage('error',jqXHR.getResponseHeader('code'));
-                                                                       }
-                                                                       }
-                                                                       });
-                                    });
-     
-                 
 });
 
 
@@ -3485,6 +3284,7 @@ function getContentDetails(index){
         data: '',
         contentType: "application/json;utf-8"
     }).success(function (data) {
+        data["isquery"]="false";
         mainView.router.load({
             url:'tpl/contentDetail.html',
             context: data
@@ -3500,6 +3300,12 @@ function getContentDetails(index){
 
 //page初始化_contentPermission
 ucApp.onPageInit('contentPermission', function (page) {
+     if (flag_fullscreen) {
+     $$("#fullscreen_contentPermission").html("取消全屏");
+     } else {
+     $$("#fullscreen_contentPermission").html("全屏");
+     };
+                 
     $$('#fullscreen_contentPermission').on('click', function () {
         fullscreen('#fullscreen_contentPermission');
     });
@@ -3515,32 +3321,31 @@ ucApp.onPageInit('contentPermission', function (page) {
     //});
 
     $$('#back_contentPermission').on('click', function () {
-        mainView.router.back({
-            url: 'index.html'
-            ,force:true
-        });
-        syncHomeFullscreen('#fullscreen_contentPermission');
+//        mainView.router.back({
+//            url: 'index.html'
+//            ,force:true
+//        });
+//        syncHomeFullscreen('#fullscreen_contentPermission');
+         var isquery = $$('#isquery_contentPermission').val();
+         if(isquery=="false"){
+             mainView.router.back({
+                                  url: 'index.html'
+                                  ,force:true
+                                  });
+             syncHomeFullscreen('#fullscreen_contentPermission');
+         }else if (isquery=="true"){
+             doQuery();
+         }else{
+             mainView.router.back({
+                                  url: 'index.html'
+                                  ,force:true
+                                  });
+             syncHomeFullscreen('#fullscreen_contentPermission');
+         }
     });
 
 });
 
-//page初始化_contentPermission
-ucApp.onPageInit('queryContentPermission', function (page) {
-     $$('#fullscreen_queryContentPermission').on('click', function () {
-                                      fullscreen('#fullscreen_queryContentPermission');
-                                      });
-     
-     $$('#back_queryContentPermission').on('click', function () {
-                                syncHomeFullscreen('#fullscreen_queryContentPermission');
-                                if (flag_fullscreen) {
-                                $$("#fullscreen_queryResult").html("取消全屏");
-                                } else {
-                                $$("#fullscreen_queryResult").html("全屏");
-                                }
-                                });
-     
-     
-});
 
 
 //模板查询结果点击Details
@@ -3551,6 +3356,9 @@ function querygetContentDetails(index){
         return;
     };
     
+    var selectLi = $$('#queryli'+index);
+    ucApp.swipeoutClose(selectLi,function(){});
+    
     var cid = $$('#queryid'+index).val();
     //发请求获取详情信息
     $.ajax({
@@ -3560,10 +3368,12 @@ function querygetContentDetails(index){
            data: '',
            contentType: "application/json;utf-8"
            }).success(function (data) {
-                      mainView.router.load({
-                                           url:'tpl/query/queryContentDetail.html',
-                                           context: data
-                                           });
+                          data["isquery"]="true";
+                          mainView.router.load({
+                                               url:'tpl/contentDetail.html',
+                                               context: data
+                                               });
+                      
                       }).error(function (jqXHR) {
                                if (jqXHR.status == '401') {
                                status401Error();
@@ -3593,6 +3403,7 @@ function getContentPermissions(index){
         data: '',
         contentType: "application/json;utf-8"
     }).success(function (data) {
+        data["isquery"]="false";
         mainView.router.load({
             url:'tpl/contentPermission.html',
             context: data
@@ -3615,6 +3426,9 @@ function querygetContentPermissions(index){
         return;
     };
     
+    var selectLi = $$('#queryli'+index);
+    ucApp.swipeoutClose(selectLi,function(){});
+    
     var cid = $$('#queryid'+index).val();
     
     //发请求获取详情信息
@@ -3625,18 +3439,20 @@ function querygetContentPermissions(index){
            data: '',
            contentType: "application/json;utf-8"
            }).success(function (data) {
+                      data["isquery"]="true";
                       mainView.router.load({
-                                           url:'tpl/query/queryContentPermission.html',
+                                           url:'tpl/contentPermission.html',
                                            context: data
                                            });
                       
+                      
                       }).error(function (jqXHR) {
                                if (jqXHR.status == '401') {
-                               status401Error();
+                                status401Error();
                                } else {
-                               showMessage('error',jqXHR.getResponseHeader('code'));
+                                showMessage('error',jqXHR.getResponseHeader('code'));
                                }
-                               });
+                      });
 }
 
 //被踢后跳转到登录页面
@@ -3671,7 +3487,7 @@ function getContentList(folderId, qName) {
         $$('#itemList')[0].innerHTML = Template7.templates.listTemplate(data);
 
        //防止滑动点击第二个内容的按钮时，第一个页面已经存在，导致不触发请求
-       $$('.swipeout').on('open', function () {
+       $$('.contentliststyle').on('open', function () {
                           swipeout_closed = false;
                           mainView.router.back({
                                                url: 'index.html',
@@ -3679,7 +3495,7 @@ function getContentList(folderId, qName) {
                                                });
                           });
        
-       $$('.swipeout').on('closed', function () {
+       $$('.contentliststyle').on('closed', function () {
                           swipeout_closed = true;
                           if (flag_fullscreen) {
                           $$('.view-left').css('display', 'none');
