@@ -338,47 +338,47 @@ ucApp.onPageInit('newFile', function (page) {
         );
     });
 
-                 $$('#newFile_add').on('click', function () {
-                                       if (!$("#content_newFileForm").valid()) {
-                                       return;
-                                       }
-                                       ucApp.showIndicator();
-                                       var description = $$('#content_newFile_description').val();
-                                       var name = $$('#content_newFile_name').val();
-                                       var pid = $$('#content_newFile_parentId').val();
-                                       var content = {
-                                       contentTypeName: sysfilecontenttype,
-                                       parentId: pid,
-                                       name: name,
-                                       description: description
-                                       //filePath: basePath
-                                       };
-                                       var contentString = JSON.stringify(content);
-                                       $$('#content_newFile_contentString').val(contentString);
-                                       $('#content_newFileForm').ajaxSubmit({
-                                                                            url : ucUrl + 'contents',
-                                                                            type : 'POST',
-                                                                            success : function(responseText, statusText) {
-                                                                            var currentFolderId = storage.getItem('currentFolder');
-                                                                            $('#search_input').attr('value','');
-                                                                            getContentList(currentFolderId,'');
-                                                                            ucApp.hideIndicator();
-                                                                            showMessage('success','新建成功!');
-                                                                            mainView.router.back({
-                                                                                                 url: 'index.html'
-                                                                                                 ,force:true
-                                                                                                 })
-                                                                            } ,
-                                                                            error: function(jqXHR, textStatus, errorThrown) {
-                                                                                ucApp.hideIndicator();
-                                                                                if (jqXHR.getResponseHeader('code').length>80){
-                                                                                    showMessage('error','存储流失败');
-                                                                                }else{
-                                                                                    showMessage('error',jqXHR.getResponseHeader('code'));
-                                                                                }
-                                                                            }
-                                                                            });
-                                       });
+     $$('#newFile_add').on('click', function () {
+                           if (!$("#content_newFileForm").valid()) {
+                           return;
+                           }
+                           ucApp.showIndicator();
+                           var description = $$('#content_newFile_description').val();
+                           var name = $$('#content_newFile_name').val();
+                           var pid = $$('#content_newFile_parentId').val();
+                           var content = {
+                           contentTypeName: sysfilecontenttype,
+                           parentId: pid,
+                           name: name,
+                           description: description
+                           //filePath: basePath
+                           };
+                           var contentString = JSON.stringify(content);
+                           $$('#content_newFile_contentString').val(contentString);
+                           $('#content_newFileForm').ajaxSubmit({
+                                                                url : ucUrl + 'contents',
+                                                                type : 'POST',
+                                                                success : function(responseText, statusText) {
+                                                                var currentFolderId = storage.getItem('currentFolder');
+                                                                $('#search_input').attr('value','');
+                                                                getContentList(currentFolderId,'');
+                                                                ucApp.hideIndicator();
+                                                                showMessage('success','新建成功!');
+                                                                mainView.router.back({
+                                                                                     url: 'index.html'
+                                                                                     ,force:true
+                                                                                     })
+                                                                } ,
+                                                                error: function(jqXHR, textStatus, errorThrown) {
+                                                                    ucApp.hideIndicator();
+                                                                    if (jqXHR.getResponseHeader('code').length>80){
+                                                                        showMessage('error','存储流失败');
+                                                                    }else{
+                                                                        showMessage('error',jqXHR.getResponseHeader('code'));
+                                                                    }
+                                                                }
+                                                                });
+                           });
 
     $$('#back_newFile').on('click', function () {
         mainView.router.back({
@@ -1740,10 +1740,11 @@ function refreshTemplates(){
                       }
                       
                       $('#ul_templates').find('a').click(function(){
-                                                         
-                                                         if(!query_swipeout_closed){
-                                                         ucApp.swipeoutClose(swipeoutLi,function(){});
-                                                         }
+//                                                         alert(query_swipeout_closed);
+//                                                         alert(swipeoutLi);
+//                                                         if(!query_swipeout_closed){
+//                                                         ucApp.swipeoutClose(swipeoutLi,function(){});
+//                                                         }
                                                          
                                                          var tempId = $(this).attr('name');
                                                          var tempName = $(this).attr('tempname');
@@ -1755,9 +1756,7 @@ function refreshTemplates(){
                                                                               animatePages:false
                                                                               });
                                                          
-                                                         //alert(query_swipeout_closed);
-                                                         //alert(swipeoutLi);
-                                                         
+                                
                                                          
                                                          mainView.router.load({
                                                                               url: 'tpl/templateDetail.html',
@@ -2126,21 +2125,18 @@ ucApp.onPageInit('queryResult', function (page) {
         $$('#queryItemList')[0].innerHTML = Template7.templates.querylistTemplate(queryResultData);
      }
                  
-                 //alert(flag_fullscreen);
      if (flag_fullscreen) {
         $$("#fullscreen_queryResult").html("取消全屏");
      } else {
         $$("#fullscreen_queryResult").html("全屏");
      };
                  
-     $$('.swipeout').on('open', function () {
-                        //alert("open");
-        swipeoutLi = $$('#queryli'+index);
+     $$('.queryliststyle').on('open', function () {
+        swipeoutLi = $(this);
         query_swipeout_closed = false;
      });
                  
-     $$('.swipeout').on('closed', function () {
-                        //alert("close");
+     $$('.queryliststyle').on('closed', function () {
         query_swipeout_closed = true;
      });
 

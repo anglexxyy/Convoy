@@ -345,7 +345,7 @@
 
 <script type="text/template7" id="listTemplate">
     {{#each rows}}
-    <li class="row no-gutter swipeout" id=li{{@index}}>
+    <li class="row no-gutter swipeout contentliststyle" id=li{{@index}}>
         <div class="col-15">
             <label class="label-checkbox item-content" onclick="toggle_toolbar_buttons({{@index}})">
                 <input type="checkbox" id=content_checkbox{{@index}} name="content_checkbox" value="" >
@@ -409,7 +409,7 @@
         </div>
     </li>
     {{#each rows}}
-    <li class="row no-gutter swipeout" id=queryli{{@index}}>
+    <li class="row no-gutter swipeout queryliststyle" id=queryli{{@index}}>
         <div class="swipeout-content">
             <a href="#" class="item-link item-content" onclick="queryclickContent({{@index}})">
                 <div class="item-media">
