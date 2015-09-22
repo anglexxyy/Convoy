@@ -179,9 +179,7 @@ var mainView = ucApp.addView('.view-main', {
 //});
 
 //全局ajax请求的IP端口地址配置
-//var ucUrl = 'http://192.168.1.116:8080/dm/';
-var ucUrl = 'http://192.168.1.75:8080/ucontent_dm/';
-//var ucUrl = 'http://221.234.47.116:8028/ucontent_dm/';
+var ucUrl = '';
 
 
 //会话级的存储 - sessionStorage
@@ -3616,4 +3614,32 @@ function onBackKeyDown() {
         ]
     })
 
+}
+
+
+// 读取配置文件的服务配置
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+    var configURI = cordova.file.applicationDirectory + "serverIP.config";
+    window.resolveLocalFileSystemURI(configURI, readConfig, onError);
+}
+
+function readConfig(fileEntry){
+    fileEntry.file(gotFileRead, fail);
+}
+
+function gotFileRead(file) {
+    var reader = new FileReader();
+    reader.onloadend = function(evt) {
+        ucUrl = evt.target.result;
+    };
+    reader.readAsText(file);
+}
+
+function onError(error){
+    console.log(error);
+}
+
+function fail(error){
+    console.log(error);
 }

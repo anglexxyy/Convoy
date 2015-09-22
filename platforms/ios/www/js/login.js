@@ -6,9 +6,7 @@ var loginApp = new Framework7({
 var $$ = Dom7;
 
 //全局ajax请求的IP端口地址配置
-//var ucUrl = 'http://192.168.1.116:8080/dm/';
-var ucUrl = 'http://192.168.1.75:8080/ucontent_dm/';
-//var ucUrl = 'http://221.234.47.116:8028/ucontent_dm/';
+var ucUrl = '';
 
 //会话级的存储 - sessionStorage
 var storage = window.sessionStorage;
@@ -194,6 +192,80 @@ function disabledLogin() {
 function enabledLogin() {
     $$('#login_login').removeClass('ui-state-disabled').prop('disabled', false);
 }
+
+
+// 读取配置文件的服务配置
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+    var configURI = cordova.file.applicationDirectory + "serverIP.config";
+    window.resolveLocalFileSystemURI(configURI, readConfig, onError);
+}
+
+function readConfig(fileEntry){
+    fileEntry.file(gotFileRead, fail);
+}
+
+function gotFileRead(file) {
+    var reader = new FileReader();
+    reader.onloadend = function(evt) {
+        ucUrl = evt.target.result;
+    };
+    reader.readAsText(file);
+}
+
+function onError(error){
+    console.log(error);
+}
+
+function fail(error){
+    console.log(error);
+}
+
+//弹出配置界面
+function onConfigServer() {
+    loginApp.modal({
+                title:  '',
+                text: '<div><input type="text" id="serverIP" value='+ucUrl+'></div>',
+                buttons: [
+                          {
+                          text: '确定',
+                          onClick: function() {
+                          var ip = $$('#serverIP').val();
+                          WriteIPConfig(ip);
+                          }
+                          },
+                          {
+                          text: '取消',
+                          onClick: function() {
+                          }
+                          }
+                          ]
+                })
+    
+}
+
+function WriteIPConfig(){
+    var configURI = cordova.file.applicationDirectory + "serverIP.config";
+    window.resolveLocalFileSystemURI(configURI, writeConfig, onError);
+}
+
+function writeConfig(fileEntry){
+    fileEntry.createWriter(gotFileWriter, fail);
+}
+function onError(error){}
+
+function gotFileWriter(writer) {
+    var userText = $('#serverIP').val();
+    writer.seek(writer.length);
+    writer.write(userText);
+    writer.onwriteend = function(evt){
+        ucUrl = userText;
+    }
+}
+
+function fail(error){
+}
+
 
 
 //展示讯息

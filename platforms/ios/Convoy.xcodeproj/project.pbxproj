@@ -32,6 +32,7 @@
 		58BE241568FF4CC5849B6EE3 /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = EDC6CCC4B47E4AB295326594 /* CDVFileTransfer.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
 		744A2DF51AB94BE90047C106 /* OnlinePreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 744A2DF41AB94BE90047C106 /* OnlinePreview.m */; };
+		7484F6821BB0FD1400A5E49A /* serverIP.config in Resources */ = {isa = PBXBuildFile; fileRef = 7484F6811BB0FD1400A5E49A /* serverIP.config */; };
 		7488BA211ADB5FFC0083E364 /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA151ADB5FFC0083E364 /* CollectionViewCell.m */; };
 		7488BA221ADB5FFC0083E364 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7488BA171ADB5FFC0083E364 /* CollectionViewController.m */; };
 		7488BA231ADB5FFC0083E364 /* ImagesPreview.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7488BA181ADB5FFC0083E364 /* ImagesPreview.storyboard */; };
@@ -60,7 +61,6 @@
 		74D79E201AC3D7F000F1A370 /* ThumbsMainToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D79E0A1AC3D7F000F1A370 /* ThumbsMainToolbar.m */; };
 		74D79E211AC3D7F000F1A370 /* ThumbsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D79E0C1AC3D7F000F1A370 /* ThumbsViewController.m */; };
 		74D79E221AC3D7F000F1A370 /* UIXToolbarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74D79E0E1AC3D7F000F1A370 /* UIXToolbarView.m */; };
-		74D79E241AC3DA0800F1A370 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74D79E231AC3DA0800F1A370 /* UIKit.framework */; };
 		74D79E261AC3DA1700F1A370 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74D79E251AC3DA1700F1A370 /* Foundation.framework */; };
 		74D79E281AC3DA1F00F1A370 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74D79E271AC3DA1F00F1A370 /* MessageUI.framework */; };
 		74D79E2A1AC3DA2800F1A370 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74D79E291AC3DA2800F1A370 /* QuartzCore.framework */; };
@@ -84,6 +84,7 @@
 		74D79E511AC3EA7100F1A370 /* Reader-Print@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74D79E3E1AC3EA7100F1A370 /* Reader-Print@2x.png */; };
 		74D79E521AC3EA7100F1A370 /* Reader-Thumbs.png in Resources */ = {isa = PBXBuildFile; fileRef = 74D79E3F1AC3EA7100F1A370 /* Reader-Thumbs.png */; };
 		74D79E531AC3EA7100F1A370 /* Reader-Thumbs@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74D79E401AC3EA7100F1A370 /* Reader-Thumbs@2x.png */; };
+		74F8BDF61BB0FFC8008EA68B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74D79E231AC3DA0800F1A370 /* UIKit.framework */; };
 		7DD3B1D0BC5C473F85F2F26E /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2114DB4F41714F08A65E81A0 /* CDVLocalFilesystem.m */; };
 		7E7966DE1810823500FA85AD /* icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D41810823500FA85AD /* icon-40.png */; };
 		7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D51810823500FA85AD /* icon-40@2x.png */; };
@@ -153,6 +154,8 @@
 		66F3A74DA2DA4A6CA6EB0302 /* CDVFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVFile.m; path = org.apache.cordova.file/CDVFile.m; sourceTree = "<group>"; };
 		744A2DF31AB94BE90047C106 /* OnlinePreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnlinePreview.h; path = com.nikoyo.ucmobile.preview/OnlinePreview.h; sourceTree = "<group>"; };
 		744A2DF41AB94BE90047C106 /* OnlinePreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnlinePreview.m; path = com.nikoyo.ucmobile.preview/OnlinePreview.m; sourceTree = "<group>"; };
+		7484F6811BB0FD1400A5E49A /* serverIP.config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = serverIP.config; sourceTree = "<group>"; };
+		7484F6831BB0FF0700A5E49A /* InterfaceBuilderKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InterfaceBuilderKit.framework; path = Library/Frameworks/InterfaceBuilderKit.framework; sourceTree = DEVELOPER_DIR; };
 		7488BA141ADB5FFC0083E364 /* CollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
 		7488BA151ADB5FFC0083E364 /* CollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
 		7488BA161ADB5FFC0083E364 /* CollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewController.h; sourceTree = "<group>"; };
@@ -260,11 +263,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74F8BDF61BB0FFC8008EA68B /* UIKit.framework in Frameworks */,
 				74D79E2C1AC3DA3600F1A370 /* ImageIO.framework in Frameworks */,
 				74D79E2A1AC3DA2800F1A370 /* QuartzCore.framework in Frameworks */,
 				74D79E281AC3DA1F00F1A370 /* MessageUI.framework in Frameworks */,
 				74D79E261AC3DA1700F1A370 /* Foundation.framework in Frameworks */,
-				74D79E241AC3DA0800F1A370 /* UIKit.framework in Frameworks */,
 				5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */,
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -335,6 +338,7 @@
 				8D1107310486CEB800E47090 /* Convoy-Info.plist */,
 				74D79DE11AC3D76500F1A370 /* Localizable.strings */,
 				74D79DE51AC3D7CB00F1A370 /* test.pdf */,
+				7484F6811BB0FD1400A5E49A /* serverIP.config */,
 			);
 			name = Resources;
 			path = Convoy/Resources;
@@ -343,6 +347,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7484F6831BB0FF0700A5E49A /* InterfaceBuilderKit.framework */,
 				74D79E2B1AC3DA3600F1A370 /* ImageIO.framework */,
 				74D79E291AC3DA2800F1A370 /* QuartzCore.framework */,
 				74D79E271AC3DA1F00F1A370 /* MessageUI.framework */,
@@ -626,6 +631,7 @@
 				3088BBBD154F3926009F9C59 /* Default-Landscape@2x~ipad.png in Resources */,
 				74D79E491AC3EA7100F1A370 /* Reader-Email@2x.png in Resources */,
 				3088BBBE154F3926009F9C59 /* Default-Landscape~ipad.png in Resources */,
+				7484F6821BB0FD1400A5E49A /* serverIP.config in Resources */,
 				3088BBBF154F3926009F9C59 /* Default-Portrait@2x~ipad.png in Resources */,
 				7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */,
 				3088BBC0154F3926009F9C59 /* Default-Portrait~ipad.png in Resources */,
@@ -749,6 +755,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -781,6 +791,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Convoy/Convoy-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
